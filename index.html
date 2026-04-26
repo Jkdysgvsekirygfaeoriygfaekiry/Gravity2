@@ -319,6 +319,48 @@ select, button, input[type="number"] {
     border-radius: 6px;
   }
 
+
+  /* custom-only ring editor */
+  .custom-ring-editor {
+    margin-top: 10px;
+    padding: 9px;
+    border: 1px solid rgba(140,190,255,.14);
+    border-radius: 10px;
+    background: rgba(5,8,18,.35);
+  }
+
+  .custom-ring-title {
+    color: #dce9ff;
+    font-size: 12px;
+    margin-bottom: 8px;
+    letter-spacing: .08em;
+  }
+
+  .custom-ring-line {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .custom-ring-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .custom-ring-grid label {
+    grid-template-columns: 56px 1fr 54px;
+    margin: 4px 0;
+  }
+
+  .custom-ring-editor.is-disabled {
+    opacity: .48;
+  }
+
+
 @media (max-width: 760px) {
     .hud {
       height: 38vh;
@@ -357,7 +399,7 @@ select, button, input[type="number"] {
 
 <aside class="hud" id="controlPanel">
   <h1>GRAVITY LAB</h1>
-  <div class="subtitle">引力彈道實驗室：放置引力球，調整發射台，讓小球被捕獲、繞行、彈弓甩出，或直接撞成太空煙火。</div>
+  <div class="subtitle">引力彈道實驗室：放置天體，調整發射台，讓小球被捕獲、繞行、彈弓甩出，或直接撞成太空煙火。</div>
 
   <div class="hud-grid">
   <div class="section">
@@ -385,7 +427,7 @@ select, button, input[type="number"] {
   </div>
 
   <div class="section">
-    <div class="section-title">新增引力球</div>
+    <div class="section-title">新增天體</div>
     <select id="preset" class="wide">
       <optgroup label="特殊天體">
         <option value="blackhole">黑洞</option>
@@ -462,8 +504,20 @@ select, button, input[type="number"] {
       <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
     </div>
 
+      <div class="custom-ring-editor" id="customRingEditor">
+        <div class="custom-ring-title">自訂星環</div>
+        <div class="custom-ring-line">
+          <button id="customRingEnabled">星環：無</button>
+          <div class="color-picker">環顏色 <input id="customRingColor" type="color" value="#ffe0a2"></div>
+        </div>
+        <div class="custom-ring-grid">
+          <label>環數 <input id="customRingCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="customRingCountNum" type="number" min="1" max="3" step="1"></label>
+          <label>粗度 <input id="customRingWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="customRingWidthNum" type="number" min="1" max="14" step="1"></label>
+        </div>
+      </div>
+
     <div class="row">
-      <button class="ok" id="placePlanetBtn">放置引力球</button>
+      <button class="ok" id="placePlanetBtn">放置天體</button>
       <button class="danger" id="deletePlanetBtn">刪除選中</button>
     </div>
   </div>
@@ -475,7 +529,7 @@ select, button, input[type="number"] {
 
   <div class="hint">
     操作：滑鼠滾輪縮放，中鍵/右鍵拖曳視角；觸控支援單指拖曳、雙指縮放與平移。<br>
-    選「設定發射台」或「放置引力球」後，在畫布點一下。<br>
+    選「設定發射台」或「放置天體」後，在畫布點一下。<br>
     點引力球可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。
   </div>
 </div>
@@ -528,6 +582,9 @@ select, button, input[type="number"] {
     drag: $("drag"), timeScale: $("timeScale"), trail: $("trail"),
     preset: $("preset"), planetRadius: $("planetRadius"), planetMass: $("planetMass"), atmosphere: $("atmosphere"),
     primaryColor: $("primaryColor"), secondaryColor: $("secondaryColor"),
+    customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"),
+    customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"),
+    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"),
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
     dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
@@ -729,7 +786,10 @@ select, button, input[type="number"] {
     ui.planetRadiusNum.value = +ui.planetRadius.value;
     ui.planetMassNum.value = Number.isInteger(+ui.planetMass.value) ? String(+ui.planetMass.value) : (+ui.planetMass.value).toFixed(2);
     ui.atmosphereNum.value = +ui.atmosphere.value;
-  }
+  
+    if (ui.customRingCountNum) ui.customRingCountNum.value = +ui.customRingCount.value;
+    if (ui.customRingWidthNum) ui.customRingWidthNum.value = +ui.customRingWidth.value;
+    }
 
 
   function setPlanetControls(p) {
@@ -740,7 +800,46 @@ select, button, input[type="number"] {
       ui.primaryColor.value = p.colors[0];
       ui.secondaryColor.value = p.colors[1];
     }
+    if (p?.isCustom) {
+      syncCustomRingControlsFromPlanet(p);
+    } else {
+      setCustomRingEnabled(false);
+    }
+    updateCustomRingEditorVisibility();
+
     syncLabels();
+  }
+
+
+  let customRingEnabledDraft = false;
+
+  function setCustomRingEnabled(enabled) {
+    customRingEnabledDraft = !!enabled;
+    if (!ui.customRingEnabled) return;
+    ui.customRingEnabled.textContent = customRingEnabledDraft ? "星環：有" : "星環：無";
+    ui.customRingEnabled.classList.toggle("active-mode", customRingEnabledDraft);
+    if (ui.customRingEditor) {
+      ui.customRingEditor.classList.toggle("is-disabled", !customRingEnabledDraft);
+    }
+    if (selectedPlanet && selectedPlanet.isCustom) {
+      selectedPlanet.rings = customRingEnabledDraft;
+    }
+  }
+
+  function syncCustomRingControlsFromPlanet(p) {
+    if (!ui.customRingCount) return;
+    ui.customRingCount.value = p?.ringCount || 1;
+    ui.customRingWidth.value = p?.ringWidth || 3;
+    ui.customRingColor.value = p?.ringColor || "#ffe0a2";
+    setCustomRingEnabled(!!p?.rings && !!p?.isCustom);
+  }
+
+  function updateCustomRingEditorVisibility() {
+    if (!ui.customRingEditor) return;
+    const isCustomPreset = ui.preset.value === "custom";
+    const isSelectedCustom = !!selectedPlanet?.isCustom;
+    const shouldShow = isCustomPreset || isSelectedCustom;
+    ui.customRingEditor.style.display = shouldShow ? "block" : "none";
   }
 
   function applyPresetToSliders() {
@@ -750,6 +849,18 @@ select, button, input[type="number"] {
     ui.atmosphere.value = p.atmosphere;
     ui.primaryColor.value = p.colors[0];
     ui.secondaryColor.value = p.colors[1];
+    if (ui.customRingCount) {
+      if (ui.preset.value === "custom") {
+        ui.customRingCount.value = 1;
+        ui.customRingWidth.value = 3;
+        ui.customRingColor.value = "#ffe0a2";
+        setCustomRingEnabled(false);
+      } else {
+        setCustomRingEnabled(false);
+      }
+      updateCustomRingEditorVisibility();
+    }
+
     syncLabels();
   }
 
@@ -768,15 +879,15 @@ select, button, input[type="number"] {
 
     if (mode === "setLauncher") {
       ui.setLauncherBtn.textContent = "點宇宙放置中...";
-      ui.placePlanetBtn.textContent = "放置引力球";
+      ui.placePlanetBtn.textContent = "放置天體";
       showPlacementBanner("發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。");
     } else if (mode === "placePlanet") {
       ui.placePlanetBtn.textContent = "點宇宙放置中...";
       ui.setLauncherBtn.textContent = "設定發射台";
-      showPlacementBanner("引力球放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。");
+      showPlacementBanner("天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。");
     } else {
       ui.setLauncherBtn.textContent = "設定發射台";
-      ui.placePlanetBtn.textContent = "放置引力球";
+      ui.placePlanetBtn.textContent = "放置天體";
       hidePlacementBanner();
     }
   }
@@ -812,10 +923,11 @@ select, button, input[type="number"] {
       colors,
       glow: isCustom ? ui.secondaryColor.value : base.glow,
       spin: Math.random() * Math.PI * 2,
-      rings: !!base.rings,
-      ringCount: base.ringCount || 1,
-      ringWidth: base.ringWidth || 3,
-      ringColor: base.ringColor || base.glow || "#ffe0a2",
+      rings: isCustom ? customRingEnabledDraft : !!base.rings,
+      ringCount: isCustom ? +ui.customRingCount.value : (base.ringCount || 1),
+      ringWidth: isCustom ? +ui.customRingWidth.value : (base.ringWidth || 3),
+      ringColor: isCustom ? ui.customRingColor.value : (base.ringColor || base.glow || "#ffe0a2"),
+      isCustom,
       blackHole: !!base.blackHole,
       whiteHole: !!base.whiteHole
     };
@@ -1328,7 +1440,7 @@ select, button, input[type="number"] {
 
       ctx.fillStyle = "rgba(235,255,242,.95)";
       ctx.font = "13px ui-monospace, monospace";
-      ctx.fillText("點擊放置引力球", mouse.x + 18, mouse.y - 18);
+      ctx.fillText("點擊放置天體", mouse.x + 18, mouse.y - 18);
       ctx.restore();
     }
     if (mode === "setLauncher") {
@@ -1358,9 +1470,9 @@ select, button, input[type="number"] {
     const live = probes.filter(p => p.alive).length;
     const selected = selectedPlanet ? `${selectedPlanet.name}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}` : "無";
     ui.status.innerHTML = `
-      <div class="chip">模式 <strong>${mode === "placePlanet" ? "等待你點宇宙放引力球" : mode === "setLauncher" ? "等待你點宇宙放發射台" : "一般"}</strong></div>
+      <div class="chip">模式 <strong>${mode === "placePlanet" ? "等待你點宇宙放天體" : mode === "setLauncher" ? "等待你點宇宙放發射台" : "一般"}</strong></div>
       <div class="chip">小球 <strong>${live}</strong></div>
-      <div class="chip">引力球 <strong>${planets.length}</strong></div>
+      <div class="chip">天體 <strong>${planets.length}</strong></div>
       <div class="chip">選中 <strong>${selected}</strong></div>
       <div class="chip">空阻 <strong>${(+ui.drag.value).toFixed(3)}</strong></div>
     `;
@@ -1781,6 +1893,11 @@ select, button, input[type="number"] {
         selectedPlanet.mass = +ui.planetMass.value;
         selectedPlanet.atmosphere = +ui.atmosphere.value;
       }
+
+      if (["customRingCount", "customRingWidth"].includes(rangeId) && selectedPlanet?.isCustom) {
+        selectedPlanet.ringCount = +ui.customRingCount.value;
+        selectedPlanet.ringWidth = +ui.customRingWidth.value;
+      }
     });
 
     num.addEventListener("change", () => {
@@ -1804,6 +1921,17 @@ select, button, input[type="number"] {
   bindRangeNumber("planetRadius", "planetRadiusNum");
   bindRangeNumber("planetMass", "planetMassNum");
   bindRangeNumber("atmosphere", "atmosphereNum");
+  bindRangeNumber("customRingCount", "customRingCountNum");
+  bindRangeNumber("customRingWidth", "customRingWidthNum");
+
+
+  if (ui.customRingEnabled) {
+    ui.customRingEnabled.onclick = () => setCustomRingEnabled(!customRingEnabledDraft);
+
+    ui.customRingColor.addEventListener("input", () => {
+      if (selectedPlanet?.isCustom) selectedPlanet.ringColor = ui.customRingColor.value;
+    });
+  }
 
   const colorInputs = ["primaryColor", "secondaryColor"];
   colorInputs.forEach(id => {

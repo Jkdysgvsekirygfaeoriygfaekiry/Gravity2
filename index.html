@@ -714,11 +714,30 @@ select, button, input[type="number"] {
         <div class="custom-ring-line">
           <button id="customRingRotateEnabled">星環自轉：無</button>
           <label class="custom-ring-select">
-            <span>方向</span>
+            <span>自轉方向</span>
             <select id="customRingRotateDir">
               <option value="cw">順時針</option>
               <option value="ccw">逆時針</option>
             </select>
+          </label>
+        </div>
+
+        <div class="custom-ring-line">
+          <button id="customRingOrbitEnabled">星環公轉：無</button>
+          <label class="custom-ring-select">
+            <span>公轉方向</span>
+            <select id="customRingOrbitDir">
+              <option value="cw">順時針</option>
+              <option value="ccw">逆時針</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="custom-ring-grid">
+          <label>
+            <span>公轉速</span>
+            <input id="customRingOrbitSpeed" type="range" min="0" max="3" value="0.25" step="0.01">
+            <input class="range-number" id="customRingOrbitSpeedNum" type="number" min="0" max="3" step="0.01">
           </label>
         </div>
       </div>
@@ -795,9 +814,13 @@ select, button, input[type="number"] {
     customGlowEnabled: $("customGlowEnabled"), customGlowColor: $("customGlowColor"),
     customGlowSize: $("customGlowSize"), customGlowStrength: $("customGlowStrength"),
     customGlowSizeNum: $("customGlowSizeNum"), customGlowStrengthNum: $("customGlowStrengthNum"),
-    customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"), customRingRotateEnabled: $("customRingRotateEnabled"),
-    customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"), customRingRotateSpeed: $("customRingRotateSpeed"), customRingRotateDir: $("customRingRotateDir"),
-    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"), customRingRotateSpeedNum: $("customRingRotateSpeedNum"),
+    customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"),
+    customRingRotateEnabled: $("customRingRotateEnabled"), customRingOrbitEnabled: $("customRingOrbitEnabled"),
+    customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"),
+    customRingRotateSpeed: $("customRingRotateSpeed"), customRingRotateDir: $("customRingRotateDir"),
+    customRingOrbitSpeed: $("customRingOrbitSpeed"), customRingOrbitDir: $("customRingOrbitDir"),
+    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"),
+    customRingRotateSpeedNum: $("customRingRotateSpeedNum"), customRingOrbitSpeedNum: $("customRingOrbitSpeedNum"),
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
     dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
@@ -1026,6 +1049,7 @@ select, button, input[type="number"] {
     if (ui.customRingCountNum) ui.customRingCountNum.value = +ui.customRingCount.value;
     if (ui.customRingWidthNum) ui.customRingWidthNum.value = +ui.customRingWidth.value;
     if (ui.customRingRotateSpeedNum) ui.customRingRotateSpeedNum.value = (+ui.customRingRotateSpeed.value).toFixed(2);
+    if (ui.customRingOrbitSpeedNum) ui.customRingOrbitSpeedNum.value = (+ui.customRingOrbitSpeed.value).toFixed(2);
     if (ui.customGlowSizeNum) ui.customGlowSizeNum.value = +ui.customGlowSize.value;
     if (ui.customGlowStrengthNum) ui.customGlowStrengthNum.value = (+ui.customGlowStrength.value).toFixed(2);
   }
@@ -1050,6 +1074,7 @@ select, button, input[type="number"] {
 
   let customRingEnabledDraft = false;
   let customRingRotateEnabledDraft = false;
+  let customRingOrbitEnabledDraft = false;
   let customHighlightEnabledDraft = true;
   let customStripesEnabledDraft = true;
   let customGlowEnabledDraft = true;
@@ -1075,6 +1100,14 @@ select, button, input[type="number"] {
     ui.customRingRotateEnabled.textContent = customRingRotateEnabledDraft ? "星環自轉：有" : "星環自轉：無";
     ui.customRingRotateEnabled.classList.toggle("active-mode", customRingRotateEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.ringRotateEnabled = customRingRotateEnabledDraft;
+  }
+
+  function setCustomRingOrbitEnabled(enabled, updateSelected = true) {
+    customRingOrbitEnabledDraft = !!enabled;
+    if (!ui.customRingOrbitEnabled) return;
+    ui.customRingOrbitEnabled.textContent = customRingOrbitEnabledDraft ? "星環公轉：有" : "星環公轉：無";
+    ui.customRingOrbitEnabled.classList.toggle("active-mode", customRingOrbitEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.ringOrbitEnabled = customRingOrbitEnabledDraft;
   }
 
   function setCustomHighlightEnabled(enabled, updateSelected = true) {
@@ -1111,8 +1144,11 @@ select, button, input[type="number"] {
     ui.customRingColor.value = p?.ringColor || "#ffe0a2";
     ui.customRingRotateSpeed.value = p?.ringRotateSpeed ?? 0.35;
     ui.customRingRotateDir.value = p?.ringRotateDir || "cw";
+    ui.customRingOrbitSpeed.value = p?.ringOrbitSpeed ?? 0.25;
+    ui.customRingOrbitDir.value = p?.ringOrbitDir || "cw";
     setCustomRingEnabled(!!p?.rings && !!p?.isCustom, false);
     setCustomRingRotateEnabled(!!p?.ringRotateEnabled && !!p?.isCustom, false);
+    setCustomRingOrbitEnabled(!!p?.ringOrbitEnabled && !!p?.isCustom, false);
   }
 
   function syncCustomAppearanceControlsFromPlanet(p) {
@@ -1148,12 +1184,15 @@ select, button, input[type="number"] {
       ui.customRingColor.value = "#ffe0a2";
       ui.customRingRotateSpeed.value = 0.35;
       ui.customRingRotateDir.value = "cw";
+      ui.customRingOrbitSpeed.value = 0.25;
+      ui.customRingOrbitDir.value = "cw";
       setCustomHighlightEnabled(true, false);
       setCustomStripesEnabled(true, false);
       setCustomGlowEnabled(true, false);
       setSecondaryTarget("highlight", false);
       setCustomRingEnabled(false, false);
       setCustomRingRotateEnabled(false, false);
+      setCustomRingOrbitEnabled(false, false);
     }
     updateCustomEditorsVisibility();
     syncLabels();
@@ -1231,7 +1270,11 @@ select, button, input[type="number"] {
       ringRotateEnabled: isCustom ? customRingRotateEnabledDraft : false,
       ringRotateDir: isCustom ? ui.customRingRotateDir.value : "cw",
       ringRotateSpeed: isCustom ? +ui.customRingRotateSpeed.value : 0,
+      ringOrbitEnabled: isCustom ? customRingOrbitEnabledDraft : false,
+      ringOrbitDir: isCustom ? ui.customRingOrbitDir.value : "cw",
+      ringOrbitSpeed: isCustom ? +ui.customRingOrbitSpeed.value : 0,
       ringAngle: -0.25,
+      ringBaseAngle: -0.25,
       ringPhase: Math.random() * Math.PI * 2,
       isCustom,
       blackHole: !!base.blackHole,
@@ -1878,6 +1921,10 @@ select, button, input[type="number"] {
           const dir = pl.ringRotateDir === "ccw" ? -1 : 1;
           pl.ringPhase = (pl.ringPhase || 0) + dt * (pl.ringRotateSpeed || 0) * dir * 2.4;
         }
+        if (pl.rings && pl.ringOrbitEnabled) {
+          const dir = pl.ringOrbitDir === "ccw" ? -1 : 1;
+          pl.ringAngle = (pl.ringAngle ?? pl.ringBaseAngle ?? -0.25) + dt * (pl.ringOrbitSpeed || 0) * dir;
+        }
       }
       const physicsSteps = clamp(Math.ceil(dt * 80), 1, 8);
       const stepDt = dt / physicsSteps;
@@ -2287,10 +2334,11 @@ select, button, input[type="number"] {
         selectedPlanet.atmosphere = +ui.atmosphere.value;
       }
 
-      if (["customRingCount", "customRingWidth", "customRingRotateSpeed"].includes(rangeId) && selectedPlanet?.isCustom) {
+      if (["customRingCount", "customRingWidth", "customRingRotateSpeed", "customRingOrbitSpeed"].includes(rangeId) && selectedPlanet?.isCustom) {
         selectedPlanet.ringCount = +ui.customRingCount.value;
         selectedPlanet.ringWidth = +ui.customRingWidth.value;
         selectedPlanet.ringRotateSpeed = +ui.customRingRotateSpeed.value;
+        selectedPlanet.ringOrbitSpeed = +ui.customRingOrbitSpeed.value;
       }
 
       if (["customGlowSize", "customGlowStrength"].includes(rangeId) && selectedPlanet?.isCustom) {
@@ -2323,6 +2371,7 @@ select, button, input[type="number"] {
   bindRangeNumber("customRingCount", "customRingCountNum");
   bindRangeNumber("customRingWidth", "customRingWidthNum");
   bindRangeNumber("customRingRotateSpeed", "customRingRotateSpeedNum");
+  bindRangeNumber("customRingOrbitSpeed", "customRingOrbitSpeedNum");
   bindRangeNumber("customGlowSize", "customGlowSizeNum");
   bindRangeNumber("customGlowStrength", "customGlowStrengthNum");
 
@@ -2343,11 +2392,15 @@ select, button, input[type="number"] {
   if (ui.customRingEnabled) {
     ui.customRingEnabled.onclick = () => setCustomRingEnabled(!customRingEnabledDraft);
     ui.customRingRotateEnabled.onclick = () => setCustomRingRotateEnabled(!customRingRotateEnabledDraft);
+    ui.customRingOrbitEnabled.onclick = () => setCustomRingOrbitEnabled(!customRingOrbitEnabledDraft);
     ui.customRingColor.addEventListener("input", () => {
       if (selectedPlanet?.isCustom) selectedPlanet.ringColor = ui.customRingColor.value;
     });
     ui.customRingRotateDir.addEventListener("change", () => {
       if (selectedPlanet?.isCustom) selectedPlanet.ringRotateDir = ui.customRingRotateDir.value;
+    });
+    ui.customRingOrbitDir.addEventListener("change", () => {
+      if (selectedPlanet?.isCustom) selectedPlanet.ringOrbitDir = ui.customRingOrbitDir.value;
     });
   }
 

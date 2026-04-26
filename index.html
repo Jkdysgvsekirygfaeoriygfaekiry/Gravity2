@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gravity Lab 引力彈道實驗室</title>
+<style>
+:root{
+  --bg:#03040a;--panel:rgba(10,14,28,.92);--panel2:rgba(18,24,43,.78);
+  --line:rgba(140,190,255,.22);--text:#dce9ff;--muted:#88a1c7;
+  --accent:#7df9ff;--accent2:#ffcc66;--danger:#ff5c8a;--ok:#8cffb1;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 50%,#0b1022 0%,#03040a 55%,#010105 100%);
+  color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Noto Sans TC",monospace;
+  touch-action:none;overscroll-behavior:none;
+}
+#game{position:fixed;inset:0;width:100vw;height:100vh;cursor:crosshair;touch-action:none}
+.hud{
+  position:fixed;left:0;right:0;bottom:0;height:34vh;max-height:34vh;overflow:auto;
+  padding:14px 16px 18px;border:1px solid var(--line);border-left:0;border-right:0;border-bottom:0;
+  background:linear-gradient(180deg,rgba(8,12,26,.96),rgba(6,8,18,.90));backdrop-filter:blur(14px);
+  box-shadow:0 -10px 36px rgba(0,180,255,.16),inset 0 0 18px rgba(125,249,255,.035);
+  border-radius:18px 18px 0 0;z-index:7;transform:translateY(100%);transition:transform .22s ease;
+}
+.hud.open{transform:translateY(0)}
+.hud-grid{display:grid;grid-template-columns:290px repeat(4,minmax(260px,1fr));gap:10px;align-items:start}
+.panel-toggle{
+  position:fixed;right:16px;bottom:16px;z-index:9;min-width:142px;border-color:rgba(125,249,255,.75);
+  color:white;background:linear-gradient(180deg,rgba(0,150,210,.72),rgba(20,60,110,.72));
+  box-shadow:0 0 22px rgba(125,249,255,.25)
+}
+.panel-toggle.panel-open{bottom:calc(34vh + 14px)}
+h1{margin:0 0 4px;font-size:18px;letter-spacing:.08em;color:var(--accent);text-shadow:0 0 14px rgba(125,249,255,.7)}
+.subtitle{color:var(--muted);font-size:12px;line-height:1.45;margin-bottom:12px}
+.section{border:1px solid rgba(140,190,255,.14);background:var(--panel2);border-radius:12px;padding:10px;margin-top:10px}
+.section-title{color:#fff;font-size:12px;margin-bottom:9px;letter-spacing:.08em}
+label{display:grid;grid-template-columns:94px 1fr 86px;gap:8px;align-items:center;font-size:12px;color:#b9cbeb;margin:8px 0}
+input[type=range]{width:100%;min-height:28px;accent-color:var(--accent)}
+.range-number{width:86px;min-width:0;padding:7px 6px;text-align:right;color:var(--text);background:rgba(5,8,18,.92);border:1px solid rgba(125,249,255,.28);border-radius:9px;font:inherit;font-size:11px}
+select,button,input[type=number]{color:var(--text);background:rgba(5,8,18,.92);border:1px solid rgba(125,249,255,.28);border-radius:9px;padding:8px 10px;font:inherit;outline:none}
+button{cursor:pointer;min-height:42px;touch-action:manipulation;transition:transform .08s,border-color .2s,box-shadow .2s,background .2s}
+button:hover{border-color:rgba(125,249,255,.75);box-shadow:0 0 16px rgba(125,249,255,.18);background:rgba(15,30,50,.92)}
+button:active{transform:translateY(1px) scale(.99)}
+button.active-mode{border-color:rgba(255,204,102,.9);box-shadow:0 0 18px rgba(255,204,102,.25),inset 0 0 14px rgba(255,204,102,.08);color:#fff2c7}
+button.orbit-active{border-color:rgba(140,255,177,.9);color:#e8fff0;box-shadow:0 0 18px rgba(140,255,177,.25),inset 0 0 14px rgba(140,255,177,.08)}
+.row,.color-row,.ring-toggle-row,.ring-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ring-controls label{grid-template-columns:72px 1fr 56px;margin:4px 0}
+.color-picker{display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:center;font-size:12px;color:#b9cbeb}
+input[type=color]{width:100%;height:38px;border:1px solid rgba(125,249,255,.28);border-radius:9px;background:rgba(5,8,18,.92);padding:3px}
+.wide{width:100%;margin-top:8px}.primary{background:linear-gradient(180deg,rgba(0,150,210,.45),rgba(20,60,110,.45));color:white;border-color:rgba(125,249,255,.72)}
+.danger{border-color:rgba(255,92,138,.55);color:#ffd7e2}.ok{border-color:rgba(140,255,177,.55);color:#ddffe9}
+.hint{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.55}
+.placement-banner{
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:8;display:none;max-width:min(620px,calc(100vw - 28px));
+  padding:11px 15px;border-radius:999px;border:1px solid rgba(125,249,255,.35);background:rgba(4,8,20,.78);
+  color:#eaf5ff;backdrop-filter:blur(10px);box-shadow:0 0 24px rgba(125,249,255,.16);font-size:13px;pointer-events:none;text-align:center
+}
+.placement-banner.show{display:block}.placement-banner strong{color:var(--accent);text-shadow:0 0 10px rgba(125,249,255,.7)}
+.status{position:fixed;left:14px;top:14px;right:14px;min-height:42px;pointer-events:none;display:flex;flex-wrap:wrap;gap:8px;align-items:start}
+.chip{background:rgba(8,12,25,.72);border:1px solid rgba(125,249,255,.18);color:#bdd7ff;border-radius:999px;padding:8px 11px;font-size:12px;backdrop-filter:blur(8px);box-shadow:0 0 20px rgba(0,0,0,.25)}
+.chip strong{color:white}
+.help{position:fixed;right:14px;bottom:14px;width:min(430px,calc(100vw - 28px));color:#a8bad8;background:rgba(7,9,18,.70);border:1px solid rgba(140,190,255,.15);border-radius:14px;padding:12px;font-size:12px;line-height:1.55;backdrop-filter:blur(10px)}
+.kbd{color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:1px 6px;border-radius:6px}
+@media(max-width:760px){
+  .hud{height:38vh;max-height:38vh;padding:12px}.hud-grid{grid-template-columns:1fr}.panel-toggle.panel-open{bottom:calc(38vh + 12px)}
+  .status{left:10px;right:10px;top:10px}.placement-banner{top:58px;border-radius:14px;line-height:1.35}.help{display:none}
+  label{grid-template-columns:82px 1fr 48px}.section{padding:9px}
+}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<aside class="hud" id="controlPanel">
+  <h1>GRAVITY LAB</h1>
+  <div class="subtitle">引力彈道實驗室：放置引力球，調整發射台，讓小球被捕獲、繞行、彈弓甩出，或直接撞成太空煙火。</div>
+
+  <div class="hud-grid">
+    <div class="section">
+      <div class="section-title">發射台</div>
+      <label>力度 <input id="power" type="range" min="20" max="900" value="340" step="1"><input class="range-number" id="powerNum" type="number"></label>
+      <label>角度 <input id="angle" type="range" min="0" max="360" value="28" step="1"><input class="range-number" id="angleNum" type="number"></label>
+      <label>小球半徑 <input id="probeRadius" type="range" min="2" max="10" value="4" step="1"><input class="range-number" id="probeRadiusNum" type="number"></label>
+      <div class="row">
+        <button class="primary" id="launchBtn">發射小球</button>
+        <button id="setLauncherBtn">設定發射台</button>
+      </div>
+      <button class="wide" id="clearProbesBtn">清除小球</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">環境</div>
+      <label>空氣阻力 <input id="drag" type="range" min="0" max="0.30" value="0.000" step="0.001"><input class="range-number" id="dragNum" type="number"></label>
+      <label>時間倍率 <input id="timeScale" type="range" min="0.15" max="4" value="1" step="0.05"><input class="range-number" id="timeScaleNum" type="number"></label>
+      <label>軌跡長度 <input id="trail" type="range" min="20" max="1600" value="520" step="10"><input class="range-number" id="trailNum" type="number"></label>
+      <div class="row">
+        <button id="pauseBtn">暫停</button>
+        <button id="resetViewBtn">視角歸零</button>
+      </div>
+      <button class="wide" id="orbitModeBtn">軌道模式：關</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">新增引力球</div>
+      <select id="preset" class="wide">
+        <optgroup label="特殊天體">
+          <option value="blackhole">黑洞</option><option value="whitehole">白洞</option><option value="neutronstar">中子星</option>
+          <option value="sun">太陽</option><option value="earth">地球</option><option value="moon">月球</option>
+        </optgroup>
+        <optgroup label="八大行星">
+          <option value="mercury">水星</option><option value="venus">金星</option><option value="mars">火星</option>
+          <option value="jupiter">木星</option><option value="saturn">土星</option><option value="uranus">天王星</option><option value="neptune">海王星</option>
+        </optgroup>
+        <option value="custom">自訂</option>
+      </select>
+      <label>大小 <input id="planetRadius" type="range" min="10" max="130" value="34" step="1"><input class="range-number" id="planetRadiusNum" type="number"></label>
+      <label>質量 <input id="planetMass" type="range" min="-5000000" max="5000000" value="9000" step="1000"><input class="range-number" id="planetMassNum" type="number"></label>
+      <label>大氣厚度 <input id="atmosphere" type="range" min="0" max="180" value="30" step="1"><input class="range-number" id="atmosphereNum" type="number"></label>
+
+      <div class="color-row">
+        <div class="color-picker">主顏色 <input id="primaryColor" type="color" value="#a46bff"></div>
+        <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
+      </div>
+
+      <div class="ring-toggle-row">
+        <button id="ringEnabledBtn">星環：無</button>
+        <div class="color-picker">環顏色 <input id="ringColor" type="color" value="#ffe0a2"></div>
+      </div>
+      <div class="ring-controls">
+        <label>環數 <input id="ringCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="ringCountNum" type="number" min="1" max="3" step="1"></label>
+        <label>粗度 <input id="ringWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="ringWidthNum" type="number" min="1" max="14" step="1"></label>
+      </div>
+
+      <div class="row">
+        <button class="ok" id="placePlanetBtn">放置引力球</button>
+        <button class="danger" id="deletePlanetBtn">刪除選中</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">管理 / 自訂</div>
+      <button class="wide danger" id="clearAllBtn">清空全部</button>
+      <button class="wide" id="shareBtn">複製分享連結</button>
+    </div>
+
+    <div class="hint">
+      操作：滑鼠滾輪縮放，中鍵/右鍵拖曳視角；觸控支援單指拖曳、雙指縮放與平移。<br>
+      選「設定發射台」或「放置引力球」後，在畫布點一下。<br>
+      點引力球可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。
+    </div>
+  </div>
+</aside>
+
+<button class="panel-toggle" id="panelToggle">控制面板 ▲</button>
+<div class="placement-banner" id="placementBanner"></div>
+<div class="status" id="status"></div>
+
+<div class="help">
+  <b>玩法小提醒</b><br>
+  <span class="kbd">手機</span> 單指拖曳星球/平移視角，雙指縮放。<span class="kbd">空阻 = 0</span> 幾乎就是太空；速度剛好會成為衛星，太慢會撞上去，太快會逃逸。<br>
+  大氣厚度會額外拖慢穿過大氣的小球，做得太厚會像宇宙果凍，超好笑但很不科學。
+</div>
+
+<script>
+(() => {
+  const canvas=document.getElementById("game");
+  const ctx=canvas.getContext("2d",{alpha:false});
+  const $=id=>document.getElementById(id);
+
+  if(!CanvasRenderingContext2D.prototype.roundRect){
+    CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+      if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+      this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);
+      this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this;
+    };
+  }
+
+  function safeId(){
+    try{ if(globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID(); }catch(_){}
+    return "id_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2);
+  }
+
+  const ui={
+    power:$("power"),angle:$("angle"),probeRadius:$("probeRadius"),drag:$("drag"),timeScale:$("timeScale"),trail:$("trail"),
+    preset:$("preset"),planetRadius:$("planetRadius"),planetMass:$("planetMass"),atmosphere:$("atmosphere"),
+    primaryColor:$("primaryColor"),secondaryColor:$("secondaryColor"),ringEnabledBtn:$("ringEnabledBtn"),ringColor:$("ringColor"),
+    ringCount:$("ringCount"),ringWidth:$("ringWidth"),
+    powerNum:$("powerNum"),angleNum:$("angleNum"),probeRadiusNum:$("probeRadiusNum"),dragNum:$("dragNum"),timeScaleNum:$("timeScaleNum"),
+    trailNum:$("trailNum"),planetRadiusNum:$("planetRadiusNum"),planetMassNum:$("planetMassNum"),atmosphereNum:$("atmosphereNum"),
+    ringCountNum:$("ringCountNum"),ringWidthNum:$("ringWidthNum"),
+    launchBtn:$("launchBtn"),setLauncherBtn:$("setLauncherBtn"),clearProbesBtn:$("clearProbesBtn"),pauseBtn:$("pauseBtn"),
+    resetViewBtn:$("resetViewBtn"),orbitModeBtn:$("orbitModeBtn"),placePlanetBtn:$("placePlanetBtn"),deletePlanetBtn:$("deletePlanetBtn"),
+    clearAllBtn:$("clearAllBtn"),shareBtn:$("shareBtn"),status:$("status"),placementBanner:$("placementBanner"),
+    controlPanel:$("controlPanel"),panelToggle:$("panelToggle")
+  };
+
+  let W=0,H=0,DPR=1;
+  let camera={x:0,y:0,zoom:1};
+  let mode="none",paused=false,orbitAssistMode=false;
+  let selectedPlanet=null,draggingPlanet=null,panning=false;
+  let ringEnabledDraft=false;
+  let mouse={x:0,y:0,wx:0,wy:0},lastMouse={x:0,y:0};
+  const G=24,SOFTENING=45,MAX_SPEED=4200;
+  const launcher={x:-330,y:120};
+  const planets=[],probes=[],particles=[];
+
+  const presets={
+    blackhole:{name:"黑洞",radius:38,mass:4000000,atmosphere:0,colors:["#000000","#181023"],glow:"#b06cff",rings:true,ringCount:2,ringWidth:4,ringColor:"#ffb45a",blackHole:true},
+    whitehole:{name:"白洞",radius:38,mass:-4000000,atmosphere:0,colors:["#f8fbff","#ffffff"],glow:"#dff8ff",rings:true,ringCount:3,ringWidth:3,ringColor:"#e8fbff",whiteHole:true},
+    neutronstar:{name:"中子星",radius:22,mass:3950000,atmosphere:8,colors:["#9feaff","#ffffff"],glow:"#bff6ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e8fbff"},
+    sun:{name:"太陽",radius:70,mass:2100000,atmosphere:115,colors:["#ff7c1a","#fff06e"],glow:"#ffcf4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffcf4d"},
+    mercury:{name:"水星",radius:16,mass:1150,atmosphere:0,colors:["#77716a","#c2b8aa"],glow:"#b9b1a6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b9b1a6"},
+    venus:{name:"金星",radius:32,mass:8500,atmosphere:88,colors:["#d8a96a","#fff0b0"],glow:"#ffd48a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffd48a"},
+    earth:{name:"地球",radius:34,mass:10400,atmosphere:34,colors:["#2d7dff","#4affb0"],glow:"#6db7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#6db7ff"},
+    mars:{name:"火星",radius:24,mass:1120,atmosphere:14,colors:["#b94e32","#ff9a61"],glow:"#ff7d5a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff7d5a"},
+    jupiter:{name:"木星",radius:78,mass:330000,atmosphere:90,colors:["#d9a46b","#f6e0b8"],glow:"#ffbd79",rings:true,ringCount:2,ringWidth:3,ringColor:"#ffe0a2"},
+    saturn:{name:"土星",radius:72,mass:99000,atmosphere:82,colors:["#d8c08b","#fff1bd"],glow:"#ffe0a2",rings:true,ringCount:3,ringWidth:5,ringColor:"#ffe0a2"},
+    uranus:{name:"天王星",radius:54,mass:15100,atmosphere:62,colors:["#7fd6df","#d8ffff"],glow:"#a7f7ff",rings:true,ringCount:2,ringWidth:2,ringColor:"#a7f7ff"},
+    neptune:{name:"海王星",radius:53,mass:17800,atmosphere:66,colors:["#244dff","#8bb6ff"],glow:"#6fa0ff",rings:false,ringCount:1,ringWidth:2,ringColor:"#6fa0ff"},
+    moon:{name:"月球",radius:18,mass:128,atmosphere:0,colors:["#999fa8","#d9dce2"],glow:"#d8d8d8",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d8d8"},
+    custom:{name:"自訂",radius:34,mass:9000,atmosphere:30,colors:["#a46bff","#7df9ff"],glow:"#b493ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe0a2"}
+  };
+
+  function resize(){
+    DPR=Math.max(1,Math.min(2,devicePixelRatio||1)); W=innerWidth; H=innerHeight;
+    canvas.width=Math.floor(W*DPR); canvas.height=Math.floor(H*DPR);
+    canvas.style.width=W+"px"; canvas.style.height=H+"px";
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  addEventListener("resize",resize); resize();
+
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const len=(x,y)=>Math.hypot(x,y);
+  const worldToScreen=(x,y)=>({x:(x-camera.x)*camera.zoom+W/2,y:(y-camera.y)*camera.zoom+H/2});
+  const screenToWorld=(x,y)=>({x:(x-W/2)/camera.zoom+camera.x,y:(y-H/2)/camera.zoom+camera.y});
+
+  function syncLabels(){
+    ui.powerNum.value=Math.round(+ui.power.value);ui.angleNum.value=Math.round(+ui.angle.value);ui.probeRadiusNum.value=+ui.probeRadius.value;
+    ui.dragNum.value=(+ui.drag.value).toFixed(3);ui.timeScaleNum.value=(+ui.timeScale.value).toFixed(2);ui.trailNum.value=+ui.trail.value;
+    ui.planetRadiusNum.value=+ui.planetRadius.value;ui.planetMassNum.value=Math.round(+ui.planetMass.value);ui.atmosphereNum.value=+ui.atmosphere.value;
+    ui.ringCountNum.value=+ui.ringCount.value;ui.ringWidthNum.value=+ui.ringWidth.value;
+  }
+
+  function setRingEnabled(enabled,updateSelected=true){
+    ringEnabledDraft=!!enabled;
+    ui.ringEnabledBtn.textContent=ringEnabledDraft?"星環：有":"星環：無";
+    ui.ringEnabledBtn.classList.toggle("active-mode",ringEnabledDraft);
+    if(updateSelected&&selectedPlanet) selectedPlanet.rings=ringEnabledDraft;
+  }
+
+  function setPlanetControls(p){
+    ui.planetRadius.value=p.radius; ui.planetMass.value=p.mass; ui.atmosphere.value=p.atmosphere;
+    ui.primaryColor.value=p.colors?.[0]||"#a46bff"; ui.secondaryColor.value=p.colors?.[1]||"#7df9ff";
+    ui.ringCount.value=p.ringCount||1; ui.ringWidth.value=p.ringWidth||3; ui.ringColor.value=p.ringColor||p.glow||"#ffe0a2";
+    setRingEnabled(!!p.rings,false); syncLabels();
+  }
+
+  function applyPresetToSliders(){
+    const p=presets[ui.preset.value]||presets.custom;
+    ui.planetRadius.value=p.radius;ui.planetMass.value=p.mass;ui.atmosphere.value=p.atmosphere;
+    ui.primaryColor.value=p.colors[0];ui.secondaryColor.value=p.colors[1];
+    ui.ringCount.value=p.ringCount||1;ui.ringWidth.value=p.ringWidth||3;ui.ringColor.value=p.ringColor||p.glow||"#ffe0a2";
+    setRingEnabled(!!p.rings,false);syncLabels();
+  }
+
+  function showPlacementBanner(text){
+    ui.placementBanner.innerHTML=`<strong>等待放置</strong>　${text}`;
+    ui.placementBanner.classList.add("show");
+  }
+  function hidePlacementBanner(){ui.placementBanner.classList.remove("show")}
+  function setMode(next){
+    mode=next==="none"?"none":(mode===next?"none":next); draggingPlanet=null;
+    ui.setLauncherBtn.classList.toggle("active-mode",mode==="setLauncher");
+    ui.placePlanetBtn.classList.toggle("active-mode",mode==="placePlanet");
+    ui.setLauncherBtn.textContent=mode==="setLauncher"?"點宇宙放置中...":"設定發射台";
+    ui.placePlanetBtn.textContent=mode==="placePlanet"?"點宇宙放置中...":"放置引力球";
+    if(mode==="setLauncher") showPlacementBanner("發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。");
+    else if(mode==="placePlanet") showPlacementBanner("引力球放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。");
+    else hidePlacementBanner();
+  }
+  function finishPlacement(){mode="none";setMode("none")}
+
+  function makePlanet(x,y,presetKey=ui.preset.value){
+    const base=presets[presetKey]||presets.custom, isCustom=presetKey==="custom";
+    const p={
+      id:safeId(),x,y,radius:+ui.planetRadius.value,mass:+ui.planetMass.value,atmosphere:+ui.atmosphere.value,
+      name:base.name,colors:isCustom?[ui.primaryColor.value,ui.secondaryColor.value]:[base.colors[0],base.colors[1]],
+      glow:isCustom?ui.secondaryColor.value:base.glow,spin:Math.random()*Math.PI*2,
+      rings:ringEnabledDraft,ringCount:+ui.ringCount.value,ringWidth:+ui.ringWidth.value,ringColor:ui.ringColor.value,
+      blackHole:!!base.blackHole,whiteHole:!!base.whiteHole
+    };
+    planets.push(p); selectedPlanet=p; setPlanetControls(p); return p;
+  }
+
+  function explode(x,y,color="#7df9ff",count=34){
+    for(let i=0;i<count;i++){
+      const a=Math.random()*Math.PI*2,s=40+Math.random()*320;
+      particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.9,max:.7+Math.random()*.8,color,size:1+Math.random()*3});
+    }
+  }
+
+  function launchProbe(){
+    const a=(+ui.angle.value)*Math.PI/180,power=+ui.power.value,r=+ui.probeRadius.value;
+    probes.push({x:launcher.x,y:launcher.y,vx:Math.cos(a)*power,vy:Math.sin(a)*power,radius:r,trail:[],age:0,alive:true,orbitMemory:{},colorSeed:Math.random()});
+  }
+
+  function predictOrbitRisk(probe,pl,d){
+    if(!orbitAssistMode||pl.blackHole||pl.whiteHole||pl.mass<=0||d<=0) return {target:null,blend:0};
+    const dx=probe.x-pl.x,dy=probe.y-pl.y,mu=G*Math.abs(pl.mass),r=Math.max(1,d);
+    const speed2=probe.vx*probe.vx+probe.vy*probe.vy,energy=speed2/2-mu/r,h=dx*probe.vy-dy*probe.vx;
+    let blend=.018;
+    if(energy>=0) blend=.055;
+    else{
+      const a=-mu/(2*energy),e2=clamp(1-(h*h)/(mu*Math.max(1,a)),0,.999),ecc=Math.sqrt(e2),peri=a*(1-ecc);
+      if(peri<pl.radius+probe.radius+22) blend=.07; else if(ecc>.45) blend=.04;
+    }
+    if(d>pl.radius+Math.max(260,pl.atmosphere+240)) blend*=.15;
+    const rx=dx/r,ry=dy/r; let tx=-ry,ty=rx;
+    if(probe.vx*tx+probe.vy*ty<0){tx*=-1;ty*=-1}
+    const targetRadius=Math.max(r,pl.radius+probe.radius+45),circularSpeed=Math.sqrt(mu/targetRadius);
+    return {blend,target:{vx:tx*circularSpeed,vy:ty*circularSpeed}};
+  }
+
+  function applyOrbitAssist(probe,pl,d){
+    if(!orbitAssistMode||!probe.alive||pl.blackHole||pl.whiteHole||pl.mass<=0)return;
+    const plan=predictOrbitRisk(probe,pl,d); if(!plan.target)return;
+    const localRange=pl.radius+Math.max(340,pl.atmosphere+260);
+    const proximity=clamp(1-(d-pl.radius)/Math.max(1,localRange-pl.radius),0,1);
+    let blend=clamp(plan.blend*(.2+proximity*1.8),0,.11);
+    probe.vx+=(plan.target.vx-probe.vx)*blend; probe.vy+=(plan.target.vy-probe.vy)*blend;
+  }
+
+  function updateProbe(probe,dt){
+    let ax=0,ay=0;
+    for(const pl of planets){
+      const dx=pl.x-probe.x,dy=pl.y-probe.y,rawD2=dx*dx+dy*dy,d=Math.sqrt(rawD2)||.0001;
+      const soft=Math.max(SOFTENING,pl.radius*pl.radius*.12),force=G*pl.mass/(rawD2+soft);
+      ax+=(dx/d)*force; ay+=(dy/d)*force;
+
+      if(pl.whiteHole){
+        const range=pl.radius*8+260;
+        if(d<range){const burst=1-d/range,kick=4200*burst*burst*dt; probe.vx-=(dx/d)*kick; probe.vy-=(dy/d)*kick;}
+      }
+      applyOrbitAssist(probe,pl,d);
+
+      const atmosphereEdge=pl.radius+pl.atmosphere;
+      if(pl.atmosphere>0&&d<atmosphereEdge){
+        const depth=1-clamp((d-pl.radius)/Math.max(1,pl.atmosphere),0,1),localDrag=depth*depth*1.25;
+        probe.vx*=Math.max(0,1-localDrag*dt); probe.vy*=Math.max(0,1-localDrag*dt);
+      }
+      const hitRadius=pl.blackHole?pl.radius*1.08:pl.whiteHole?0:pl.radius+probe.radius;
+      if(hitRadius>0&&d<hitRadius){explode(probe.x,probe.y,pl.glow||"#7df9ff",pl.blackHole?80:50); probe.alive=false; return;}
+    }
+
+    const globalDrag=+ui.drag.value;
+    if(globalDrag>0){const f=Math.max(0,1-globalDrag*dt*1.7);probe.vx*=f;probe.vy*=f;}
+    probe.vx+=ax*dt; probe.vy+=ay*dt;
+    const speed=len(probe.vx,probe.vy); if(speed>MAX_SPEED){probe.vx=probe.vx/speed*MAX_SPEED;probe.vy=probe.vy/speed*MAX_SPEED;}
+    probe.x+=probe.vx*dt; probe.y+=probe.vy*dt; probe.age+=dt;
+    probe.trail.push({x:probe.x,y:probe.y});
+    const maxTrail=+ui.trail.value; if(probe.trail.length>maxTrail) probe.trail.splice(0,probe.trail.length-maxTrail);
+    if(Math.abs(probe.x-camera.x)>32000||Math.abs(probe.y-camera.y)>32000) probe.alive=false;
+  }
+
+  function updateParticles(dt){
+    for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=1-.8*dt;p.vy*=1-.8*dt;p.life-=dt}
+    for(let i=particles.length-1;i>=0;i--) if(particles[i].life<=0) particles.splice(i,1);
+  }
+
+  function starField(){
+    ctx.fillStyle="#03040a";ctx.fillRect(0,0,W,H);
+    const grid=190*camera.zoom,baseX=((-camera.x*camera.zoom)%grid+grid)%grid,baseY=((-camera.y*camera.zoom)%grid+grid)%grid;
+    ctx.save();ctx.globalAlpha=.16;ctx.strokeStyle="#3d5f95";ctx.lineWidth=1;
+    for(let x=baseX;x<W;x+=grid){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+    for(let y=baseY;y<H;y+=grid){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+    ctx.restore();
+    const t=performance.now()*.00008;
+    for(let layer=0;layer<3;layer++){
+      const spacing=[68,113,181][layer],alpha=[.24,.16,.11][layer],size=[1.15,1.6,2.1][layer],par=[.16,.08,.035][layer];
+      const ox=((-camera.x*camera.zoom*par)%spacing+spacing)%spacing,oy=((-camera.y*camera.zoom*par)%spacing+spacing)%spacing;
+      ctx.fillStyle=`rgba(190,220,255,${alpha})`;
+      for(let x=ox;x<W+spacing;x+=spacing) for(let y=oy;y<H+spacing;y+=spacing){
+        const n=Math.sin((x*12.9898+y*78.233)*.013+layer*11.7);
+        if(n>.37){ctx.globalAlpha=alpha*(.65+.35*Math.sin(t*40+x*.01+y*.02));ctx.fillRect(Math.round(x),Math.round(y),size,size);}
+      }
+      ctx.globalAlpha=1;
+    }
+  }
+
+  function drawAtmosphere(pl){
+    if(pl.atmosphere<=0)return;
+    const s=worldToScreen(pl.x,pl.y),r=pl.radius*camera.zoom,a=(pl.radius+pl.atmosphere)*camera.zoom;
+    const g=ctx.createRadialGradient(s.x,s.y,r,s.x,s.y,a);
+    g.addColorStop(0,"rgba(125,249,255,0)");g.addColorStop(.55,"rgba(125,249,255,.055)");g.addColorStop(1,"rgba(125,249,255,.18)");
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,a,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="rgba(125,249,255,.18)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(s.x,s.y,a,0,Math.PI*2);ctx.stroke();
+  }
+
+  function drawPlanet(pl){
+    const s=worldToScreen(pl.x,pl.y),r=pl.radius*camera.zoom; if(r<1)return;
+    if(pl.blackHole){
+      ctx.save();
+      const halo=ctx.createRadialGradient(s.x,s.y,r*.2,s.x,s.y,r*4.2);
+      halo.addColorStop(0,"rgba(255,255,255,.88)");halo.addColorStop(.08,"rgba(176,108,255,.55)");halo.addColorStop(.28,"rgba(255,140,60,.20)");halo.addColorStop(1,"rgba(176,108,255,0)");
+      ctx.fillStyle=halo;ctx.beginPath();ctx.arc(s.x,s.y,r*4.2,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle="rgba(255,180,90,.65)";ctx.lineWidth=Math.max(2,4*camera.zoom);ctx.beginPath();ctx.ellipse(s.x,s.y,r*2.2,r*.55,-.28+pl.spin,0,Math.PI*2);ctx.stroke();
+      ctx.shadowBlur=26;ctx.shadowColor="#b06cff";ctx.fillStyle="#000";ctx.beginPath();ctx.arc(s.x,s.y,r,0,Math.PI*2);ctx.fill();
+      ctx.shadowBlur=0;ctx.strokeStyle="rgba(210,180,255,.88)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(s.x,s.y,r+4,0,Math.PI*2);ctx.stroke();
+      if(selectedPlanet===pl){ctx.setLineDash([6,6]);ctx.strokeStyle="#7df9ff";ctx.beginPath();ctx.arc(s.x,s.y,r+13,0,Math.PI*2);ctx.stroke();}
+      ctx.fillStyle="rgba(235,225,255,.86)";ctx.font="11px ui-monospace,monospace";ctx.fillText(`${pl.name} M:${Math.round(pl.mass)}`,s.x+r+11,s.y-r-8);
+      ctx.restore();return;
+    }
+    drawAtmosphere(pl);
+    ctx.save();ctx.shadowBlur=28*camera.zoom;ctx.shadowColor=pl.glow;
+    const grad=ctx.createRadialGradient(s.x-r*.32,s.y-r*.38,r*.12,s.x,s.y,r*1.25);
+    grad.addColorStop(0,"#ffffff");grad.addColorStop(.12,pl.colors[1]);grad.addColorStop(.58,pl.colors[0]);grad.addColorStop(1,"#050816");
+    ctx.fillStyle=grad;ctx.beginPath();ctx.arc(s.x,s.y,r,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;ctx.clip();ctx.globalAlpha=.16;ctx.strokeStyle="#ffffff";ctx.lineWidth=Math.max(1,2*camera.zoom);
+    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.ellipse(s.x,s.y+i*r*.22,r*.9,r*(.08+Math.abs(i)*.015),pl.spin+i*.1,0,Math.PI*2);ctx.stroke();}
+    ctx.globalAlpha=.10;for(let i=0;i<18;i++){const yy=s.y-r+(i/17)*r*2;ctx.fillStyle=i%2?"#000":"#fff";ctx.fillRect(s.x-r,yy,r*2,Math.max(1,r*.028));}
+    ctx.restore();
+
+    if(pl.rings){
+      ctx.save(); const count=clamp(Math.round(pl.ringCount||1),1,3),width=Math.max(1,(pl.ringWidth||3)*camera.zoom);
+      for(let i=0;i<count;i++){const scale=1.55+i*.26;ctx.strokeStyle=(pl.ringColor||"#ffe0a2")+(i===0?"99":"55");ctx.lineWidth=Math.max(1,width*(1-i*.18));ctx.beginPath();ctx.ellipse(s.x,s.y,r*scale,r*(.36+i*.055),-.25,0,Math.PI*2);ctx.stroke();}
+      ctx.restore();
+    }
+    if(selectedPlanet===pl){ctx.save();ctx.strokeStyle="#7df9ff";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.arc(s.x,s.y,r+9,0,Math.PI*2);ctx.stroke();ctx.restore();}
+    ctx.fillStyle="rgba(220,235,255,.78)";ctx.font="11px ui-monospace,monospace";ctx.fillText(`${pl.name} M:${Math.round(pl.mass)}`,s.x+r+9,s.y-r-7);
+  }
+
+  function drawProbe(p){
+    if(p.trail.length>1){
+      ctx.save();ctx.lineWidth=Math.max(1,1.4*camera.zoom);
+      for(let i=1;i<p.trail.length;i++){const a=i/p.trail.length,p0=worldToScreen(p.trail[i-1].x,p.trail[i-1].y),p1=worldToScreen(p.trail[i].x,p.trail[i].y);ctx.strokeStyle=`rgba(125,249,255,${a*.55})`;ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();}
+      ctx.restore();
+    }
+    const s=worldToScreen(p.x,p.y),r=Math.max(2,p.radius*camera.zoom);
+    ctx.save();ctx.shadowBlur=12;ctx.shadowColor="#7df9ff";
+    const g=ctx.createRadialGradient(s.x-r*.3,s.y-r*.3,0,s.x,s.y,r*1.4);
+    g.addColorStop(0,"#fff");g.addColorStop(.5,"#7df9ff");g.addColorStop(1,"#0b4c7d");
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,r,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+
+  function drawLauncher(){
+    const s=worldToScreen(launcher.x,launcher.y),a=+ui.angle.value*Math.PI/180;
+    ctx.save();ctx.translate(s.x,s.y);ctx.rotate(a);ctx.shadowBlur=18;ctx.shadowColor="#ffcc66";ctx.fillStyle="#1b263f";ctx.strokeStyle="#ffcc66";ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(-18,-11,42,22,7);ctx.fill();ctx.stroke();ctx.fillStyle="#ffcc66";ctx.fillRect(12,-4,34,8);ctx.restore();
+    ctx.strokeStyle="rgba(255,204,102,.42)";ctx.lineWidth=2;ctx.setLineDash([7,7]);ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x+Math.cos(a)*112,s.y+Math.sin(a)*112);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle="#ffe6a3";ctx.font="12px ui-monospace,monospace";ctx.fillText("LAUNCHER",s.x+20,s.y+31);
+  }
+
+  function drawParticles(){
+    for(const p of particles){const s=worldToScreen(p.x,p.y);ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.fillRect(s.x,s.y,p.size,p.size)}
+    ctx.globalAlpha=1;
+  }
+
+  function drawModePreview(){
+    if(mode==="placePlanet"){
+      const r=+ui.planetRadius.value*camera.zoom,a=(+ui.planetRadius.value+ +ui.atmosphere.value)*camera.zoom;
+      ctx.save();ctx.strokeStyle="rgba(140,255,177,.85)";ctx.fillStyle="rgba(140,255,177,.10)";ctx.lineWidth=2;ctx.setLineDash([5,5]);
+      ctx.beginPath();ctx.arc(mouse.x,mouse.y,a,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(mouse.x,mouse.y,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle="rgba(235,255,242,.95)";ctx.font="13px ui-monospace,monospace";ctx.fillText("點擊放置引力球",mouse.x+18,mouse.y-18);ctx.restore();
+    }else if(mode==="setLauncher"){
+      ctx.save();ctx.strokeStyle="rgba(255,204,102,.95)";ctx.fillStyle="rgba(255,204,102,.12)";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(mouse.x,mouse.y,22,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(mouse.x-28,mouse.y);ctx.lineTo(mouse.x+28,mouse.y);ctx.moveTo(mouse.x,mouse.y-28);ctx.lineTo(mouse.x,mouse.y+28);ctx.stroke();
+      ctx.fillStyle="rgba(255,246,211,.95)";ctx.font="13px ui-monospace,monospace";ctx.fillText("點擊放置發射台",mouse.x+18,mouse.y-18);ctx.restore();
+    }
+  }
+
+  function renderStatus(){
+    const live=probes.filter(p=>p.alive).length;
+    const selected=selectedPlanet?`${selectedPlanet.name}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}`:"無";
+    ui.status.innerHTML=`
+      <div class="chip">模式 <strong>${mode==="placePlanet"?"等待你點宇宙放引力球":mode==="setLauncher"?"等待你點宇宙放發射台":"一般"}</strong></div>
+      <div class="chip">小球 <strong>${live}</strong></div>
+      <div class="chip">引力球 <strong>${planets.length}</strong></div>
+      <div class="chip">選中 <strong>${selected}</strong></div>
+      <div class="chip">空阻 <strong>${(+ui.drag.value).toFixed(3)}</strong></div>`;
+  }
+
+  let lastTime=performance.now();
+  function loop(now){
+    const rawDt=Math.min(.035,(now-lastTime)/1000); lastTime=now;
+    const dt=rawDt*+ui.timeScale.value;
+    if(!paused){
+      for(const pl of planets) pl.spin+=dt*.15;
+      const steps=clamp(Math.ceil(dt*80),1,8),stepDt=dt/steps;
+      for(let step=0;step<steps;step++) for(const probe of probes) if(probe.alive) updateProbe(probe,stepDt);
+      for(let i=probes.length-1;i>=0;i--) if(!probes[i].alive) probes.splice(i,1);
+      updateParticles(dt);
+    }
+    starField();drawLauncher();for(const pl of planets)drawPlanet(pl);for(const p of probes)drawProbe(p);drawParticles();drawModePreview();renderStatus();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  function updateMouseFromScreen(x,y){mouse.x=x;mouse.y=y;const w=screenToWorld(x,y);mouse.wx=w.x;mouse.wy=w.y;return w}
+  function findPlanet(wx,wy){for(let i=planets.length-1;i>=0;i--){const p=planets[i];if(len(wx-p.x,wy-p.y)<=p.radius+8/camera.zoom)return p;}return null}
+
+  function handlePrimaryStart(x,y){
+    const w=updateMouseFromScreen(x,y);
+    if(mode==="setLauncher"){launcher.x=w.x;launcher.y=w.y;explode(w.x,w.y,"#ffcc66",18);finishPlacement();return"placed";}
+    if(mode==="placePlanet"){const p=makePlanet(w.x,w.y,ui.preset.value);explode(w.x,w.y,p.glow||"#7df9ff",24);finishPlacement();return"placed";}
+    const hit=findPlanet(w.x,w.y);
+    if(hit){selectedPlanet=hit;setPlanetControls(hit);draggingPlanet=hit;return"dragPlanet";}
+    selectedPlanet=null;return"pan";
+  }
+
+  const pointerState={pointers:new Map(),mode:"none",lastCenter:{x:0,y:0},lastDist:0};
+  function pointerCenter(){
+    const pts=[...pointerState.pointers.values()];
+    if(!pts.length)return{x:mouse.x,y:mouse.y}; if(pts.length===1)return{x:pts[0].x,y:pts[0].y};
+    return{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};
+  }
+  function pointerDistance(){
+    const pts=[...pointerState.pointers.values()]; if(pts.length<2)return 0;
+    return Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+  }
+
+  canvas.addEventListener("pointerdown",e=>{
+    if(e.target!==canvas)return; e.preventDefault(); canvas.setPointerCapture?.(e.pointerId);
+    pointerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); updateMouseFromScreen(e.clientX,e.clientY);
+    if(pointerState.pointers.size>=2){draggingPlanet=null;pointerState.mode="pinch";pointerState.lastCenter=pointerCenter();pointerState.lastDist=Math.max(1,pointerDistance());return;}
+    if(e.button===1||e.button===2){panning=true;pointerState.mode="pan";pointerState.lastCenter={x:e.clientX,y:e.clientY};return;}
+    const action=handlePrimaryStart(e.clientX,e.clientY);
+    pointerState.mode=action==="dragPlanet"?"dragPlanet":action==="placed"?"placed":"pan";
+    pointerState.lastCenter={x:e.clientX,y:e.clientY};
+  },{passive:false});
+
+  canvas.addEventListener("pointermove",e=>{
+    if(!pointerState.pointers.has(e.pointerId)){updateMouseFromScreen(e.clientX,e.clientY);return;}
+    e.preventDefault();pointerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pointerState.pointers.size>=2){
+      const c=pointerCenter(),dist=Math.max(1,pointerDistance()),before=screenToWorld(c.x,c.y);
+      camera.zoom=clamp(camera.zoom*(dist/Math.max(1,pointerState.lastDist)),.18,4);
+      const after=screenToWorld(c.x,c.y);camera.x+=before.x-after.x;camera.y+=before.y-after.y;
+      camera.x-=(c.x-pointerState.lastCenter.x)/camera.zoom;camera.y-=(c.y-pointerState.lastCenter.y)/camera.zoom;
+      pointerState.lastCenter=c;pointerState.lastDist=dist;updateMouseFromScreen(c.x,c.y);return;
+    }
+    const c=pointerCenter(),dx=c.x-pointerState.lastCenter.x,dy=c.y-pointerState.lastCenter.y,w=updateMouseFromScreen(c.x,c.y);
+    if(draggingPlanet&&pointerState.mode==="dragPlanet"){draggingPlanet.x=w.x;draggingPlanet.y=w.y;}
+    else if(pointerState.mode==="pan"){camera.x-=dx/camera.zoom;camera.y-=dy/camera.zoom;}
+    pointerState.lastCenter=c;
+  },{passive:false});
+
+  function endPointer(e){
+    pointerState.pointers.delete(e.pointerId);
+    if(pointerState.pointers.size===0){draggingPlanet=null;panning=false;pointerState.mode="none";}
+    else{pointerState.lastCenter=pointerCenter();pointerState.mode="pan";}
+  }
+  canvas.addEventListener("pointerup",endPointer,{passive:false});
+  canvas.addEventListener("pointercancel",endPointer,{passive:false});
+  canvas.addEventListener("contextmenu",e=>e.preventDefault());
+
+  canvas.addEventListener("wheel",e=>{
+    e.preventDefault();const before=screenToWorld(e.clientX,e.clientY),factor=Math.exp(-e.deltaY*.001);
+    camera.zoom=clamp(camera.zoom*factor,.18,4);const after=screenToWorld(e.clientX,e.clientY);
+    camera.x+=before.x-after.x;camera.y+=before.y-after.y;
+  },{passive:false});
+
+  let panelOpen=false;
+  function setPanelOpen(open){
+    panelOpen=open;ui.controlPanel.classList.toggle("open",panelOpen);ui.panelToggle.classList.toggle("panel-open",panelOpen);
+    ui.panelToggle.textContent=panelOpen?"關閉面板 ▼":"控制面板 ▲";
+  }
+  ui.panelToggle.onclick=()=>setPanelOpen(!panelOpen); setPanelOpen(false);
+
+  ui.launchBtn.onclick=launchProbe;
+  ui.setLauncherBtn.onclick=()=>setMode("setLauncher");
+  ui.placePlanetBtn.onclick=()=>setMode("placePlanet");
+  ui.clearProbesBtn.onclick=()=>{probes.length=0;particles.length=0};
+  ui.pauseBtn.onclick=()=>{paused=!paused;ui.pauseBtn.textContent=paused?"繼續":"暫停"};
+  ui.orbitModeBtn.onclick=()=>{orbitAssistMode=!orbitAssistMode;ui.orbitModeBtn.textContent=orbitAssistMode?"軌道模式：開":"軌道模式：關";ui.orbitModeBtn.classList.toggle("orbit-active",orbitAssistMode)};
+  ui.resetViewBtn.onclick=()=>{camera.x=0;camera.y=0;camera.zoom=1};
+  ui.deletePlanetBtn.onclick=()=>{if(!selectedPlanet)return;const i=planets.indexOf(selectedPlanet);if(i>=0)planets.splice(i,1);selectedPlanet=null};
+  ui.clearAllBtn.onclick=()=>{planets.length=0;probes.length=0;particles.length=0;selectedPlanet=null;setMode("none")};
+  ui.shareBtn.onclick=async()=>{try{await navigator.clipboard.writeText(location.href);ui.shareBtn.textContent="已複製！";setTimeout(()=>ui.shareBtn.textContent="複製分享連結",1000)}catch(_){alert(location.href)}};
+
+  ui.preset.addEventListener("change",applyPresetToSliders);
+  function bindRangeNumber(rangeId,numId){
+    const range=ui[rangeId],num=ui[numId]; if(!range||!num)return;
+    range.addEventListener("input",()=>{
+      num.value=rangeId==="drag"?(+range.value).toFixed(3):rangeId==="timeScale"?(+range.value).toFixed(2):range.value;
+      if(["planetRadius","planetMass","atmosphere"].includes(rangeId)&&selectedPlanet){
+        selectedPlanet.radius=+ui.planetRadius.value;selectedPlanet.mass=+ui.planetMass.value;selectedPlanet.atmosphere=+ui.atmosphere.value;
+      }
+      if(["ringCount","ringWidth"].includes(rangeId)&&selectedPlanet){selectedPlanet.ringCount=+ui.ringCount.value;selectedPlanet.ringWidth=+ui.ringWidth.value;}
+    });
+    num.addEventListener("change",()=>{
+      let v=+num.value,lo=+range.min,hi=+range.max;if(Number.isNaN(v))v=+range.value;v=clamp(v,lo,hi);
+      range.value=v;num.value=rangeId==="drag"?v.toFixed(3):rangeId==="timeScale"?v.toFixed(2):Math.round(v*1000)/1000;
+      range.dispatchEvent(new Event("input"));
+    });
+  }
+  ["power","angle","probeRadius","drag","timeScale","trail","planetRadius","planetMass","atmosphere","ringCount","ringWidth"]
+    .forEach(id=>bindRangeNumber(id,id+"Num"));
+
+  ui.ringEnabledBtn.onclick=()=>setRingEnabled(!ringEnabledDraft,true);
+  ui.ringColor.addEventListener("input",()=>{if(selectedPlanet)selectedPlanet.ringColor=ui.ringColor.value});
+  ["primaryColor","secondaryColor"].forEach(id=>ui[id].addEventListener("input",()=>{if(selectedPlanet){selectedPlanet.colors=[ui.primaryColor.value,ui.secondaryColor.value];selectedPlanet.glow=ui.secondaryColor.value;}}));
+
+  addEventListener("keydown",e=>{
+    if(e.code==="Space"){e.preventDefault();launchProbe()}
+    if(e.key.toLowerCase()==="p")ui.placePlanetBtn.click();
+    if(e.key.toLowerCase()==="l")ui.setLauncherBtn.click();
+    if(e.key.toLowerCase()==="r")ui.resetViewBtn.click();
+    if(e.key.toLowerCase()==="o")ui.orbitModeBtn.click();
+    if(e.key==="Delete"||e.key==="Backspace")ui.deletePlanetBtn.click();
+  });
+
+  ui.preset.value="earth";applyPresetToSliders();makePlanet(0,0,"earth");
+  ui.preset.value="moon";applyPresetToSliders();makePlanet(310,-120,"moon");
+  selectedPlanet=planets[0];setPlanetControls(selectedPlanet);syncLabels();
+})();
+</script>
+</body>
+</html>

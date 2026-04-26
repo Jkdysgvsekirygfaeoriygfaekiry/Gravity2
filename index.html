@@ -320,44 +320,65 @@ select, button, input[type="number"] {
   }
 
 
-  /* custom-only ring editor */
+  /* v13: custom ring editor vertical mobile-safe layout */
   .custom-ring-editor {
     margin-top: 10px;
-    padding: 9px;
+    padding: 10px;
     border: 1px solid rgba(140,190,255,.14);
-    border-radius: 10px;
+    border-radius: 12px;
     background: rgba(5,8,18,.35);
   }
 
   .custom-ring-title {
     color: #dce9ff;
     font-size: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: .08em;
   }
 
   .custom-ring-line {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 8px;
-    align-items: center;
+    align-items: stretch;
     margin-top: 8px;
+  }
+
+  .custom-ring-line .color-picker {
+    grid-template-columns: 72px 1fr;
   }
 
   .custom-ring-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 10px;
   }
 
   .custom-ring-grid label {
-    grid-template-columns: 56px 1fr 54px;
-    margin: 4px 0;
+    display: grid;
+    grid-template-columns: 56px minmax(120px, 1fr) 68px;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+  }
+
+  .custom-ring-grid .range-number {
+    width: 68px;
   }
 
   .custom-ring-editor.is-disabled {
-    opacity: .48;
+    opacity: .52;
+  }
+
+  @media (max-width: 760px) {
+    .custom-ring-grid label {
+      grid-template-columns: 52px minmax(90px, 1fr) 64px;
+    }
+
+    .custom-ring-line .color-picker {
+      grid-template-columns: 64px 1fr;
+    }
   }
 
 
@@ -511,8 +532,16 @@ select, button, input[type="number"] {
           <div class="color-picker">環顏色 <input id="customRingColor" type="color" value="#ffe0a2"></div>
         </div>
         <div class="custom-ring-grid">
-          <label>環數 <input id="customRingCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="customRingCountNum" type="number" min="1" max="3" step="1"></label>
-          <label>粗度 <input id="customRingWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="customRingWidthNum" type="number" min="1" max="14" step="1"></label>
+          <label>
+            <span>環數</span>
+            <input id="customRingCount" type="range" min="1" max="3" value="1" step="1">
+            <input class="range-number" id="customRingCountNum" type="number" min="1" max="3" step="1">
+          </label>
+          <label>
+            <span>粗度</span>
+            <input id="customRingWidth" type="range" min="1" max="14" value="3" step="1">
+            <input class="range-number" id="customRingWidthNum" type="number" min="1" max="14" step="1">
+          </label>
         </div>
       </div>
 

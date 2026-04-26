@@ -339,7 +339,48 @@
     border-radius: 6px;
   }
 
-  @media (max-width: 760px) {
+  
+  /* v7 ring editor cleanup */
+  .ring-editor {
+    margin-top: 10px;
+    padding: 9px;
+    border: 1px solid rgba(140,190,255,.14);
+    border-radius: 10px;
+    background: rgba(5,8,18,.35);
+  }
+
+  .ring-editor-title {
+    color: #dce9ff;
+    font-size: 12px;
+    margin-bottom: 8px;
+    letter-spacing: .08em;
+  }
+
+  .ring-editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .ring-editor-grid label {
+    grid-template-columns: 56px 1fr 54px;
+    margin: 4px 0;
+  }
+
+  .ring-color-line {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+
+  .ring-color-line .color-picker {
+    grid-template-columns: 58px 1fr;
+  }
+
+
+@media (max-width: 760px) {
     .hud {
       height: 38vh;
       max-height: 38vh;
@@ -482,17 +523,16 @@
       <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
     </div>
 
-    <div class="ring-toggle-row">
-      <button id="ringEnabledBtn">星環：無</button>
-      <div class="color-picker">環顏色 <input id="ringColor" type="color" value="#ffe0a2"></div>
-    </div>
-    <div class="ring-controls">
-      <label>環數 <input id="ringCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="ringCountNum" type="number" min="1" max="3" step="1"></label>
-      <label>粗度 <input id="ringWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="ringWidthNum" type="number" min="1" max="14" step="1"></label>
-    </div>
-    <div class="color-row">
-      <div class="color-picker">主顏色 <input id="primaryColor" type="color" value="#a46bff"></div>
-      <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
+    <div class="ring-editor">
+      <div class="ring-editor-title">星環設定</div>
+      <div class="ring-color-line">
+        <button id="ringEnabledBtn">星環：無</button>
+        <div class="color-picker">環顏色 <input id="ringColor" type="color" value="#ffe0a2"></div>
+      </div>
+      <div class="ring-editor-grid">
+        <label>環數 <input id="ringCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="ringCountNum" type="number" min="1" max="3" step="1"></label>
+        <label>粗度 <input id="ringWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="ringWidthNum" type="number" min="1" max="14" step="1"></label>
+      </div>
     </div>
 
     <div class="ring-toggle-row">
@@ -681,6 +721,60 @@
     mk2:{name:"鳥神星衛星 MK2",radius:7,mass:1,atmosphere:0,colors:["#4a3d35","#9b8173"],glow:"#a78678",rings:false,ringCount:1,ringWidth:3,ringColor:"#a78678"},
     dysnomia:{name:"鬩衛一 Dysnomia",radius:10,mass:1,atmosphere:0,colors:["#aeb8c5","#f5fbff"],glow:"#dbeaff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dbeaff"},
     vanth:{name:"亡衛一 Vanth",radius:10,mass:1,atmosphere:0,colors:["#6c7380","#bbc5d0"],glow:"#b6c3d6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b6c3d6"},
+
+    amalthea:{name:"木衛五 Amalthea",radius:12,mass:2,atmosphere:0,colors:["#7a4439","#d28a75"],glow:"#d28a75",rings:false,ringCount:1,ringWidth:3,ringColor:"#d28a75"},
+    himalia:{name:"木衛六 Himalia",radius:11,mass:1,atmosphere:0,colors:["#777065","#beb4a4"],glow:"#beb4a4",rings:false,ringCount:1,ringWidth:3,ringColor:"#beb4a4"},
+    thebe:{name:"木衛十四 Thebe",radius:10,mass:1,atmosphere:0,colors:["#7d4e42","#ba7f6f"],glow:"#ba7f6f",rings:false,ringCount:1,ringWidth:3,ringColor:"#ba7f6f"},
+    hyperion:{name:"土衛七 Hyperion",radius:13,mass:1,atmosphere:0,colors:["#8d7e65","#d7c59d"],glow:"#d7c59d",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7c59d"},
+    janus:{name:"土衛十 Janus",radius:10,mass:1,atmosphere:0,colors:["#8f8980","#d8d0c4"],glow:"#d8d0c4",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d0c4"},
+    epimetheus:{name:"土衛十一 Epimetheus",radius:9,mass:1,atmosphere:0,colors:["#8a837a","#cac1b5"],glow:"#cac1b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cac1b5"},
+    prometheus:{name:"土衛十六 Prometheus",radius:8,mass:1,atmosphere:0,colors:["#878177","#d1c7b9"],glow:"#d1c7b9",rings:false,ringCount:1,ringWidth:3,ringColor:"#d1c7b9"},
+    pandora:{name:"土衛十七 Pandora",radius:8,mass:1,atmosphere:0,colors:["#807a70","#c5bcad"],glow:"#c5bcad",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5bcad"},
+    helene:{name:"土衛十二 Helene",radius:7,mass:1,atmosphere:0,colors:["#969187","#ddd6c9"],glow:"#ddd6c9",rings:false,ringCount:1,ringWidth:3,ringColor:"#ddd6c9"},
+    telesto:{name:"土衛十三 Telesto",radius:7,mass:1,atmosphere:0,colors:["#98958e","#e3ddd2"],glow:"#e3ddd2",rings:false,ringCount:1,ringWidth:3,ringColor:"#e3ddd2"},
+    calypso:{name:"土衛十四 Calypso",radius:7,mass:1,atmosphere:0,colors:["#98948a","#e0d7c8"],glow:"#e0d7c8",rings:false,ringCount:1,ringWidth:3,ringColor:"#e0d7c8"},
+    atlas:{name:"土衛十五 Atlas",radius:7,mass:1,atmosphere:0,colors:["#8c867c","#d6cabd"],glow:"#d6cabd",rings:false,ringCount:1,ringWidth:3,ringColor:"#d6cabd"},
+    pan:{name:"土衛十八 Pan",radius:6,mass:1,atmosphere:0,colors:["#8f887d","#d3c8b9"],glow:"#d3c8b9",rings:true,ringCount:1,ringWidth:2,ringColor:"#d3c8b9"},
+    methone:{name:"土衛三十二 Methone",radius:6,mass:1,atmosphere:0,colors:["#aaa49c","#eee7dc"],glow:"#eee7dc",rings:false,ringCount:1,ringWidth:3,ringColor:"#eee7dc"},
+    pallene:{name:"土衛三十三 Pallene",radius:6,mass:1,atmosphere:0,colors:["#a39d94","#e6ddd0"],glow:"#e6ddd0",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6ddd0"},
+    mab:{name:"天衛二十六 Mab",radius:6,mass:1,atmosphere:0,colors:["#8da4b0","#d7f3ff"],glow:"#d7f3ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7f3ff"},
+    puck:{name:"天衛十五 Puck",radius:10,mass:1,atmosphere:0,colors:["#6f7a83","#c5d5df"],glow:"#c5d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5d5df"},
+    portia:{name:"天衛十二 Portia",radius:8,mass:1,atmosphere:0,colors:["#6c7780","#bdcbd5"],glow:"#bdcbd5",rings:false,ringCount:1,ringWidth:3,ringColor:"#bdcbd5"},
+    juliet:{name:"天衛十一 Juliet",radius:8,mass:1,atmosphere:0,colors:["#6d7882","#c6d5df"],glow:"#c6d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c6d5df"},
+    desdemona:{name:"天衛十 Desdemona",radius:7,mass:1,atmosphere:0,colors:["#6b7580","#bfced8"],glow:"#bfced8",rings:false,ringCount:1,ringWidth:3,ringColor:"#bfced8"},
+    cressida:{name:"天衛九 Cressida",radius:7,mass:1,atmosphere:0,colors:["#6d7982","#c4d4df"],glow:"#c4d4df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c4d4df"},
+    bianca:{name:"天衛八 Bianca",radius:7,mass:1,atmosphere:0,colors:["#707b84","#c7d5df"],glow:"#c7d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c7d5df"},
+    galatea:{name:"海衛六 Galatea",radius:9,mass:1,atmosphere:0,colors:["#536db1","#a5bfff"],glow:"#a5bfff",rings:false,ringCount:1,ringWidth:3,ringColor:"#a5bfff"},
+    larissa:{name:"海衛七 Larissa",radius:9,mass:1,atmosphere:0,colors:["#5268a0","#9bb2ed"],glow:"#9bb2ed",rings:false,ringCount:1,ringWidth:3,ringColor:"#9bb2ed"},
+    despina:{name:"海衛五 Despina",radius:8,mass:1,atmosphere:0,colors:["#526aa7","#9fb9f5"],glow:"#9fb9f5",rings:false,ringCount:1,ringWidth:3,ringColor:"#9fb9f5"},
+    thalassa:{name:"海衛四 Thalassa",radius:7,mass:1,atmosphere:0,colors:["#526ba8","#9db6f0"],glow:"#9db6f0",rings:false,ringCount:1,ringWidth:3,ringColor:"#9db6f0"},
+    naiad:{name:"海衛三 Naiad",radius:7,mass:1,atmosphere:0,colors:["#4e66a2","#95afea"],glow:"#95afea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95afea"},
+    halimede:{name:"Halimede",radius:6,mass:1,atmosphere:0,colors:["#51679e","#8fa9e2"],glow:"#8fa9e2",rings:false,ringCount:1,ringWidth:3,ringColor:"#8fa9e2"},
+    sao:{name:"Sao",radius:6,mass:1,atmosphere:0,colors:["#5068a4","#91aee9"],glow:"#91aee9",rings:false,ringCount:1,ringWidth:3,ringColor:"#91aee9"},
+    laomedeia:{name:"Laomedeia",radius:6,mass:1,atmosphere:0,colors:["#526aa8","#97b2ee"],glow:"#97b2ee",rings:false,ringCount:1,ringWidth:3,ringColor:"#97b2ee"},
+    psamathe:{name:"Psamathe",radius:6,mass:1,atmosphere:0,colors:["#4e66a0","#90aae4"],glow:"#90aae4",rings:false,ringCount:1,ringWidth:3,ringColor:"#90aae4"},
+    neso:{name:"Neso",radius:6,mass:1,atmosphere:0,colors:["#5069a5","#95b0ea"],glow:"#95b0ea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95b0ea"},
+
+    vesta:{name:"灶神星 Vesta",radius:18,mass:3,atmosphere:0,colors:["#8d887f","#d9d1c3"],glow:"#d9d1c3",rings:false,ringCount:1,ringWidth:3,ringColor:"#d9d1c3"},
+    pallas:{name:"智神星 Pallas",radius:18,mass:3,atmosphere:0,colors:["#7f7b73","#cbc3b5"],glow:"#cbc3b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbc3b5"},
+    hygiea:{name:"健神星 Hygiea",radius:17,mass:1,atmosphere:0,colors:["#69645d","#afa79b"],glow:"#afa79b",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa79b"},
+    interamnia:{name:"司理星 Interamnia",radius:16,mass:1,atmosphere:0,colors:["#6e675e","#b3aa9b"],glow:"#b3aa9b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b3aa9b"},
+    euphrosyne:{name:"欣女星 Euphrosyne",radius:15,mass:1,atmosphere:0,colors:["#6a665e","#aaa49a"],glow:"#aaa49a",rings:false,ringCount:1,ringWidth:3,ringColor:"#aaa49a"},
+    davida:{name:"大衛星 Davida",radius:15,mass:1,atmosphere:0,colors:["#5d5952","#9e978d"],glow:"#9e978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#9e978d"},
+    psyche:{name:"靈神星 Psyche",radius:14,mass:1,atmosphere:0,colors:["#8c725e","#d7ae8a"],glow:"#d7ae8a",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7ae8a"},
+    eunomia:{name:"司法星 Eunomia",radius:14,mass:1,atmosphere:0,colors:["#7d786f","#c9c0b2"],glow:"#c9c0b2",rings:false,ringCount:1,ringWidth:3,ringColor:"#c9c0b2"},
+    juno:{name:"婚神星 Juno",radius:13,mass:1,atmosphere:0,colors:["#7a7168","#c2b4a7"],glow:"#c2b4a7",rings:false,ringCount:1,ringWidth:3,ringColor:"#c2b4a7"},
+    camilla:{name:"卡蜜拉星 Camilla",radius:14,mass:1,atmosphere:0,colors:["#5d564f","#9f9488"],glow:"#9f9488",rings:false,ringCount:1,ringWidth:3,ringColor:"#9f9488"},
+    sylvia:{name:"林神星 Sylvia",radius:15,mass:1,atmosphere:0,colors:["#5d5750","#a0978d"],glow:"#a0978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a0978d"},
+    hektor:{name:"赫克托 Hektor",radius:14,mass:1,atmosphere:0,colors:["#6b5b4f","#b0937e"],glow:"#b0937e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b0937e"},
+    achilles:{name:"阿基里斯 Achilles",radius:12,mass:1,atmosphere:0,colors:["#6c5e52","#ad9888"],glow:"#ad9888",rings:false,ringCount:1,ringWidth:3,ringColor:"#ad9888"},
+    patroclus:{name:"帕特羅克洛斯 Patroclus",radius:12,mass:1,atmosphere:0,colors:["#5f574f","#a3998d"],glow:"#a3998d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a3998d"},
+    eros:{name:"愛神星 Eros",radius:10,mass:1,atmosphere:0,colors:["#8b6655","#cf9b82"],glow:"#cf9b82",rings:false,ringCount:1,ringWidth:3,ringColor:"#cf9b82"},
+    bennu:{name:"貝努 Bennu",radius:7,mass:1,atmosphere:0,colors:["#4a4540","#8a8177"],glow:"#8a8177",rings:false,ringCount:1,ringWidth:3,ringColor:"#8a8177"},
+    ryugu:{name:"龍宮 Ryugu",radius:7,mass:1,atmosphere:0,colors:["#4d4842","#8e857a"],glow:"#8e857a",rings:false,ringCount:1,ringWidth:3,ringColor:"#8e857a"},
+    itokawa:{name:"糸川 Itokawa",radius:7,mass:1,atmosphere:0,colors:["#6b6258","#afa396"],glow:"#afa396",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa396"},
+    apophis:{name:"阿波菲斯 Apophis",radius:7,mass:1,atmosphere:0,colors:["#5f554d","#9d8e80"],glow:"#9d8e80",rings:false,ringCount:1,ringWidth:3,ringColor:"#9d8e80"},
+    toutatis:{name:"圖塔蒂斯 Toutatis",radius:8,mass:1,atmosphere:0,colors:["#6a6055","#b09f8e"],glow:"#b09f8e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b09f8e"},
     custom:{name:"自訂",radius:34,mass:9000,atmosphere:30,colors:["#a46bff","#7df9ff"],glow:"#b493ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe0a2"}
   };
 

@@ -371,70 +371,9 @@ select, button, input[type="number"] {
     opacity: .52;
   }
 
-  
-  /* v14: custom appearance editor */
-  .custom-style-editor {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid rgba(140,190,255,.14);
-    border-radius: 12px;
-    background: rgba(5,8,18,.35);
-  }
-  .custom-style-title {
-    color: #dce9ff;
-    font-size: 12px;
-    margin-bottom: 10px;
-    letter-spacing: .08em;
-  }
-  .custom-style-stack {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .custom-style-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    align-items: center;
-  }
-  .custom-style-row .color-picker,
-  .custom-style-row .select-wrap {
-    display: grid;
-    grid-template-columns: 84px 1fr;
-    align-items: center;
-    gap: 8px;
-  }
-  .custom-style-row select {
-    width: 100%;
-    padding: 9px 10px;
-    border-radius: 10px;
-    color: var(--text);
-    background: rgba(5,8,18,.92);
-    border: 1px solid rgba(125,249,255,.28);
-    font: inherit;
-  }
-  .custom-style-row label {
-    display: grid;
-    grid-template-columns: 84px minmax(120px,1fr) 72px;
-    gap: 8px;
-    align-items: center;
-    margin: 0;
-  }
-  .custom-style-row .range-number {
-    width: 72px;
-  }
-  .custom-style-editor.is-disabled,
-  .custom-ring-editor.is-disabled {
-    opacity: .52;
-  }
-
-@media (max-width: 760px) {
+  @media (max-width: 760px) {
     .custom-ring-grid label {
       grid-template-columns: 52px minmax(90px, 1fr) 64px;
-    }
-
-    .custom-style-row label {
-      grid-template-columns: 72px minmax(90px, 1fr) 64px;
     }
 
     .custom-ring-line .color-picker {
@@ -474,6 +413,133 @@ select, button, input[type="number"] {
     label { grid-template-columns: 82px 1fr 48px; }
     .section { padding: 9px; }
   }
+
+
+  /* v14 custom appearance controls */
+  .custom-style-editor,
+  .custom-ring-editor {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid rgba(140,190,255,.14);
+    border-radius: 12px;
+    background: rgba(5,8,18,.35);
+  }
+
+  .custom-style-title,
+  .custom-ring-title {
+    color: #dce9ff;
+    font-size: 12px;
+    margin-bottom: 10px;
+    letter-spacing: .08em;
+  }
+
+  .custom-style-stack,
+  .custom-ring-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .custom-style-line,
+  .custom-ring-line {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .custom-style-select {
+    display: grid;
+    grid-template-columns: 86px 1fr;
+    gap: 8px;
+    align-items: center;
+    color: #a8bdd7;
+    font-size: 12px;
+  }
+
+  .custom-style-select select {
+    width: 100%;
+    min-width: 0;
+    background: rgba(6,10,24,.9);
+    color: #eef7ff;
+    border: 1px solid rgba(130,190,255,.18);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12px;
+    outline: none;
+  }
+
+  .custom-style-line .color-picker,
+  .custom-ring-line .color-picker {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .custom-style-grid,
+  .custom-ring-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .custom-style-grid label,
+  .custom-ring-grid label {
+    display: grid;
+    grid-template-columns: 64px minmax(120px, 1fr) 68px;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+  }
+
+  .custom-style-grid .range-number,
+  .custom-ring-grid .range-number {
+    width: 68px;
+  }
+
+  @media (max-width: 760px) {
+    .custom-style-select {
+      grid-template-columns: 74px 1fr;
+    }
+
+    .custom-style-grid label,
+    .custom-ring-grid label {
+      grid-template-columns: 58px minmax(90px, 1fr) 64px;
+    }
+
+    .custom-style-line .color-picker,
+    .custom-ring-line .color-picker {
+      grid-template-columns: 64px 1fr;
+    }
+  }
+
+
+  /* v15 custom ring rotation controls */
+  .custom-ring-select {
+    display: grid;
+    grid-template-columns: 86px 1fr;
+    gap: 8px;
+    align-items: center;
+    color: #a8bdd7;
+    font-size: 12px;
+  }
+
+  .custom-ring-select select {
+    width: 100%;
+    min-width: 0;
+    background: rgba(6,10,24,.9);
+    color: #eef7ff;
+    border: 1px solid rgba(130,190,255,.18);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12px;
+    outline: none;
+  }
+
+  @media (max-width: 760px) {
+    .custom-ring-select {
+      grid-template-columns: 74px 1fr;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -586,42 +652,44 @@ select, button, input[type="number"] {
       <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
     </div>
 
-      <div class="custom-style-editor" id="customStyleEditor">
-        <div class="custom-style-title">自訂外觀</div>
-        <div class="custom-style-stack">
-          <div class="custom-style-row">
-            <button id="customHighlightBtn">高光：有</button>
-          </div>
-          <div class="custom-style-row">
-            <button id="customStripesBtn">條紋：有</button>
-          </div>
-          <div class="custom-style-row">
-            <div class="select-wrap">副色目標
-              <select id="secondaryTarget">
-                <option value="highlight">高光</option>
-                <option value="stripes">條紋</option>
-                <option value="halo">光環</option>
-                <option value="none">無</option>
-              </select>
-            </div>
-          </div>
-          <div class="custom-style-row">
-            <button id="customGlowBtn">發光：有</button>
-          </div>
-          <div class="custom-style-row">
-            <div class="color-picker">光色 <input id="customGlowColor" type="color" value="#7df9ff"></div>
-          </div>
-          <div class="custom-style-row">
-            <label><span>發光大小</span><input id="customGlowSize" type="range" min="0" max="80" value="26" step="1"><input class="range-number" id="customGlowSizeNum" type="number" min="0" max="80" step="1"></label>
-          </div>
-          <div class="custom-style-row">
-            <label><span>發光強度</span><input id="customGlowIntensity" type="range" min="0" max="100" value="65" step="1"><input class="range-number" id="customGlowIntensityNum" type="number" min="0" max="100" step="1"></label>
-          </div>
+    <div class="custom-style-editor" id="customStyleEditor">
+      <div class="custom-style-title">自訂外觀</div>
+      <div class="custom-style-stack">
+        <div class="custom-style-line">
+          <button id="customHighlightEnabled">高光：有</button>
+          <button id="customStripesEnabled">條紋：有</button>
+        </div>
+        <label class="custom-style-select">
+          <span>副色作用</span>
+          <select id="secondaryTarget">
+            <option value="highlight">高光</option>
+            <option value="stripes">條紋</option>
+            <option value="halo">光環</option>
+            <option value="none">無</option>
+          </select>
+        </label>
+        <div class="custom-style-line">
+          <button id="customGlowEnabled">發光：有</button>
+          <div class="color-picker">光色 <input id="customGlowColor" type="color" value="#7df9ff"></div>
+        </div>
+        <div class="custom-style-grid">
+          <label>
+            <span>光大小</span>
+            <input id="customGlowSize" type="range" min="0" max="72" value="28" step="1">
+            <input class="range-number" id="customGlowSizeNum" type="number" min="0" max="72" step="1">
+          </label>
+          <label>
+            <span>光強度</span>
+            <input id="customGlowStrength" type="range" min="0" max="3" value="1" step="0.05">
+            <input class="range-number" id="customGlowStrengthNum" type="number" min="0" max="3" step="0.05">
+          </label>
         </div>
       </div>
+    </div>
 
-      <div class="custom-ring-editor" id="customRingEditor">
-        <div class="custom-ring-title">自訂星環</div>
+    <div class="custom-ring-editor" id="customRingEditor">
+      <div class="custom-ring-title">自訂星環</div>
+      <div class="custom-ring-stack">
         <div class="custom-ring-line">
           <button id="customRingEnabled">星環：無</button>
           <div class="color-picker">環顏色 <input id="customRingColor" type="color" value="#ffe0a2"></div>
@@ -637,8 +705,24 @@ select, button, input[type="number"] {
             <input id="customRingWidth" type="range" min="1" max="14" value="3" step="1">
             <input class="range-number" id="customRingWidthNum" type="number" min="1" max="14" step="1">
           </label>
+          <div class="custom-ring-line">
+            <button id="customRingRotateEnabled">星環旋轉：無</button>
+          </div>
+          <label class="custom-ring-select">
+            <span>方向</span>
+            <select id="customRingDirection">
+              <option value="cw">順時針</option>
+              <option value="ccw">逆時針</option>
+            </select>
+          </label>
+          <label>
+            <span>速度</span>
+            <input id="customRingSpeed" type="range" min="0" max="6" value="1" step="0.05">
+            <input class="range-number" id="customRingSpeedNum" type="number" min="0" max="6" step="0.05">
+          </label>
         </div>
       </div>
+    </div>
 
     <div class="row">
       <button class="ok" id="placePlanetBtn">放置天體</button>
@@ -654,7 +738,7 @@ select, button, input[type="number"] {
   <div class="hint">
     操作：滑鼠滾輪縮放，中鍵/右鍵拖曳視角；觸控支援單指拖曳、雙指縮放與平移。<br>
     選「設定發射台」或「放置天體」後，在畫布點一下。<br>
-    點引力球可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。
+    點天體可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。
   </div>
 </div>
 </aside>
@@ -706,12 +790,15 @@ select, button, input[type="number"] {
     drag: $("drag"), timeScale: $("timeScale"), trail: $("trail"),
     preset: $("preset"), planetRadius: $("planetRadius"), planetMass: $("planetMass"), atmosphere: $("atmosphere"),
     primaryColor: $("primaryColor"), secondaryColor: $("secondaryColor"),
-    customStyleEditor: $("customStyleEditor"), customHighlightBtn: $("customHighlightBtn"), customStripesBtn: $("customStripesBtn"),
-    secondaryTarget: $("secondaryTarget"), customGlowBtn: $("customGlowBtn"), customGlowColor: $("customGlowColor"),
-    customGlowSize: $("customGlowSize"), customGlowIntensity: $("customGlowIntensity"), customGlowSizeNum: $("customGlowSizeNum"), customGlowIntensityNum: $("customGlowIntensityNum"),
+    customStyleEditor: $("customStyleEditor"), customHighlightEnabled: $("customHighlightEnabled"),
+    customStripesEnabled: $("customStripesEnabled"), secondaryTarget: $("secondaryTarget"),
+    customGlowEnabled: $("customGlowEnabled"), customGlowColor: $("customGlowColor"),
+    customGlowSize: $("customGlowSize"), customGlowStrength: $("customGlowStrength"),
+    customGlowSizeNum: $("customGlowSizeNum"), customGlowStrengthNum: $("customGlowStrengthNum"),
     customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"),
     customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"),
-    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"),
+    customRingRotateEnabled: $("customRingRotateEnabled"), customRingDirection: $("customRingDirection"), customRingSpeed: $("customRingSpeed"),
+    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"), customRingSpeedNum: $("customRingSpeedNum"),
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
     dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
@@ -903,6 +990,29 @@ select, button, input[type="number"] {
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
   function len(x, y) { return Math.hypot(x, y); }
 
+  function hexToRgba(hex, alpha = 1) {
+    const raw = String(hex || "#ffffff").replace("#", "");
+    const full = raw.length === 3 ? raw.split("").map(ch => ch + ch).join("") : raw.padEnd(6, "0").slice(0, 6);
+    const num = parseInt(full, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r},${g},${b},${clamp(alpha, 0, 1)})`;
+  }
+
+  function mixHex(hex, amount = 0.3) {
+    const raw = String(hex || "#ffffff").replace("#", "");
+    const full = raw.length === 3 ? raw.split("").map(ch => ch + ch).join("") : raw.padEnd(6, "0").slice(0, 6);
+    const num = parseInt(full, 16);
+    let r = (num >> 16) & 255;
+    let g = (num >> 8) & 255;
+    let b = num & 255;
+    r = Math.round(r + (255 - r) * clamp(amount, 0, 1));
+    g = Math.round(g + (255 - g) * clamp(amount, 0, 1));
+    b = Math.round(b + (255 - b) * clamp(amount, 0, 1));
+    return `rgb(${r},${g},${b})`;
+  }
+
   function syncLabels() {
     ui.powerNum.value = Math.round(+ui.power.value);
     ui.angleNum.value = Math.round(+ui.angle.value);
@@ -913,11 +1023,14 @@ select, button, input[type="number"] {
     ui.planetRadiusNum.value = +ui.planetRadius.value;
     ui.planetMassNum.value = Number.isInteger(+ui.planetMass.value) ? String(+ui.planetMass.value) : (+ui.planetMass.value).toFixed(2);
     ui.atmosphereNum.value = +ui.atmosphere.value;
-    if (ui.customGlowSizeNum) ui.customGlowSizeNum.value = +ui.customGlowSize.value;
-    if (ui.customGlowIntensityNum) ui.customGlowIntensityNum.value = +ui.customGlowIntensity.value;
+  
     if (ui.customRingCountNum) ui.customRingCountNum.value = +ui.customRingCount.value;
     if (ui.customRingWidthNum) ui.customRingWidthNum.value = +ui.customRingWidth.value;
+    if (ui.customRingSpeedNum) ui.customRingSpeedNum.value = (+ui.customRingSpeed.value).toFixed(2);
+    if (ui.customGlowSizeNum) ui.customGlowSizeNum.value = +ui.customGlowSize.value;
+    if (ui.customGlowStrengthNum) ui.customGlowStrengthNum.value = (+ui.customGlowStrength.value).toFixed(2);
   }
+
 
   function setPlanetControls(p) {
     ui.planetRadius.value = p.radius;
@@ -928,73 +1041,68 @@ select, button, input[type="number"] {
       ui.secondaryColor.value = p.colors[1];
     }
     if (p?.isCustom) {
-      syncCustomAppearanceFromPlanet(p);
+      syncCustomAppearanceControlsFromPlanet(p);
       syncCustomRingControlsFromPlanet(p);
-    } else {
-      setCustomHighlightEnabled(true, false);
-      setCustomStripesEnabled(true, false);
-      setCustomGlowEnabled(true, false);
-      setSecondaryTargetValue("highlight", false);
-      setCustomRingEnabled(false, false);
     }
     updateCustomEditorsVisibility();
     syncLabels();
   }
 
+
   let customRingEnabledDraft = false;
-  let customHighlightDraft = true;
-  let customStripesDraft = true;
-  let customGlowDraft = true;
-  let customSecondaryTargetDraft = "highlight";
+  let customRingRotateEnabledDraft = false;
+  let customHighlightEnabledDraft = true;
+  let customStripesEnabledDraft = true;
+  let customGlowEnabledDraft = true;
 
-  function setToggleButton(btn, on, onText, offText) {
-    if (!btn) return;
-    btn.textContent = on ? onText : offText;
-    btn.classList.toggle("active-mode", !!on);
+  function setSecondaryTarget(value, updateSelected = true) {
+    let next = value || "none";
+    if (!customHighlightEnabledDraft && next === "highlight") next = "none";
+    if (ui.secondaryTarget) ui.secondaryTarget.value = next;
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.secondaryTarget = next;
   }
 
-  function setCustomHighlightEnabled(enabled, pushToPlanet = true) {
-    customHighlightDraft = !!enabled;
-    setToggleButton(ui.customHighlightBtn, customHighlightDraft, "高光：有", "高光：無");
-    if (!customHighlightDraft && customSecondaryTargetDraft === "highlight") {
-      setSecondaryTargetValue("none", pushToPlanet);
-    }
-    if (pushToPlanet && selectedPlanet?.isCustom) selectedPlanet.useHighlight = customHighlightDraft;
-  }
-
-  function setCustomStripesEnabled(enabled, pushToPlanet = true) {
-    customStripesDraft = !!enabled;
-    setToggleButton(ui.customStripesBtn, customStripesDraft, "條紋：有", "條紋：無");
-    if (pushToPlanet && selectedPlanet?.isCustom) selectedPlanet.useStripes = customStripesDraft;
-  }
-
-  function setCustomGlowEnabled(enabled, pushToPlanet = true) {
-    customGlowDraft = !!enabled;
-    setToggleButton(ui.customGlowBtn, customGlowDraft, "發光：有", "發光：無");
-    if (pushToPlanet && selectedPlanet?.isCustom) selectedPlanet.glowEnabled = customGlowDraft;
-  }
-
-  function setSecondaryTargetValue(value, pushToPlanet = true) {
-    customSecondaryTargetDraft = value;
-    if (ui.secondaryTarget) ui.secondaryTarget.value = value;
-    if (pushToPlanet && selectedPlanet?.isCustom) selectedPlanet.secondaryTarget = value;
-  }
-
-  function setCustomRingEnabled(enabled, pushToPlanet = true) {
+  function setCustomRingEnabled(enabled, updateSelected = true) {
     customRingEnabledDraft = !!enabled;
-    setToggleButton(ui.customRingEnabled, customRingEnabledDraft, "星環：有", "星環：無");
-    if (ui.customRingEditor) ui.customRingEditor.classList.toggle("is-disabled", !customRingEnabledDraft);
-    if (pushToPlanet && selectedPlanet?.isCustom) selectedPlanet.rings = customRingEnabledDraft;
+    if (!ui.customRingEnabled) return;
+    ui.customRingEnabled.textContent = customRingEnabledDraft ? "星環：有" : "星環：無";
+    ui.customRingEnabled.classList.toggle("active-mode", customRingEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.rings = customRingEnabledDraft;
   }
 
-  function syncCustomAppearanceFromPlanet(p) {
-    setCustomHighlightEnabled(!!p?.useHighlight, false);
-    setCustomStripesEnabled(!!p?.useStripes, false);
-    setCustomGlowEnabled(p?.glowEnabled !== false, false);
-    if (ui.customGlowColor) ui.customGlowColor.value = p?.glowColor || p?.glow || "#7df9ff";
-    if (ui.customGlowSize) ui.customGlowSize.value = p?.glowSize ?? 26;
-    if (ui.customGlowIntensity) ui.customGlowIntensity.value = p?.glowIntensity ?? 65;
-    setSecondaryTargetValue(p?.secondaryTarget || "highlight", false);
+  function setCustomRingRotateEnabled(enabled, updateSelected = true) {
+    customRingRotateEnabledDraft = !!enabled;
+    if (!ui.customRingRotateEnabled) return;
+    ui.customRingRotateEnabled.textContent = customRingRotateEnabledDraft ? "星環旋轉：有" : "星環旋轉：無";
+    ui.customRingRotateEnabled.classList.toggle("active-mode", customRingRotateEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.ringRotate = customRingRotateEnabledDraft;
+  }
+
+  function setCustomHighlightEnabled(enabled, updateSelected = true) {
+    customHighlightEnabledDraft = !!enabled;
+    if (!ui.customHighlightEnabled) return;
+    ui.customHighlightEnabled.textContent = customHighlightEnabledDraft ? "高光：有" : "高光：無";
+    ui.customHighlightEnabled.classList.toggle("active-mode", customHighlightEnabledDraft);
+    if (!customHighlightEnabledDraft && ui.secondaryTarget?.value === "highlight") {
+      setSecondaryTarget("none", updateSelected);
+    }
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.highlightEnabled = customHighlightEnabledDraft;
+  }
+
+  function setCustomStripesEnabled(enabled, updateSelected = true) {
+    customStripesEnabledDraft = !!enabled;
+    if (!ui.customStripesEnabled) return;
+    ui.customStripesEnabled.textContent = customStripesEnabledDraft ? "條紋：有" : "條紋：無";
+    ui.customStripesEnabled.classList.toggle("active-mode", customStripesEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.stripesEnabled = customStripesEnabledDraft;
+  }
+
+  function setCustomGlowEnabled(enabled, updateSelected = true) {
+    customGlowEnabledDraft = !!enabled;
+    if (!ui.customGlowEnabled) return;
+    ui.customGlowEnabled.textContent = customGlowEnabledDraft ? "發光：有" : "發光：無";
+    ui.customGlowEnabled.classList.toggle("active-mode", customGlowEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.glowEnabled = customGlowEnabledDraft;
   }
 
   function syncCustomRingControlsFromPlanet(p) {
@@ -1002,7 +1110,21 @@ select, button, input[type="number"] {
     ui.customRingCount.value = p?.ringCount || 1;
     ui.customRingWidth.value = p?.ringWidth || 3;
     ui.customRingColor.value = p?.ringColor || "#ffe0a2";
+    if (ui.customRingDirection) ui.customRingDirection.value = p?.ringDirection || "cw";
+    if (ui.customRingSpeed) ui.customRingSpeed.value = p?.ringSpeed ?? 1;
     setCustomRingEnabled(!!p?.rings && !!p?.isCustom, false);
+    setCustomRingRotateEnabled(!!p?.ringRotate && !!p?.isCustom, false);
+  }
+
+  function syncCustomAppearanceControlsFromPlanet(p) {
+    if (!ui.customGlowSize) return;
+    ui.customGlowColor.value = p?.glowColor || p?.glow || p?.colors?.[1] || "#7df9ff";
+    ui.customGlowSize.value = p?.glowSize ?? 28;
+    ui.customGlowStrength.value = p?.glowStrength ?? 1;
+    setCustomHighlightEnabled(p?.highlightEnabled !== false, false);
+    setCustomStripesEnabled(p?.stripesEnabled !== false, false);
+    setCustomGlowEnabled(p?.glowEnabled !== false, false);
+    setSecondaryTarget(p?.secondaryTarget || (p?.highlightEnabled === false ? "none" : "highlight"), false);
   }
 
   function updateCustomEditorsVisibility() {
@@ -1019,28 +1141,24 @@ select, button, input[type="number"] {
     ui.primaryColor.value = p.colors[0];
     ui.secondaryColor.value = p.colors[1];
     if (ui.preset.value === "custom") {
-      setCustomHighlightEnabled(true, false);
-      setCustomStripesEnabled(true, false);
-      setSecondaryTargetValue("highlight", false);
-      setCustomGlowEnabled(true, false);
       ui.customGlowColor.value = ui.secondaryColor.value;
-      ui.customGlowSize.value = 26;
-      ui.customGlowIntensity.value = 65;
+      ui.customGlowSize.value = 28;
+      ui.customGlowStrength.value = 1;
       ui.customRingCount.value = 1;
       ui.customRingWidth.value = 3;
       ui.customRingColor.value = "#ffe0a2";
-      setCustomRingEnabled(false, false);
-    } else {
+      ui.customRingDirection.value = "cw";
+      ui.customRingSpeed.value = 1;
+      setCustomRingRotateEnabled(false, false);
       setCustomHighlightEnabled(true, false);
       setCustomStripesEnabled(true, false);
-      setSecondaryTargetValue("highlight", false);
       setCustomGlowEnabled(true, false);
+      setSecondaryTarget("highlight", false);
       setCustomRingEnabled(false, false);
     }
     updateCustomEditorsVisibility();
     syncLabels();
   }
-
 
   function setMode(nextMode) {
     if (nextMode === "none") {
@@ -1099,18 +1217,22 @@ select, button, input[type="number"] {
       name: base.name,
       colors,
       glow: isCustom ? ui.customGlowColor.value : base.glow,
-      glowEnabled: isCustom ? customGlowDraft : true,
       glowColor: isCustom ? ui.customGlowColor.value : base.glow,
+      glowEnabled: isCustom ? customGlowEnabledDraft : true,
       glowSize: isCustom ? +ui.customGlowSize.value : 28,
-      glowIntensity: isCustom ? +ui.customGlowIntensity.value : 65,
-      useHighlight: isCustom ? customHighlightDraft : true,
-      useStripes: isCustom ? customStripesDraft : true,
-      secondaryTarget: isCustom ? customSecondaryTargetDraft : "highlight",
+      glowStrength: isCustom ? +ui.customGlowStrength.value : 1,
+      highlightEnabled: isCustom ? customHighlightEnabledDraft : true,
+      stripesEnabled: isCustom ? customStripesEnabledDraft : true,
+      secondaryTarget: isCustom ? ui.secondaryTarget.value : "highlight",
       spin: Math.random() * Math.PI * 2,
       rings: isCustom ? customRingEnabledDraft : !!base.rings,
       ringCount: isCustom ? +ui.customRingCount.value : (base.ringCount || 1),
       ringWidth: isCustom ? +ui.customRingWidth.value : (base.ringWidth || 3),
       ringColor: isCustom ? ui.customRingColor.value : (base.ringColor || base.glow || "#ffe0a2"),
+      ringRotate: isCustom ? customRingRotateEnabledDraft : false,
+      ringDirection: isCustom ? ui.customRingDirection.value : "cw",
+      ringSpeed: isCustom ? +ui.customRingSpeed.value : 0,
+      ringAngle: Math.random() * Math.PI * 2,
       isCustom,
       blackHole: !!base.blackHole,
       whiteHole: !!base.whiteHole
@@ -1120,7 +1242,6 @@ select, button, input[type="number"] {
     setPlanetControls(p);
     return p;
   }
-
 
   function launchProbe() {
     const angle = (+ui.angle.value) * Math.PI / 180;
@@ -1412,80 +1533,6 @@ select, button, input[type="number"] {
     ctx.stroke();
   }
 
-
-  function drawCustomPlanetBody(pl, s, r) {
-    const baseColor = pl.colors?.[0] || "#7d8cff";
-    const secondary = pl.colors?.[1] || "#d8f5ff";
-    const glowColor = pl.glowColor || pl.glow || secondary;
-    const glowSize = +pl.glowSize || 0;
-    const glowIntensity = clamp((+pl.glowIntensity || 0) / 100, 0, 1);
-    const secondaryTarget = pl.secondaryTarget || "highlight";
-
-    if (pl.glowEnabled && glowSize > 0 && glowIntensity > 0.01) {
-      ctx.save();
-      const outer = r * (1.25 + glowSize / 26);
-      const g = ctx.createRadialGradient(s.x, s.y, r * 0.65, s.x, s.y, outer);
-      g.addColorStop(0, `${glowColor}00`);
-      g.addColorStop(0.55, `${glowColor}${Math.round(55 * glowIntensity).toString(16).padStart(2,'0')}`);
-      g.addColorStop(1, `${glowColor}00`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, outer, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    ctx.save();
-    const grad = ctx.createRadialGradient(s.x - r * .32, s.y - r * .38, r * .12, s.x, s.y, r * 1.22);
-    if (pl.useHighlight) {
-      const hi = secondaryTarget === "highlight" ? secondary : "#ffffff";
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(.16, hi);
-      grad.addColorStop(.56, baseColor);
-      grad.addColorStop(1, "#050816");
-    } else {
-      grad.addColorStop(0, baseColor);
-      grad.addColorStop(.65, baseColor);
-      grad.addColorStop(1, "#050816");
-    }
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.clip();
-    if (pl.useStripes) {
-      const stripeStroke = secondaryTarget === "stripes" ? `${secondary}88` : "rgba(255,255,255,.15)";
-      const stripeFill = secondaryTarget === "stripes" ? `${secondary}2a` : "rgba(255,255,255,.08)";
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = stripeStroke;
-      ctx.lineWidth = Math.max(1, 2 * camera.zoom);
-      for (let i = -2; i <= 2; i++) {
-        ctx.beginPath();
-        ctx.ellipse(s.x, s.y + i * r * .22, r * .9, r * (.08 + Math.abs(i) * .015), pl.spin + i * .1, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      for (let i = 0; i < 18; i++) {
-        const yy = s.y - r + (i / 17) * r * 2;
-        ctx.fillStyle = i % 2 ? stripeFill : `${stripeFill}`;
-        ctx.fillRect(s.x - r, yy, r * 2, Math.max(1, r * .028));
-      }
-    }
-    ctx.restore();
-
-    if (secondaryTarget === "halo") {
-      ctx.save();
-      ctx.strokeStyle = `${secondary}cc`;
-      ctx.shadowBlur = Math.max(6, (pl.glowSize || 12) * camera.zoom * 0.8);
-      ctx.shadowColor = secondary;
-      ctx.lineWidth = Math.max(1.25, 1.5 * camera.zoom);
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, r * 1.12, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-  }
-
   function drawPlanet(pl) {
     const s = worldToScreen(pl.x, pl.y);
     const r = pl.radius * camera.zoom;
@@ -1537,58 +1584,94 @@ select, button, input[type="number"] {
       return;
     }
 
-    drawAtmosphere(pl);
-
-    if (pl.isCustom) {
-      drawCustomPlanetBody(pl, s, r);
-    } else {
-      ctx.save();
-      ctx.shadowBlur = 28 * camera.zoom;
-      ctx.shadowColor = pl.glow;
-      const grad = ctx.createRadialGradient(s.x - r * .32, s.y - r * .38, r * .12, s.x, s.y, r * 1.25);
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(.12, pl.colors[1]);
-      grad.addColorStop(.58, pl.colors[0]);
-      grad.addColorStop(1, "#050816");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.shadowBlur = 0;
-      ctx.clip();
-
-      ctx.globalAlpha = .16;
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = Math.max(1, 2 * camera.zoom);
-      for (let i = -2; i <= 2; i++) {
-        ctx.beginPath();
-        ctx.ellipse(s.x, s.y + i * r * .22, r * .9, r * (.08 + Math.abs(i) * .015), pl.spin + i * .1, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.globalAlpha = .10;
-      for (let i = 0; i < 18; i++) {
-        const yy = s.y - r + (i / 17) * r * 2;
-        ctx.fillStyle = i % 2 ? "#000" : "#fff";
-        ctx.fillRect(s.x - r, yy, r * 2, Math.max(1, r * .028));
-      }
-      ctx.restore();
-    }
 
     if (pl.rings) {
       ctx.save();
       const count = clamp(Math.round(pl.ringCount || 1), 1, 3);
       const width = Math.max(1, (pl.ringWidth || 3) * camera.zoom);
       for (let i = 0; i < count; i++) {
-        const scale = 1.55 + i * .26;
+        const scale = 1.55 + i * 0.26;
         ctx.strokeStyle = i === 0 ? `${pl.ringColor || "#ffe0a2"}99` : `${pl.ringColor || "#ffe0a2"}55`;
-        ctx.lineWidth = Math.max(1, width * (1 - i * .18));
+        ctx.lineWidth = Math.max(1, width * (1 - i * 0.18));
         ctx.beginPath();
-        ctx.ellipse(s.x, s.y, r * scale, r * (.36 + i * .055), -0.25, 0, Math.PI * 2);
+        ctx.ellipse(s.x, s.y, r * scale, r * (0.36 + i * 0.055), (pl.ringAngle || 0) - 0.25, 0, Math.PI * 2);
         ctx.stroke();
       }
       ctx.restore();
     }
+
+    drawAtmosphere(pl);
+
+    const primaryColor = pl.colors?.[0] || "#6f8cff";
+    const secondaryColor = pl.colors?.[1] || "#d7f0ff";
+    const highlightEnabled = pl.highlightEnabled !== false;
+    const stripesEnabled = pl.stripesEnabled !== false;
+    const glowEnabled = pl.glowEnabled !== false;
+    const secondaryTarget = pl.secondaryTarget || (highlightEnabled ? "highlight" : "none");
+    const glowColor = pl.glowColor || pl.glow || secondaryColor;
+    const glowSize = Math.max(0, +(pl.glowSize ?? 28));
+    const glowStrength = clamp(+(pl.glowStrength ?? 1), 0, 3);
+    const highlightColor = secondaryTarget === "highlight" ? secondaryColor : mixHex(primaryColor, 0.35);
+
+    ctx.save();
+    ctx.shadowBlur = glowEnabled ? glowSize * camera.zoom * (0.75 + glowStrength * 0.65) : 0;
+    ctx.shadowColor = glowEnabled ? hexToRgba(glowColor, clamp(0.25 + glowStrength * 0.2, 0, 1)) : "transparent";
+    const grad = ctx.createRadialGradient(s.x - r * 0.32, s.y - r * 0.38, r * 0.12, s.x, s.y, r * 1.25);
+    if (highlightEnabled) {
+      grad.addColorStop(0, "#ffffff");
+      grad.addColorStop(0.14, highlightColor);
+      grad.addColorStop(0.6, primaryColor);
+    } else {
+      grad.addColorStop(0, mixHex(primaryColor, 0.18));
+      grad.addColorStop(0.5, primaryColor);
+      grad.addColorStop(0.9, mixHex(primaryColor, 0.02));
+    }
+    grad.addColorStop(1, "#050816");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.clip();
+
+    if (highlightEnabled) {
+      ctx.globalAlpha = 0.15;
+      ctx.strokeStyle = secondaryTarget === "highlight" ? hexToRgba(secondaryColor, 0.95) : "#ffffff";
+      ctx.lineWidth = Math.max(1, 2 * camera.zoom);
+      for (let i = -2; i <= 2; i++) {
+        ctx.beginPath();
+        ctx.ellipse(s.x, s.y + i * r * 0.22, r * 0.9, r * (0.08 + Math.abs(i) * 0.015), pl.spin + i * 0.1, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    if (stripesEnabled) {
+      ctx.globalAlpha = secondaryTarget === "stripes" ? 0.28 : 0.1;
+      for (let i = 0; i < 18; i++) {
+        const yy = s.y - r + (i / 17) * r * 2;
+        if (secondaryTarget === "stripes") {
+          ctx.fillStyle = i % 2 ? hexToRgba(secondaryColor, 0.85) : hexToRgba("#000000", 0.18);
+        } else {
+          ctx.fillStyle = i % 2 ? "#000" : "#fff";
+        }
+        ctx.fillRect(s.x - r, yy, r * 2, Math.max(1, r * 0.028));
+      }
+    }
+    ctx.restore();
+
+    if (secondaryTarget === "halo") {
+      ctx.save();
+      ctx.strokeStyle = hexToRgba(secondaryColor, 0.92);
+      ctx.lineWidth = Math.max(1, 1.75 * camera.zoom);
+      ctx.shadowColor = secondaryColor;
+      ctx.shadowBlur = Math.max(6, (glowEnabled ? glowSize * 0.65 : 10) * camera.zoom * (0.7 + glowStrength * 0.45));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r + Math.max(2, 2.4 * camera.zoom), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
 
     if (selectedPlanet === pl) {
       ctx.save();
@@ -2156,14 +2239,15 @@ select, button, input[type="number"] {
         selectedPlanet.atmosphere = +ui.atmosphere.value;
       }
 
-      if (["customRingCount", "customRingWidth"].includes(rangeId) && selectedPlanet?.isCustom) {
+      if (["customRingCount", "customRingWidth", "customRingSpeed"].includes(rangeId) && selectedPlanet?.isCustom) {
         selectedPlanet.ringCount = +ui.customRingCount.value;
         selectedPlanet.ringWidth = +ui.customRingWidth.value;
+        selectedPlanet.ringSpeed = +ui.customRingSpeed.value;
       }
 
-      if (["customGlowSize", "customGlowIntensity"].includes(rangeId) && selectedPlanet?.isCustom) {
+      if (["customGlowSize", "customGlowStrength"].includes(rangeId) && selectedPlanet?.isCustom) {
         selectedPlanet.glowSize = +ui.customGlowSize.value;
-        selectedPlanet.glowIntensity = +ui.customGlowIntensity.value;
+        selectedPlanet.glowStrength = +ui.customGlowStrength.value;
       }
     });
 
@@ -2188,21 +2272,18 @@ select, button, input[type="number"] {
   bindRangeNumber("planetRadius", "planetRadiusNum");
   bindRangeNumber("planetMass", "planetMassNum");
   bindRangeNumber("atmosphere", "atmosphereNum");
-  bindRangeNumber("customGlowSize", "customGlowSizeNum");
-  bindRangeNumber("customGlowIntensity", "customGlowIntensityNum");
   bindRangeNumber("customRingCount", "customRingCountNum");
   bindRangeNumber("customRingWidth", "customRingWidthNum");
+  bindRangeNumber("customRingSpeed", "customRingSpeedNum");
+  bindRangeNumber("customGlowSize", "customGlowSizeNum");
+  bindRangeNumber("customGlowStrength", "customGlowStrengthNum");
 
 
-  if (ui.customHighlightBtn) {
-    ui.customHighlightBtn.onclick = () => setCustomHighlightEnabled(!customHighlightDraft);
-    ui.customStripesBtn.onclick = () => setCustomStripesEnabled(!customStripesDraft);
-    ui.customGlowBtn.onclick = () => setCustomGlowEnabled(!customGlowDraft);
-    ui.secondaryTarget.addEventListener("change", () => {
-      let v = ui.secondaryTarget.value;
-      if (!customHighlightDraft && v === "highlight") v = "none";
-      setSecondaryTargetValue(v);
-    });
+  if (ui.customHighlightEnabled) {
+    ui.customHighlightEnabled.onclick = () => setCustomHighlightEnabled(!customHighlightEnabledDraft);
+    ui.customStripesEnabled.onclick = () => setCustomStripesEnabled(!customStripesEnabledDraft);
+    ui.customGlowEnabled.onclick = () => setCustomGlowEnabled(!customGlowEnabledDraft);
+    ui.secondaryTarget.addEventListener("change", () => setSecondaryTarget(ui.secondaryTarget.value));
     ui.customGlowColor.addEventListener("input", () => {
       if (selectedPlanet?.isCustom) {
         selectedPlanet.glowColor = ui.customGlowColor.value;
@@ -2213,6 +2294,10 @@ select, button, input[type="number"] {
 
   if (ui.customRingEnabled) {
     ui.customRingEnabled.onclick = () => setCustomRingEnabled(!customRingEnabledDraft);
+    ui.customRingRotateEnabled.onclick = () => setCustomRingRotateEnabled(!customRingRotateEnabledDraft);
+    ui.customRingDirection.addEventListener("change", () => {
+      if (selectedPlanet?.isCustom) selectedPlanet.ringDirection = ui.customRingDirection.value;
+    });
     ui.customRingColor.addEventListener("input", () => {
       if (selectedPlanet?.isCustom) selectedPlanet.ringColor = ui.customRingColor.value;
     });
@@ -2224,7 +2309,10 @@ select, button, input[type="number"] {
     ui[id].addEventListener("input", () => {
       if (selectedPlanet) {
         selectedPlanet.colors = [ui.primaryColor.value, ui.secondaryColor.value];
-        if (!selectedPlanet.isCustom) selectedPlanet.glow = ui.secondaryColor.value;
+        if (!selectedPlanet.isCustom) {
+          selectedPlanet.glow = ui.secondaryColor.value;
+          selectedPlanet.glowColor = ui.secondaryColor.value;
+        }
       }
     });
   });
@@ -2245,7 +2333,6 @@ select, button, input[type="number"] {
   makePlanet(310, -120, "moon");
   selectedPlanet = planets[0];
   setPlanetControls(selectedPlanet);
-  updateCustomEditorsVisibility();
   syncLabels();
 
   // Canvas roundRect fallback

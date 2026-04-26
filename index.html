@@ -683,6 +683,16 @@ select, button, input[type="number"] {
             <input id="customGlowStrength" type="range" min="0" max="3" value="1" step="0.05">
             <input class="range-number" id="customGlowStrengthNum" type="number" min="0" max="3" step="0.05">
           </label>
+          <label>
+            <span>環距離</span>
+            <input id="customHaloDistance" type="range" min="0" max="80" value="8" step="1">
+            <input class="range-number" id="customHaloDistanceNum" type="number" min="0" max="80" step="1">
+          </label>
+          <label>
+            <span>環粗細</span>
+            <input id="customHaloWidth" type="range" min="1" max="18" value="2" step="1">
+            <input class="range-number" id="customHaloWidthNum" type="number" min="1" max="18" step="1">
+          </label>
         </div>
       </div>
     </div>
@@ -710,34 +720,30 @@ select, button, input[type="number"] {
             <input id="customRingRotateSpeed" type="range" min="0" max="3" value="0.35" step="0.01">
             <input class="range-number" id="customRingRotateSpeedNum" type="number" min="0" max="3" step="0.01">
           </label>
+          <label>
+            <span>公轉速</span>
+            <input id="customRingOrbitSpeed" type="range" min="0" max="3" value="0.18" step="0.01">
+            <input class="range-number" id="customRingOrbitSpeedNum" type="number" min="0" max="3" step="0.01">
+          </label>
         </div>
         <div class="custom-ring-line">
           <button id="customRingRotateEnabled">星環自轉：無</button>
           <label class="custom-ring-select">
-            <span>自轉方向</span>
+            <span>方向</span>
             <select id="customRingRotateDir">
               <option value="cw">順時針</option>
               <option value="ccw">逆時針</option>
             </select>
           </label>
         </div>
-
         <div class="custom-ring-line">
           <button id="customRingOrbitEnabled">星環公轉：無</button>
           <label class="custom-ring-select">
-            <span>公轉方向</span>
+            <span>方向</span>
             <select id="customRingOrbitDir">
               <option value="cw">順時針</option>
               <option value="ccw">逆時針</option>
             </select>
-          </label>
-        </div>
-
-        <div class="custom-ring-grid">
-          <label>
-            <span>公轉速</span>
-            <input id="customRingOrbitSpeed" type="range" min="0" max="3" value="0.25" step="0.01">
-            <input class="range-number" id="customRingOrbitSpeedNum" type="number" min="0" max="3" step="0.01">
           </label>
         </div>
       </div>
@@ -813,14 +819,12 @@ select, button, input[type="number"] {
     customStripesEnabled: $("customStripesEnabled"), secondaryTarget: $("secondaryTarget"),
     customGlowEnabled: $("customGlowEnabled"), customGlowColor: $("customGlowColor"),
     customGlowSize: $("customGlowSize"), customGlowStrength: $("customGlowStrength"),
+    customHaloDistance: $("customHaloDistance"), customHaloWidth: $("customHaloWidth"),
     customGlowSizeNum: $("customGlowSizeNum"), customGlowStrengthNum: $("customGlowStrengthNum"),
-    customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"),
-    customRingRotateEnabled: $("customRingRotateEnabled"), customRingOrbitEnabled: $("customRingOrbitEnabled"),
-    customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"),
-    customRingRotateSpeed: $("customRingRotateSpeed"), customRingRotateDir: $("customRingRotateDir"),
-    customRingOrbitSpeed: $("customRingOrbitSpeed"), customRingOrbitDir: $("customRingOrbitDir"),
-    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"),
-    customRingRotateSpeedNum: $("customRingRotateSpeedNum"), customRingOrbitSpeedNum: $("customRingOrbitSpeedNum"),
+    customHaloDistanceNum: $("customHaloDistanceNum"), customHaloWidthNum: $("customHaloWidthNum"),
+    customRingEditor: $("customRingEditor"), customRingEnabled: $("customRingEnabled"), customRingRotateEnabled: $("customRingRotateEnabled"), customRingOrbitEnabled: $("customRingOrbitEnabled"),
+    customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingWidth: $("customRingWidth"), customRingRotateSpeed: $("customRingRotateSpeed"), customRingRotateDir: $("customRingRotateDir"), customRingOrbitSpeed: $("customRingOrbitSpeed"), customRingOrbitDir: $("customRingOrbitDir"),
+    customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"), customRingRotateSpeedNum: $("customRingRotateSpeedNum"), customRingOrbitSpeedNum: $("customRingOrbitSpeedNum"),
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
     dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
@@ -1052,6 +1056,8 @@ select, button, input[type="number"] {
     if (ui.customRingOrbitSpeedNum) ui.customRingOrbitSpeedNum.value = (+ui.customRingOrbitSpeed.value).toFixed(2);
     if (ui.customGlowSizeNum) ui.customGlowSizeNum.value = +ui.customGlowSize.value;
     if (ui.customGlowStrengthNum) ui.customGlowStrengthNum.value = (+ui.customGlowStrength.value).toFixed(2);
+    if (ui.customHaloDistanceNum) ui.customHaloDistanceNum.value = +ui.customHaloDistance.value;
+    if (ui.customHaloWidthNum) ui.customHaloWidthNum.value = +ui.customHaloWidth.value;
   }
 
 
@@ -1144,7 +1150,7 @@ select, button, input[type="number"] {
     ui.customRingColor.value = p?.ringColor || "#ffe0a2";
     ui.customRingRotateSpeed.value = p?.ringRotateSpeed ?? 0.35;
     ui.customRingRotateDir.value = p?.ringRotateDir || "cw";
-    ui.customRingOrbitSpeed.value = p?.ringOrbitSpeed ?? 0.25;
+    ui.customRingOrbitSpeed.value = p?.ringOrbitSpeed ?? 0.18;
     ui.customRingOrbitDir.value = p?.ringOrbitDir || "cw";
     setCustomRingEnabled(!!p?.rings && !!p?.isCustom, false);
     setCustomRingRotateEnabled(!!p?.ringRotateEnabled && !!p?.isCustom, false);
@@ -1156,6 +1162,8 @@ select, button, input[type="number"] {
     ui.customGlowColor.value = p?.glowColor || p?.glow || p?.colors?.[1] || "#7df9ff";
     ui.customGlowSize.value = p?.glowSize ?? 28;
     ui.customGlowStrength.value = p?.glowStrength ?? 1;
+    ui.customHaloDistance.value = p?.haloDistance ?? 8;
+    ui.customHaloWidth.value = p?.haloWidth ?? 2;
     setCustomHighlightEnabled(p?.highlightEnabled !== false, false);
     setCustomStripesEnabled(p?.stripesEnabled !== false, false);
     setCustomGlowEnabled(p?.glowEnabled !== false, false);
@@ -1179,12 +1187,14 @@ select, button, input[type="number"] {
       ui.customGlowColor.value = ui.secondaryColor.value;
       ui.customGlowSize.value = 28;
       ui.customGlowStrength.value = 1;
+      ui.customHaloDistance.value = 8;
+      ui.customHaloWidth.value = 2;
       ui.customRingCount.value = 1;
       ui.customRingWidth.value = 3;
       ui.customRingColor.value = "#ffe0a2";
       ui.customRingRotateSpeed.value = 0.35;
       ui.customRingRotateDir.value = "cw";
-      ui.customRingOrbitSpeed.value = 0.25;
+      ui.customRingOrbitSpeed.value = 0.18;
       ui.customRingOrbitDir.value = "cw";
       setCustomHighlightEnabled(true, false);
       setCustomStripesEnabled(true, false);
@@ -1259,6 +1269,8 @@ select, button, input[type="number"] {
       glowEnabled: isCustom ? customGlowEnabledDraft : true,
       glowSize: isCustom ? +ui.customGlowSize.value : 28,
       glowStrength: isCustom ? +ui.customGlowStrength.value : 1,
+      haloDistance: isCustom ? +ui.customHaloDistance.value : 8,
+      haloWidth: isCustom ? +ui.customHaloWidth.value : 2,
       highlightEnabled: isCustom ? customHighlightEnabledDraft : true,
       stripesEnabled: isCustom ? customStripesEnabledDraft : true,
       secondaryTarget: isCustom ? ui.secondaryTarget.value : "highlight",
@@ -1274,7 +1286,6 @@ select, button, input[type="number"] {
       ringOrbitDir: isCustom ? ui.customRingOrbitDir.value : "cw",
       ringOrbitSpeed: isCustom ? +ui.customRingOrbitSpeed.value : 0,
       ringAngle: -0.25,
-      ringBaseAngle: -0.25,
       ringPhase: Math.random() * Math.PI * 2,
       isCustom,
       blackHole: !!base.blackHole,
@@ -1638,6 +1649,8 @@ select, button, input[type="number"] {
     const glowColor = pl.glowColor || pl.glow || secondaryColor;
     const glowSize = Math.max(0, +(pl.glowSize ?? 28));
     const glowStrength = clamp(+(pl.glowStrength ?? 1), 0, 3);
+    const haloDistance = Math.max(0, +(pl.haloDistance ?? 8));
+    const haloWidth = Math.max(1, +(pl.haloWidth ?? 2));
     const highlightColor = secondaryTarget === "highlight" ? secondaryColor : mixHex(primaryColor, 0.35);
 
     if (pl.rings) {
@@ -1707,12 +1720,13 @@ select, button, input[type="number"] {
       grad.addColorStop(0, "#ffffff");
       grad.addColorStop(0.14, highlightColor);
       grad.addColorStop(0.6, primaryColor);
+      grad.addColorStop(1, "#050816");
     } else {
-      grad.addColorStop(0, mixHex(primaryColor, 0.18));
-      grad.addColorStop(0.5, primaryColor);
-      grad.addColorStop(0.9, mixHex(primaryColor, 0.02));
+      // High light OFF means no bright spot at all: flat body color with only a dark limb.
+      grad.addColorStop(0, primaryColor);
+      grad.addColorStop(0.72, primaryColor);
+      grad.addColorStop(1, "#050816");
     }
-    grad.addColorStop(1, "#050816");
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
@@ -1749,11 +1763,11 @@ select, button, input[type="number"] {
     if (secondaryTarget === "halo") {
       ctx.save();
       ctx.strokeStyle = hexToRgba(secondaryColor, 0.92);
-      ctx.lineWidth = Math.max(1, 1.75 * camera.zoom);
+      ctx.lineWidth = Math.max(1, haloWidth * camera.zoom);
       ctx.shadowColor = secondaryColor;
       ctx.shadowBlur = Math.max(6, (glowEnabled ? glowSize * 0.65 : 10) * camera.zoom * (0.7 + glowStrength * 0.45));
       ctx.beginPath();
-      ctx.arc(s.x, s.y, r + Math.max(2, 2.4 * camera.zoom), 0, Math.PI * 2);
+      ctx.arc(s.x, s.y, r + haloDistance * camera.zoom, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
@@ -1917,13 +1931,13 @@ select, button, input[type="number"] {
     if (!paused) {
       for (const pl of planets) {
         pl.spin += dt * 0.15;
+        if (pl.rings && pl.ringOrbitEnabled) {
+          const dir = pl.ringOrbitDir === "ccw" ? -1 : 1;
+          pl.ringAngle = (pl.ringAngle ?? -0.25) + dt * (pl.ringOrbitSpeed || 0) * dir * 0.9;
+        }
         if (pl.rings && pl.ringRotateEnabled) {
           const dir = pl.ringRotateDir === "ccw" ? -1 : 1;
           pl.ringPhase = (pl.ringPhase || 0) + dt * (pl.ringRotateSpeed || 0) * dir * 2.4;
-        }
-        if (pl.rings && pl.ringOrbitEnabled) {
-          const dir = pl.ringOrbitDir === "ccw" ? -1 : 1;
-          pl.ringAngle = (pl.ringAngle ?? pl.ringBaseAngle ?? -0.25) + dt * (pl.ringOrbitSpeed || 0) * dir;
         }
       }
       const physicsSteps = clamp(Math.ceil(dt * 80), 1, 8);
@@ -2341,9 +2355,11 @@ select, button, input[type="number"] {
         selectedPlanet.ringOrbitSpeed = +ui.customRingOrbitSpeed.value;
       }
 
-      if (["customGlowSize", "customGlowStrength"].includes(rangeId) && selectedPlanet?.isCustom) {
+      if (["customGlowSize", "customGlowStrength", "customHaloDistance", "customHaloWidth"].includes(rangeId) && selectedPlanet?.isCustom) {
         selectedPlanet.glowSize = +ui.customGlowSize.value;
         selectedPlanet.glowStrength = +ui.customGlowStrength.value;
+        selectedPlanet.haloDistance = +ui.customHaloDistance.value;
+        selectedPlanet.haloWidth = +ui.customHaloWidth.value;
       }
     });
 
@@ -2374,6 +2390,8 @@ select, button, input[type="number"] {
   bindRangeNumber("customRingOrbitSpeed", "customRingOrbitSpeedNum");
   bindRangeNumber("customGlowSize", "customGlowSizeNum");
   bindRangeNumber("customGlowStrength", "customGlowStrengthNum");
+  bindRangeNumber("customHaloDistance", "customHaloDistanceNum");
+  bindRangeNumber("customHaloWidth", "customHaloWidthNum");
 
 
   if (ui.customHighlightEnabled) {

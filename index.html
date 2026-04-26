@@ -151,27 +151,7 @@
     font: inherit;
     font-size: 11px;
   }
-
-  .ring-toggle-row,
-  .ring-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .ring-controls label {
-    grid-template-columns: 72px 1fr 56px;
-    margin: 4px 0;
-  }
-
-  .ring-toggle-row button.active-mode {
-    border-color: rgba(140,255,177,.85);
-    color: #e8fff0;
-    box-shadow: 0 0 18px rgba(140,255,177,.22), inset 0 0 14px rgba(140,255,177,.08);
-  }
-
-  select, button, input[type="number"] {
+select, button, input[type="number"] {
     color: var(--text);
     background: rgba(5, 8, 18, .92);
     border: 1px solid rgba(125,249,255,.28);
@@ -339,47 +319,6 @@
     border-radius: 6px;
   }
 
-  
-  /* v7 ring editor cleanup */
-  .ring-editor {
-    margin-top: 10px;
-    padding: 9px;
-    border: 1px solid rgba(140,190,255,.14);
-    border-radius: 10px;
-    background: rgba(5,8,18,.35);
-  }
-
-  .ring-editor-title {
-    color: #dce9ff;
-    font-size: 12px;
-    margin-bottom: 8px;
-    letter-spacing: .08em;
-  }
-
-  .ring-editor-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .ring-editor-grid label {
-    grid-template-columns: 56px 1fr 54px;
-    margin: 4px 0;
-  }
-
-  .ring-color-line {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-    align-items: center;
-  }
-
-  .ring-color-line .color-picker {
-    grid-template-columns: 58px 1fr;
-  }
-
-
 @media (max-width: 760px) {
     .hud {
       height: 38vh;
@@ -523,26 +462,6 @@
       <div class="color-picker">副顏色 <input id="secondaryColor" type="color" value="#7df9ff"></div>
     </div>
 
-    <div class="ring-editor">
-      <div class="ring-editor-title">星環設定</div>
-      <div class="ring-color-line">
-        <button id="ringEnabledBtn">星環：無</button>
-        <div class="color-picker">環顏色 <input id="ringColor" type="color" value="#ffe0a2"></div>
-      </div>
-      <div class="ring-editor-grid">
-        <label>環數 <input id="ringCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="ringCountNum" type="number" min="1" max="3" step="1"></label>
-        <label>粗度 <input id="ringWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="ringWidthNum" type="number" min="1" max="14" step="1"></label>
-      </div>
-    </div>
-
-    <div class="ring-toggle-row">
-      <button id="ringEnabledBtn">星環：無</button>
-      <div class="color-picker">環顏色 <input id="ringColor" type="color" value="#ffe0a2"></div>
-    </div>
-    <div class="ring-controls">
-      <label>環數 <input id="ringCount" type="range" min="1" max="3" value="1" step="1"><input class="range-number" id="ringCountNum" type="number" min="1" max="3" step="1"></label>
-      <label>粗度 <input id="ringWidth" type="range" min="1" max="14" value="3" step="1"><input class="range-number" id="ringWidthNum" type="number" min="1" max="14" step="1"></label>
-    </div>
     <div class="row">
       <button class="ok" id="placePlanetBtn">放置引力球</button>
       <button class="danger" id="deletePlanetBtn">刪除選中</button>
@@ -612,8 +531,6 @@
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
     dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
-    ringEnabledBtn: $("ringEnabledBtn"), ringColor: $("ringColor"), ringCount: $("ringCount"), ringWidth: $("ringWidth"),
-    ringCountNum: $("ringCountNum"), ringWidthNum: $("ringWidthNum"),
     launchBtn: $("launchBtn"), setLauncherBtn: $("setLauncherBtn"), clearProbesBtn: $("clearProbesBtn"),
     pauseBtn: $("pauseBtn"), resetViewBtn: $("resetViewBtn"), orbitModeBtn: $("orbitModeBtn"),
     placePlanetBtn: $("placePlanetBtn"), deletePlanetBtn: $("deletePlanetBtn"),
@@ -812,8 +729,6 @@
     ui.planetRadiusNum.value = +ui.planetRadius.value;
     ui.planetMassNum.value = Math.round(+ui.planetMass.value);
     ui.atmosphereNum.value = +ui.atmosphere.value;
-    ui.ringCountNum.value = +ui.ringCount.value;
-    ui.ringWidthNum.value = +ui.ringWidth.value;
   }
 
 
@@ -825,21 +740,7 @@
       ui.primaryColor.value = p.colors[0];
       ui.secondaryColor.value = p.colors[1];
     }
-    ui.ringCount.value = p.ringCount || 1;
-    ui.ringWidth.value = p.ringWidth || 3;
-    ui.ringColor.value = p.ringColor || p.glow || "#ffe0a2";
-    setRingEnabled(!!p.rings, false);
     syncLabels();
-  }
-
-
-  function setRingEnabled(enabled,updateSelected=true){
-    ringEnabledDraft=enabled;
-    ui.ringEnabledBtn.textContent=ringEnabledDraft?"星環：有":"星環：無";
-    ui.ringEnabledBtn.classList.toggle("active-mode",ringEnabledDraft);
-    if(updateSelected&&selectedPlanet){
-      selectedPlanet.rings=ringEnabledDraft;
-    }
   }
 
   function applyPresetToSliders() {
@@ -849,10 +750,6 @@
     ui.atmosphere.value = p.atmosphere;
     ui.primaryColor.value = p.colors[0];
     ui.secondaryColor.value = p.colors[1];
-    ui.ringCount.value = p.ringCount || 1;
-    ui.ringWidth.value = p.ringWidth || 3;
-    ui.ringColor.value = p.ringColor || p.glow || "#ffe0a2";
-    setRingEnabled(!!p.rings, false);
     syncLabels();
   }
 
@@ -915,10 +812,10 @@
       colors,
       glow: isCustom ? ui.secondaryColor.value : base.glow,
       spin: Math.random() * Math.PI * 2,
-      rings: ringEnabledDraft,
-      ringCount: +ui.ringCount.value,
-      ringWidth: +ui.ringWidth.value,
-      ringColor: ui.ringColor.value,
+      rings: !!base.rings,
+      ringCount: base.ringCount || 1,
+      ringWidth: base.ringWidth || 3,
+      ringColor: base.ringColor || base.glow || "#ffe0a2",
       blackHole: !!base.blackHole,
       whiteHole: !!base.whiteHole
     };
@@ -1884,11 +1781,6 @@
         selectedPlanet.mass = +ui.planetMass.value;
         selectedPlanet.atmosphere = +ui.atmosphere.value;
       }
-
-      if (["ringCount", "ringWidth"].includes(rangeId) && selectedPlanet) {
-        selectedPlanet.ringCount = +ui.ringCount.value;
-        selectedPlanet.ringWidth = +ui.ringWidth.value;
-      }
     });
 
     num.addEventListener("change", () => {
@@ -1912,18 +1804,6 @@
   bindRangeNumber("planetRadius", "planetRadiusNum");
   bindRangeNumber("planetMass", "planetMassNum");
   bindRangeNumber("atmosphere", "atmosphereNum");
-  bindRangeNumber("ringCount", "ringCountNum");
-  bindRangeNumber("ringWidth", "ringWidthNum");
-
-
-
-  ui.ringEnabledBtn.onclick = () => {
-    setRingEnabled(!ringEnabledDraft, true);
-  };
-
-  ui.ringColor.addEventListener("input", () => {
-    if (selectedPlanet) selectedPlanet.ringColor = ui.ringColor.value;
-  });
 
   const colorInputs = ["primaryColor", "secondaryColor"];
   colorInputs.forEach(id => {

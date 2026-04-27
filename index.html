@@ -1051,7 +1051,471 @@ select, button, input[type="number"] {
     en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe", fixedMode:"Fixed mode", gravityMode:"Gravity mode" },
     ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球", fixedMode:"固定模式", gravityMode:"重力模式" }
   };
+
+  const UI_TRANSLATIONS = {
+  "en": {
+    "引力彈道實驗室 Gravity Lab": "Gravity Lab",
+    "引力彈道實驗室：放置天體，調整發射台，讓小球被捕獲、繞行、彈弓甩出，或直接撞成太空煙火。": "Gravity Lab: place bodies, tune the launcher, and watch shots get captured, orbit, slingshot away, or explode into space fireworks.",
+    "發射台": "Launcher",
+    "力度": "Power",
+    "角度": "Angle",
+    "小球半徑": "Probe radius",
+    "發射物": "Projectile",
+    "小球": "Probe",
+    "發射": "Launch",
+    "設定發射台": "Set launcher",
+    "清除小球": "Clear shots",
+    "環境": "Environment",
+    "空氣阻力": "Air drag",
+    "時間倍率": "Time scale",
+    "軌跡長度": "Trail length",
+    "暫停": "Pause",
+    "繼續": "Resume",
+    "視角歸零": "Reset view",
+    "軌道模式：關": "Orbit assist: Off",
+    "軌道模式：開": "Orbit assist: On",
+    "新增天體": "Add body",
+    "特殊天體": "Special bodies",
+    "八大行星": "Planets",
+    "矮行星 / 大型外海王星天體": "Dwarf / trans-Neptunian bodies",
+    "主要衛星": "Major moons",
+    "更多衛星 / 小行星": "More moons / asteroids",
+    "大小": "Size",
+    "質量": "Mass",
+    "大氣厚度": "Atmosphere",
+    "主顏色": "Primary",
+    "副顏色": "Secondary",
+    "自訂外觀": "Custom appearance",
+    "高光：有": "Highlight: On",
+    "高光：無": "Highlight: Off",
+    "條紋：有": "Stripes: On",
+    "條紋：無": "Stripes: Off",
+    "副色作用": "Secondary use",
+    "高光": "Highlight",
+    "條紋": "Stripes",
+    "光環": "Halo",
+    "無": "None",
+    "發光：有": "Glow: On",
+    "發光：無": "Glow: Off",
+    "光色": "Glow color",
+    "光大小": "Glow size",
+    "光強度": "Glow power",
+    "環距離": "Halo gap",
+    "環粗細": "Halo width",
+    "環發光": "Halo glow",
+    "自訂星環": "Custom rings",
+    "星環：無": "Rings: Off",
+    "星環：有": "Rings: On",
+    "環顏色": "Ring color",
+    "環數": "Rings",
+    "位置": "Position",
+    "自動": "Auto",
+    "內圈": "Inner",
+    "中圈": "Middle",
+    "外圈": "Outer",
+    "內+中": "Inner+Middle",
+    "內+外": "Inner+Outer",
+    "中+外": "Middle+Outer",
+    "粗度": "Width",
+    "自轉速": "Spin speed",
+    "公轉速": "Orbit speed",
+    "星環自轉：無": "Ring spin: Off",
+    "星環自轉：有": "Ring spin: On",
+    "方向": "Direction",
+    "順時針": "Clockwise",
+    "逆時針": "Counterclockwise",
+    "星環公轉：無": "Ring orbit: Off",
+    "星環公轉：有": "Ring orbit: On",
+    "放置天體": "Place body",
+    "刪除選中": "Delete selected",
+    "固定模式": "Fixed mode",
+    "重力模式": "Gravity mode",
+    "管理 / 自訂": "Manage / Custom",
+    "清空全部": "Clear all",
+    "操作：滑鼠滾輪縮放，中鍵/右鍵拖曳視角；觸控支援單指拖曳、雙指縮放與平移。": "Controls: mouse wheel zooms; middle/right mouse drags the camera. Touch supports one-finger drag and two-finger zoom/pan.",
+    "選「設定發射台」或「放置天體」後，在畫布點一下。": "Choose “Set launcher” or “Place body”, then tap/click anywhere in space.",
+    "點天體可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。": "Tap a body to select it; drag to move it. Sliders edit the selected body’s size, mass, and atmosphere.",
+    "控制面板 ▲": "Controls ▲",
+    "關閉面板 ▼": "Close ▼",
+    "語言": "Language",
+    "中文": "中文",
+    "日本語": "日本語",
+    "玩法小提醒": "Quick tips",
+    "手機": "Mobile",
+    "單指拖曳星球/平移視角，雙指縮放。": "Use one finger to drag bodies/pan; pinch with two fingers to zoom.",
+    "空阻 = 0": "Drag = 0",
+    "幾乎就是太空；速度剛好會成為衛星，太慢會撞上去，太快會逃逸。": "is basically space. The right speed becomes an orbit; too slow crashes, too fast escapes.",
+    "大氣厚度會額外拖慢穿過大氣的小球，做得太厚會像宇宙果凍，超好笑但很不科學。": "Atmosphere slows objects that pass through it; too much turns space into jelly, funny but extremely unscientific.",
+    "等待放置": "Waiting",
+    "發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。": "Launcher placement: click/tap anywhere in space. Press again to cancel.",
+    "天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。": "Body placement: click/tap anywhere in space to add one. Press again to cancel.",
+    "模式": "Mode",
+    "一般": "Normal",
+    "等待你點宇宙放天體": "Click space to place a body",
+    "等待你點宇宙放發射台": "Click space to place launcher",
+    "天體": "Bodies",
+    "選中": "Selected",
+    "空阻": "Drag",
+    "黑洞": "Black hole",
+    "白洞": "White hole",
+    "中子星": "Neutron star",
+    "史蒂文森 2-18": "Stephenson 2-18",
+    "盾牌座 UY": "UY Scuti",
+    "天狼星 A": "Sirius A",
+    "比鄰星": "Proxima Centauri",
+    "大角星": "Arcturus",
+    "老人星": "Canopus",
+    "太陽": "Sun",
+    "水星": "Mercury",
+    "金星": "Venus",
+    "地球": "Earth",
+    "火星": "Mars",
+    "木星": "Jupiter",
+    "土星": "Saturn",
+    "天王星": "Uranus",
+    "海王星": "Neptune",
+    "穀神星": "Ceres",
+    "冥王星": "Pluto",
+    "妊神星": "Haumea",
+    "鳥神星": "Makemake",
+    "鬩神星": "Eris",
+    "亡神星": "Orcus",
+    "月球": "Moon",
+    "火衛一 Phobos": "Phobos",
+    "火衛二 Deimos": "Deimos",
+    "木衛一 Io": "Io",
+    "木衛二 Europa": "Europa",
+    "木衛三 Ganymede": "Ganymede",
+    "木衛四 Callisto": "Callisto",
+    "土衛一 Mimas": "Mimas",
+    "土衛二 Enceladus": "Enceladus",
+    "土衛三 Tethys": "Tethys",
+    "土衛四 Dione": "Dione",
+    "土衛五 Rhea": "Rhea",
+    "土衛六 Titan": "Titan",
+    "土衛八 Iapetus": "Iapetus",
+    "土衛九 Phoebe": "Phoebe",
+    "天衛五 Miranda": "Miranda",
+    "天衛一 Ariel": "Ariel",
+    "天衛二 Umbriel": "Umbriel",
+    "天衛三 Titania": "Titania",
+    "天衛四 Oberon": "Oberon",
+    "海衛一 Triton": "Triton",
+    "海衛二 Nereid": "Nereid",
+    "冥衛一 Charon": "Charon",
+    "冥衛二 Nix": "Nix",
+    "冥衛三 Hydra": "Hydra",
+    "冥衛四 Kerberos": "Kerberos",
+    "冥衛五 Styx": "Styx",
+    "妊衛一 Namaka": "Namaka",
+    "妊衛二 Hiʻiaka": "Hiʻiaka",
+    "鳥神星衛星 MK2": "MK2",
+    "鬩衛一 Dysnomia": "Dysnomia",
+    "亡衛一 Vanth": "Vanth",
+    "自訂": "Custom",
+    "木衛五 Amalthea": "Amalthea",
+    "木衛六 Himalia": "Himalia",
+    "木衛十四 Thebe": "Thebe",
+    "土衛七 Hyperion": "Hyperion",
+    "土衛十 Janus": "Janus",
+    "土衛十一 Epimetheus": "Epimetheus",
+    "土衛十六 Prometheus": "Prometheus",
+    "土衛十七 Pandora": "Pandora",
+    "土衛十二 Helene": "Helene",
+    "土衛十三 Telesto": "Telesto",
+    "土衛十四 Calypso": "Calypso",
+    "土衛十五 Atlas": "Atlas",
+    "土衛十八 Pan": "Pan",
+    "土衛三十二 Methone": "Methone",
+    "土衛三十三 Pallene": "Pallene",
+    "天衛二十六 Mab": "Mab",
+    "天衛十五 Puck": "Puck",
+    "天衛十二 Portia": "Portia",
+    "天衛十一 Juliet": "Juliet",
+    "天衛十 Desdemona": "Desdemona",
+    "天衛九 Cressida": "Cressida",
+    "天衛八 Bianca": "Bianca",
+    "海衛六 Galatea": "Galatea",
+    "海衛七 Larissa": "Larissa",
+    "海衛五 Despina": "Despina",
+    "海衛四 Thalassa": "Thalassa",
+    "海衛三 Naiad": "Naiad",
+    "灶神星 Vesta": "Vesta",
+    "智神星 Pallas": "Pallas",
+    "健神星 Hygiea": "Hygiea",
+    "司理星 Interamnia": "Interamnia",
+    "欣女星 Euphrosyne": "Euphrosyne",
+    "大衛星 Davida": "Davida",
+    "靈神星 Psyche": "Psyche",
+    "司法星 Eunomia": "Eunomia",
+    "婚神星 Juno": "Juno",
+    "卡蜜拉星 Camilla": "Camilla",
+    "林神星 Sylvia": "Sylvia",
+    "赫克托 Hektor": "Hektor",
+    "阿基里斯 Achilles": "Achilles",
+    "帕特羅克洛斯 Patroclus": "Patroclus",
+    "愛神星 Eros": "Eros",
+    "貝努 Bennu": "Bennu",
+    "龍宮 Ryugu": "Ryugu",
+    "糸川 Itokawa": "Itokawa",
+    "阿波菲斯 Apophis": "Apophis",
+    "圖塔蒂斯 Toutatis": "Toutatis"
+  },
+  "ja": {
+    "引力彈道實驗室 Gravity Lab": "重力弾道実験室 Gravity Lab",
+    "引力彈道實驗室：放置天體，調整發射台，讓小球被捕獲、繞行、彈弓甩出，或直接撞成太空煙火。": "天体を配置し、発射台を調整して、小球を捕獲・周回・スリングショット・衝突させる重力実験ゲーム。",
+    "發射台": "発射台",
+    "力度": "出力",
+    "角度": "角度",
+    "小球半徑": "小球半径",
+    "發射物": "発射物",
+    "小球": "小球",
+    "發射": "発射",
+    "設定發射台": "発射台設定",
+    "清除小球": "弾を消去",
+    "環境": "環境",
+    "空氣阻力": "空気抵抗",
+    "時間倍率": "時間倍率",
+    "軌跡長度": "軌跡長",
+    "暫停": "停止",
+    "繼續": "再開",
+    "視角歸零": "視点リセット",
+    "軌道模式：關": "軌道補助：オフ",
+    "軌道模式：開": "軌道補助：オン",
+    "新增天體": "天体を追加",
+    "特殊天體": "特殊天体",
+    "八大行星": "八惑星",
+    "矮行星 / 大型外海王星天體": "準惑星 / 大型TNO",
+    "主要衛星": "主要衛星",
+    "更多衛星 / 小行星": "その他の衛星 / 小惑星",
+    "大小": "サイズ",
+    "質量": "質量",
+    "大氣厚度": "大気厚",
+    "主顏色": "主色",
+    "副顏色": "副色",
+    "自訂外觀": "カスタム外観",
+    "高光：有": "ハイライト：有",
+    "高光：無": "ハイライト：無",
+    "條紋：有": "縞模様：有",
+    "條紋：無": "縞模様：無",
+    "副色作用": "副色の対象",
+    "高光": "ハイライト",
+    "條紋": "縞模様",
+    "光環": "光輪",
+    "無": "なし",
+    "發光：有": "発光：有",
+    "發光：無": "発光：無",
+    "光色": "光色",
+    "光大小": "光サイズ",
+    "光強度": "光強度",
+    "環距離": "光輪距離",
+    "環粗細": "光輪太さ",
+    "環發光": "光輪発光",
+    "自訂星環": "カスタムリング",
+    "星環：無": "リング：無",
+    "星環：有": "リング：有",
+    "環顏色": "リング色",
+    "環數": "リング数",
+    "位置": "位置",
+    "自動": "自動",
+    "內圈": "内側",
+    "中圈": "中央",
+    "外圈": "外側",
+    "內+中": "内+中",
+    "內+外": "内+外",
+    "中+外": "中+外",
+    "粗度": "太さ",
+    "自轉速": "自転速",
+    "公轉速": "公転速",
+    "星環自轉：無": "リング自転：無",
+    "星環自轉：有": "リング自転：有",
+    "方向": "方向",
+    "順時針": "時計回り",
+    "逆時針": "反時計回り",
+    "星環公轉：無": "リング公転：無",
+    "星環公轉：有": "リング公転：有",
+    "放置天體": "天体を配置",
+    "刪除選中": "選択を削除",
+    "固定模式": "固定モード",
+    "重力模式": "重力モード",
+    "管理 / 自訂": "管理 / カスタム",
+    "清空全部": "全消去",
+    "操作：滑鼠滾輪縮放，中鍵/右鍵拖曳視角；觸控支援單指拖曳、雙指縮放與平移。": "操作：ホイールでズーム、中/右クリックで視点移動。タッチは1本指ドラッグ、2本指ズーム/移動に対応。",
+    "選「設定發射台」或「放置天體」後，在畫布點一下。": "「発射台設定」または「天体を配置」を選び、宇宙をタップしてください。",
+    "點天體可選中，拖曳可移動。選中後滑桿會同步修改它的大小、質量與大氣。": "天体をタップして選択、ドラッグで移動。選択中はスライダーでサイズ・質量・大気を変更できます。",
+    "控制面板 ▲": "操作パネル ▲",
+    "關閉面板 ▼": "閉じる ▼",
+    "語言": "言語",
+    "中文": "中文",
+    "日本語": "日本語",
+    "玩法小提醒": "ヒント",
+    "手機": "スマホ",
+    "單指拖曳星球/平移視角，雙指縮放。": "1本指で天体ドラッグ/視点移動、2本指でズーム。",
+    "空阻 = 0": "抵抗 = 0",
+    "幾乎就是太空；速度剛好會成為衛星，太慢會撞上去，太快會逃逸。": "はほぼ宇宙空間。速度が合えば軌道、遅すぎると衝突、速すぎると脱出します。",
+    "大氣厚度會額外拖慢穿過大氣的小球，做得太厚會像宇宙果凍，超好笑但很不科學。": "大気は通過物体を減速させます。厚すぎると宇宙ゼリーになります。面白いけど非科学的。",
+    "等待放置": "配置待機",
+    "發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。": "発射台配置：宇宙の任意の場所をタップ。もう一度押すとキャンセル。",
+    "天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。": "天体配置：宇宙の任意の場所をタップして追加。もう一度押すとキャンセル。",
+    "模式": "モード",
+    "一般": "通常",
+    "等待你點宇宙放天體": "宇宙をタップして天体を配置",
+    "等待你點宇宙放發射台": "宇宙をタップして発射台を配置",
+    "天體": "天体",
+    "選中": "選択",
+    "空阻": "抵抗",
+    "黑洞": "ブラックホール",
+    "白洞": "ホワイトホール",
+    "中子星": "中性子星",
+    "史蒂文森 2-18": "スティーブンソン 2-18",
+    "盾牌座 UY": "UY Scuti",
+    "天狼星 A": "シリウスA",
+    "比鄰星": "プロキシマ・ケンタウリ",
+    "大角星": "アークトゥルス",
+    "老人星": "カノープス",
+    "太陽": "太陽",
+    "水星": "水星",
+    "金星": "金星",
+    "地球": "地球",
+    "火星": "火星",
+    "木星": "木星",
+    "土星": "土星",
+    "天王星": "天王星",
+    "海王星": "海王星",
+    "穀神星": "ケレス",
+    "冥王星": "冥王星",
+    "妊神星": "ハウメア",
+    "鳥神星": "マケマケ",
+    "鬩神星": "エリス",
+    "亡神星": "オルクス",
+    "月球": "月",
+    "火衛一 Phobos": "フォボス",
+    "火衛二 Deimos": "ダイモス",
+    "木衛一 Io": "イオ",
+    "木衛二 Europa": "エウロパ",
+    "木衛三 Ganymede": "ガニメデ",
+    "木衛四 Callisto": "カリスト",
+    "土衛一 Mimas": "ミマス",
+    "土衛二 Enceladus": "エンケラドゥス",
+    "土衛三 Tethys": "テティス",
+    "土衛四 Dione": "ディオネ",
+    "土衛五 Rhea": "レア",
+    "土衛六 Titan": "タイタン",
+    "土衛八 Iapetus": "イアペトゥス",
+    "土衛九 Phoebe": "フェーベ",
+    "天衛五 Miranda": "ミランダ",
+    "天衛一 Ariel": "アリエル",
+    "天衛二 Umbriel": "ウンブリエル",
+    "天衛三 Titania": "チタニア",
+    "天衛四 Oberon": "オベロン",
+    "海衛一 Triton": "トリトン",
+    "海衛二 Nereid": "ネレイド",
+    "冥衛一 Charon": "カロン",
+    "冥衛二 Nix": "ニクス",
+    "冥衛三 Hydra": "ヒドラ",
+    "冥衛四 Kerberos": "ケルベロス",
+    "冥衛五 Styx": "ステュクス",
+    "妊衛一 Namaka": "ナマカ",
+    "妊衛二 Hiʻiaka": "ヒイアカ",
+    "鳥神星衛星 MK2": "MK2",
+    "鬩衛一 Dysnomia": "ディスノミア",
+    "亡衛一 Vanth": "ヴァンス",
+    "自訂": "カスタム",
+    "木衛五 Amalthea": "アマルテア",
+    "木衛六 Himalia": "ヒマリア",
+    "木衛十四 Thebe": "テーベ",
+    "土衛七 Hyperion": "ヒペリオン",
+    "土衛十 Janus": "ヤヌス",
+    "土衛十一 Epimetheus": "エピメテウス",
+    "土衛十六 Prometheus": "プロメテウス",
+    "土衛十七 Pandora": "パンドラ",
+    "土衛十二 Helene": "ヘレネ",
+    "土衛十三 Telesto": "テレスト",
+    "土衛十四 Calypso": "カリプソ",
+    "土衛十五 Atlas": "アトラス",
+    "土衛十八 Pan": "パン",
+    "土衛三十二 Methone": "メトネ",
+    "土衛三十三 Pallene": "パレネ",
+    "天衛二十六 Mab": "マブ",
+    "天衛十五 Puck": "パック",
+    "天衛十二 Portia": "ポーシャ",
+    "天衛十一 Juliet": "ジュリエット",
+    "天衛十 Desdemona": "デズデモーナ",
+    "天衛九 Cressida": "クレシダ",
+    "天衛八 Bianca": "ビアンカ",
+    "海衛六 Galatea": "ガラテア",
+    "海衛七 Larissa": "ラリッサ",
+    "海衛五 Despina": "デスピナ",
+    "海衛四 Thalassa": "タラッサ",
+    "海衛三 Naiad": "ナイアド",
+    "灶神星 Vesta": "ベスタ",
+    "智神星 Pallas": "パラス",
+    "健神星 Hygiea": "ヒギエア",
+    "司理星 Interamnia": "インテラムニア",
+    "欣女星 Euphrosyne": "エウフロシネ",
+    "大衛星 Davida": "ダビダ",
+    "靈神星 Psyche": "プシケ",
+    "司法星 Eunomia": "エウノミア",
+    "婚神星 Juno": "ジュノー",
+    "卡蜜拉星 Camilla": "カミラ",
+    "林神星 Sylvia": "シルヴィア",
+    "赫克托 Hektor": "ヘクトル",
+    "阿基里斯 Achilles": "アキレス",
+    "帕特羅克洛斯 Patroclus": "パトロクロス",
+    "愛神星 Eros": "エロス",
+    "貝努 Bennu": "ベンヌ",
+    "龍宮 Ryugu": "リュウグウ",
+    "糸川 Itokawa": "イトカワ",
+    "阿波菲斯 Apophis": "アポフィス",
+    "圖塔蒂斯 Toutatis": "トータティス"
+  }
+};
+
   function t(key) { return (TEXT[currentLang] && TEXT[currentLang][key]) || TEXT.zh[key] || key; }
+
+  function trText(text) {
+    if (currentLang === "zh") return text;
+    return (UI_TRANSLATIONS[currentLang] && UI_TRANSLATIONS[currentLang][text]) || text;
+  }
+
+  function translateStaticUI() {
+    const root = document.body;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || ["SCRIPT", "STYLE"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+        const raw = node.nodeValue.trim();
+        if (!raw) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const node of nodes) {
+      const parent = node.parentElement;
+      if (!parent.dataset.i18nZhText) parent.dataset.i18nZhText = node.nodeValue.trim();
+      const original = parent.dataset.i18nZhText;
+      node.nodeValue = node.nodeValue.replace(node.nodeValue.trim(), trText(original));
+    }
+
+    document.querySelectorAll("optgroup[label]").forEach(group => {
+      if (!group.dataset.i18nZhLabel) group.dataset.i18nZhLabel = group.label;
+      group.label = trText(group.dataset.i18nZhLabel);
+    });
+
+    document.querySelectorAll("option").forEach(option => {
+      if (!option.dataset.i18nZhText) option.dataset.i18nZhText = option.textContent.trim();
+      option.textContent = trText(option.dataset.i18nZhText);
+    });
+
+    document.title = trText("引力彈道實驗室 Gravity Lab");
+  }
+
+  function bodyName(name) {
+    return trText(name);
+  }
 
   function populateProjectileSelect() {
     if (!ui.projectilePreset) return;
@@ -1063,11 +1527,19 @@ select, button, input[type="number"] {
         group.label = child.label;
         for (const option of [...child.children]) {
           if (option.value === "custom") continue;
-          group.appendChild(option.cloneNode(true));
+          const clone = option.cloneNode(true);
+          const original = option.dataset.i18nZhText || option.textContent.trim();
+          clone.dataset.i18nZhText = original;
+          clone.textContent = trText(original);
+          group.appendChild(clone);
         }
         ui.projectilePreset.appendChild(group);
       } else if (child.tagName === "OPTION" && child.value !== "custom") {
-        ui.projectilePreset.appendChild(child.cloneNode(true));
+        const clone = child.cloneNode(true);
+        const original = child.dataset.i18nZhText || child.textContent.trim();
+        clone.dataset.i18nZhText = original;
+        clone.textContent = trText(original);
+        ui.projectilePreset.appendChild(clone);
       }
     }
     ui.projectilePreset.value = oldValue;
@@ -1084,6 +1556,7 @@ select, button, input[type="number"] {
     if (ui.placePlanetBtn && mode !== "placePlanet") ui.placePlanetBtn.textContent = t("placeBody");
     if (ui.clearProbesBtn) ui.clearProbesBtn.textContent = t("clearProjectiles");
     if (ui.pauseBtn) ui.pauseBtn.textContent = paused ? t("resume") : t("pause");
+    translateStaticUI();
     if (ui.orbitModeBtn) ui.orbitModeBtn.textContent = orbitAssistMode ? t("orbitOn") : t("orbitOff");
     if (ui.bodyGravityModeBtn) {
       ui.bodyGravityModeBtn.textContent = bodyGravityMode ? t("gravityMode") : t("fixedMode");
@@ -1198,7 +1671,7 @@ select, button, input[type="number"] {
   function setCustomRingEnabled(enabled, updateSelected = true) {
     customRingEnabledDraft = !!enabled;
     if (!ui.customRingEnabled) return;
-    ui.customRingEnabled.textContent = customRingEnabledDraft ? "星環：有" : "星環：無";
+    ui.customRingEnabled.textContent = customRingEnabledDraft ? trText("星環：有") : trText("星環：無");
     ui.customRingEnabled.classList.toggle("active-mode", customRingEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.rings = customRingEnabledDraft;
   }
@@ -1206,7 +1679,7 @@ select, button, input[type="number"] {
   function setCustomRingRotateEnabled(enabled, updateSelected = true) {
     customRingRotateEnabledDraft = !!enabled;
     if (!ui.customRingRotateEnabled) return;
-    ui.customRingRotateEnabled.textContent = customRingRotateEnabledDraft ? "星環自轉：有" : "星環自轉：無";
+    ui.customRingRotateEnabled.textContent = customRingRotateEnabledDraft ? trText("星環自轉：有") : trText("星環自轉：無");
     ui.customRingRotateEnabled.classList.toggle("active-mode", customRingRotateEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.ringRotateEnabled = customRingRotateEnabledDraft;
   }
@@ -1214,7 +1687,7 @@ select, button, input[type="number"] {
   function setCustomRingOrbitEnabled(enabled, updateSelected = true) {
     customRingOrbitEnabledDraft = !!enabled;
     if (!ui.customRingOrbitEnabled) return;
-    ui.customRingOrbitEnabled.textContent = customRingOrbitEnabledDraft ? "星環公轉：有" : "星環公轉：無";
+    ui.customRingOrbitEnabled.textContent = customRingOrbitEnabledDraft ? trText("星環公轉：有") : trText("星環公轉：無");
     ui.customRingOrbitEnabled.classList.toggle("active-mode", customRingOrbitEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.ringOrbitEnabled = customRingOrbitEnabledDraft;
   }
@@ -1222,7 +1695,7 @@ select, button, input[type="number"] {
   function setCustomHighlightEnabled(enabled, updateSelected = true) {
     customHighlightEnabledDraft = !!enabled;
     if (!ui.customHighlightEnabled) return;
-    ui.customHighlightEnabled.textContent = customHighlightEnabledDraft ? "高光：有" : "高光：無";
+    ui.customHighlightEnabled.textContent = customHighlightEnabledDraft ? trText("高光：有") : trText("高光：無");
     ui.customHighlightEnabled.classList.toggle("active-mode", customHighlightEnabledDraft);
     if (!customHighlightEnabledDraft && ui.secondaryTarget?.value === "highlight") {
       setSecondaryTarget("none", updateSelected);
@@ -1233,7 +1706,7 @@ select, button, input[type="number"] {
   function setCustomStripesEnabled(enabled, updateSelected = true) {
     customStripesEnabledDraft = !!enabled;
     if (!ui.customStripesEnabled) return;
-    ui.customStripesEnabled.textContent = customStripesEnabledDraft ? "條紋：有" : "條紋：無";
+    ui.customStripesEnabled.textContent = customStripesEnabledDraft ? trText("條紋：有") : trText("條紋：無");
     ui.customStripesEnabled.classList.toggle("active-mode", customStripesEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.stripesEnabled = customStripesEnabledDraft;
   }
@@ -1241,7 +1714,7 @@ select, button, input[type="number"] {
   function setCustomGlowEnabled(enabled, updateSelected = true) {
     customGlowEnabledDraft = !!enabled;
     if (!ui.customGlowEnabled) return;
-    ui.customGlowEnabled.textContent = customGlowEnabledDraft ? "發光：有" : "發光：無";
+    ui.customGlowEnabled.textContent = customGlowEnabledDraft ? trText("發光：有") : trText("發光：無");
     ui.customGlowEnabled.classList.toggle("active-mode", customGlowEnabledDraft);
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.glowEnabled = customGlowEnabledDraft;
   }
@@ -1330,11 +1803,11 @@ select, button, input[type="number"] {
     if (mode === "setLauncher") {
       ui.setLauncherBtn.textContent = t("placingLauncher");
       ui.placePlanetBtn.textContent = t("placeBody");
-      showPlacementBanner("發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。");
+      showPlacementBanner(trText("發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。"));
     } else if (mode === "placePlanet") {
       ui.placePlanetBtn.textContent = t("placingBody");
       ui.setLauncherBtn.textContent = t("setLauncher");
-      showPlacementBanner("天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。");
+      showPlacementBanner(trText("天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。"));
     } else {
       ui.setLauncherBtn.textContent = t("setLauncher");
       ui.placePlanetBtn.textContent = t("placeBody");
@@ -1343,7 +1816,7 @@ select, button, input[type="number"] {
   }
 
   function showPlacementBanner(text) {
-    ui.placementBanner.innerHTML = `<strong>等待放置</strong>　${text}`;
+    ui.placementBanner.innerHTML = `<strong>${trText("等待放置")}</strong>　${text}`;
     ui.placementBanner.classList.add("show");
   }
 
@@ -1883,7 +2356,7 @@ select, button, input[type="number"] {
 
       ctx.fillStyle = "rgba(235,225,255,.86)";
       ctx.font = "11px ui-monospace, monospace";
-      ctx.fillText(`${pl.name} M:${Math.round(pl.mass)}`, s.x + r + 11, s.y - r - 8);
+      ctx.fillText(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 11, s.y - r - 8);
       ctx.restore();
       return;
     }
@@ -2038,7 +2511,7 @@ select, button, input[type="number"] {
 
     ctx.fillStyle = "rgba(220,235,255,.78)";
     ctx.font = "11px ui-monospace, monospace";
-    ctx.fillText(`${pl.name} M:${Math.round(pl.mass)}`, s.x + r + 9, s.y - r - 7);
+    ctx.fillText(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 9, s.y - r - 7);
   }
 
   function drawProbe(p) {
@@ -2223,7 +2696,7 @@ select, button, input[type="number"] {
 
   function renderStatus() {
     const live = probes.filter(p => p.alive).length;
-    const selected = selectedPlanet ? `${selectedPlanet.name}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}` : t("none");
+    const selected = selectedPlanet ? `${bodyName(selectedPlanet.name)}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}` : t("none");
     const modeText = mode === "placePlanet" ? t("waitingBody") : mode === "setLauncher" ? t("waitingLauncher") : t("general");
     ui.status.innerHTML = `
       <div class="chip">${t("mode")} <strong>${modeText}</strong></div>

@@ -796,6 +796,7 @@ select, button, input[type="number"] {
       <button class="ok" id="placePlanetBtn">放置天體</button>
       <button class="danger" id="deletePlanetBtn">刪除選中</button>
     </div>
+    <button class="wide" id="bodyGravityModeBtn">固定模式</button>
   </div>
 
   <div class="section">
@@ -881,7 +882,7 @@ select, button, input[type="number"] {
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
     launchBtn: $("launchBtn"), setLauncherBtn: $("setLauncherBtn"), clearProbesBtn: $("clearProbesBtn"),
     pauseBtn: $("pauseBtn"), resetViewBtn: $("resetViewBtn"), orbitModeBtn: $("orbitModeBtn"),
-    placePlanetBtn: $("placePlanetBtn"), deletePlanetBtn: $("deletePlanetBtn"),
+    placePlanetBtn: $("placePlanetBtn"), deletePlanetBtn: $("deletePlanetBtn"), bodyGravityModeBtn: $("bodyGravityModeBtn"),
     clearAllBtn: $("clearAllBtn"),
     status: $("status"),
     placementBanner: $("placementBanner"),
@@ -895,6 +896,7 @@ select, button, input[type="number"] {
   let mode = "none";
   let paused = false;
   let orbitAssistMode = false;
+  let bodyGravityMode = false;
   let selectedPlanet = null;
   let draggingPlanet = null;
   let panning = false;
@@ -1045,9 +1047,9 @@ select, button, input[type="number"] {
   };
   let currentLang = "zh";
   const TEXT = {
-    zh: { language:"語言", panelOpen:"控制面板 ▲", panelClose:"關閉面板 ▼", launch:"發射", setLauncher:"設定發射台", placeBody:"放置天體", placingLauncher:"點宇宙放置中...", placingBody:"點宇宙放置中...", clearProjectiles:"清除小球", pause:"暫停", resume:"繼續", orbitOn:"軌道模式：開", orbitOff:"軌道模式：關", mode:"模式", general:"一般", waitingBody:"等待你點宇宙放天體", waitingLauncher:"等待你點宇宙放發射台", projectiles:"小球", bodies:"天體", selected:"選中", none:"無", drag:"空阻", probe:"小球" },
-    en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe" },
-    ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球" }
+    zh: { language:"語言", panelOpen:"控制面板 ▲", panelClose:"關閉面板 ▼", launch:"發射", setLauncher:"設定發射台", placeBody:"放置天體", placingLauncher:"點宇宙放置中...", placingBody:"點宇宙放置中...", clearProjectiles:"清除小球", pause:"暫停", resume:"繼續", orbitOn:"軌道模式：開", orbitOff:"軌道模式：關", mode:"模式", general:"一般", waitingBody:"等待你點宇宙放天體", waitingLauncher:"等待你點宇宙放發射台", projectiles:"小球", bodies:"天體", selected:"選中", none:"無", drag:"空阻", probe:"小球", fixedMode:"固定模式", gravityMode:"重力模式" },
+    en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe", fixedMode:"Fixed mode", gravityMode:"Gravity mode" },
+    ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球", fixedMode:"固定模式", gravityMode:"重力模式" }
   };
   function t(key) { return (TEXT[currentLang] && TEXT[currentLang][key]) || TEXT.zh[key] || key; }
 
@@ -1083,6 +1085,10 @@ select, button, input[type="number"] {
     if (ui.clearProbesBtn) ui.clearProbesBtn.textContent = t("clearProjectiles");
     if (ui.pauseBtn) ui.pauseBtn.textContent = paused ? t("resume") : t("pause");
     if (ui.orbitModeBtn) ui.orbitModeBtn.textContent = orbitAssistMode ? t("orbitOn") : t("orbitOff");
+    if (ui.bodyGravityModeBtn) {
+      ui.bodyGravityModeBtn.textContent = bodyGravityMode ? t("gravityMode") : t("fixedMode");
+      ui.bodyGravityModeBtn.classList.toggle("orbit-active", bodyGravityMode);
+    }
     populateProjectileSelect();
   }
 
@@ -1589,6 +1595,53 @@ select, button, input[type="number"] {
     }
   }
 
+  function updatePlanetsByProjectileGravity(dt) {
+    if (!bodyGravityMode) return;
+
+    for (const pl of planets) {
+      let ax = 0, ay = 0;
+
+      for (const shot of probes) {
+        if (!shot.alive || !shot.isProjectileBody || !shot.mass) continue;
+
+        const dx = shot.x - pl.x;
+        const dy = shot.y - pl.y;
+        const rawD2 = dx * dx + dy * dy;
+        const d = Math.sqrt(rawD2) || 0.0001;
+
+        const soft = Math.max(SOFTENING, (pl.radius + shot.radius) * (pl.radius + shot.radius) * 0.08);
+        const d2 = rawD2 + soft;
+        const force = G * shot.mass / d2;
+
+        ax += (dx / d) * force;
+        ay += (dy / d) * force;
+
+        const hitRadius = (pl.whiteHole || shot.whiteHole) ? 0 : pl.radius + shot.radius;
+        if (hitRadius > 0 && d < hitRadius) {
+          explode((pl.x + shot.x) / 2, (pl.y + shot.y) / 2, shot.glow || pl.glow || "#7df9ff", 70);
+          shot.alive = false;
+
+          // Massive impact gives the fixed body a little impulse instead of deleting it.
+          const impulse = clamp(Math.abs(shot.mass) / Math.max(1, Math.abs(pl.mass)), 0.02, 1.6);
+          pl.vx = (pl.vx || 0) + shot.vx * impulse * 0.22;
+          pl.vy = (pl.vy || 0) + shot.vy * impulse * 0.22;
+        }
+      }
+
+      pl.vx = ((pl.vx || 0) + ax * dt) * Math.max(0, 1 - 0.012 * dt);
+      pl.vy = ((pl.vy || 0) + ay * dt) * Math.max(0, 1 - 0.012 * dt);
+
+      const speed = len(pl.vx, pl.vy);
+      if (speed > MAX_SPEED * 0.45) {
+        pl.vx = pl.vx / speed * MAX_SPEED * 0.45;
+        pl.vy = pl.vy / speed * MAX_SPEED * 0.45;
+      }
+
+      pl.x += pl.vx * dt;
+      pl.y += pl.vy * dt;
+    }
+  }
+
   function updateProbe(probe, dt) {
     let ax = 0, ay = 0;
 
@@ -1635,29 +1688,31 @@ select, button, input[type="number"] {
       }
     }
 
-    for (const other of probes) {
-      if (other === probe || !other.alive) continue;
-      const otherMass = other.mass || 0;
-      if (otherMass !== 0) {
-        const dx = other.x - probe.x;
-        const dy = other.y - probe.y;
-        const rawD2 = dx * dx + dy * dy;
-        const d = Math.sqrt(rawD2) || 0.0001;
-        const d2 = rawD2 + Math.max(SOFTENING, (other.radius || 4) * (other.radius || 4) * 0.12);
-        const force = G * otherMass / d2;
-        ax += (dx / d) * force;
-        ay += (dy / d) * force;
-      }
-      if (probe.isProjectileBody || other.isProjectileBody) {
-        const dx = other.x - probe.x;
-        const dy = other.y - probe.y;
-        const d = Math.hypot(dx, dy) || 0.0001;
-        const hit = (probe.radius || 4) + (other.radius || 4);
-        if (d < hit && probes.indexOf(probe) < probes.indexOf(other)) {
-          explode((probe.x + other.x) / 2, (probe.y + other.y) / 2, probe.glow || other.glow || "#7df9ff", 48);
-          probe.alive = false;
-          other.alive = false;
-          return;
+    if (bodyGravityMode) {
+      for (const other of probes) {
+        if (other === probe || !other.alive) continue;
+        const otherMass = other.mass || 0;
+        if (otherMass !== 0) {
+          const dx = other.x - probe.x;
+          const dy = other.y - probe.y;
+          const rawD2 = dx * dx + dy * dy;
+          const d = Math.sqrt(rawD2) || 0.0001;
+          const d2 = rawD2 + Math.max(SOFTENING, (other.radius || 4) * (other.radius || 4) * 0.12);
+          const force = G * otherMass / d2;
+          ax += (dx / d) * force;
+          ay += (dy / d) * force;
+        }
+        if (probe.isProjectileBody || other.isProjectileBody) {
+          const dx = other.x - probe.x;
+          const dy = other.y - probe.y;
+          const d = Math.hypot(dx, dy) || 0.0001;
+          const hit = (probe.radius || 4) + (other.radius || 4);
+          if (d < hit && probes.indexOf(probe) < probes.indexOf(other)) {
+            explode((probe.x + other.x) / 2, (probe.y + other.y) / 2, probe.glow || other.glow || "#7df9ff", 48);
+            probe.alive = false;
+            other.alive = false;
+            return;
+          }
         }
       }
     }
@@ -2176,6 +2231,7 @@ select, button, input[type="number"] {
       <div class="chip">${t("bodies")} <strong>${planets.length}</strong></div>
       <div class="chip">${t("selected")} <strong>${selected}</strong></div>
       <div class="chip">${t("drag")} <strong>${(+ui.drag.value).toFixed(3)}</strong></div>
+      <div class="chip"><strong>${bodyGravityMode ? t("gravityMode") : t("fixedMode")}</strong></div>
     `;
   }
 
@@ -2203,6 +2259,7 @@ select, button, input[type="number"] {
       const stepDt = dt / physicsSteps;
       for (let step = 0; step < physicsSteps; step++) {
         for (const probe of probes) if (probe.alive) updateProbe(probe, stepDt);
+        updatePlanetsByProjectileGravity(stepDt);
       }
       for (let i = probes.length - 1; i >= 0; i--) if (!probes[i].alive) probes.splice(i, 1);
       updateParticles(dt);
@@ -2576,6 +2633,13 @@ select, button, input[type="number"] {
     ui.orbitModeBtn.textContent = orbitAssistMode ? t("orbitOn") : t("orbitOff");
     ui.orbitModeBtn.classList.toggle("orbit-active", orbitAssistMode);
   };
+
+  ui.bodyGravityModeBtn.onclick = () => {
+    bodyGravityMode = !bodyGravityMode;
+    ui.bodyGravityModeBtn.textContent = bodyGravityMode ? t("gravityMode") : t("fixedMode");
+    ui.bodyGravityModeBtn.classList.toggle("orbit-active", bodyGravityMode);
+  };
+
   ui.resetViewBtn.onclick = () => { camera.x = 0; camera.y = 0; camera.zoom = 1; };
   ui.deletePlanetBtn.onclick = () => {
     if (!selectedPlanet) return;

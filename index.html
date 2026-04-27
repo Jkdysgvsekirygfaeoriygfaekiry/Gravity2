@@ -593,7 +593,9 @@ select, button, input[type="number"] {
     <label>空氣阻力 <input id="drag" type="range" min="0" max="0.30" value="0.000" step="0.001"><input class="range-number" id="dragNum" type="number"></label>
     <label>時間倍率 <input id="timeScale" type="range" min="0.15" max="4" value="1" step="0.05"><input class="range-number" id="timeScaleNum" type="number"></label>
     <label>軌跡長度 <input id="trail" type="range" min="20" max="1600" value="520" step="10"><input class="range-number" id="trailNum" type="number"></label>
+    <label>音量 <input id="soundVolume" type="range" min="0" max="1" value="0.42" step="0.01"><input class="range-number" id="soundVolumeNum" type="number" min="0" max="1" step="0.01"></label>
     <div class="row">
+      <button id="soundToggleBtn">音效：開</button>
       <button id="pauseBtn">暫停</button>
       <button id="resetViewBtn">視角歸零</button>
     </div>
@@ -864,7 +866,7 @@ select, button, input[type="number"] {
   const $ = id => document.getElementById(id);
   const ui = {
     power: $("power"), angle: $("angle"), probeRadius: $("probeRadius"), projectilePreset: $("projectilePreset"),
-    drag: $("drag"), timeScale: $("timeScale"), trail: $("trail"),
+    drag: $("drag"), timeScale: $("timeScale"), trail: $("trail"), soundVolume: $("soundVolume"), soundToggleBtn: $("soundToggleBtn"),
     preset: $("preset"), planetRadius: $("planetRadius"), planetMass: $("planetMass"), atmosphere: $("atmosphere"),
     primaryColor: $("primaryColor"), secondaryColor: $("secondaryColor"),
     customStyleEditor: $("customStyleEditor"), customHighlightEnabled: $("customHighlightEnabled"),
@@ -878,7 +880,7 @@ select, button, input[type="number"] {
     customRingColor: $("customRingColor"), customRingCount: $("customRingCount"), customRingSlots: $("customRingSlots"), customRingWidth: $("customRingWidth"), customRingRotateSpeed: $("customRingRotateSpeed"), customRingRotateDir: $("customRingRotateDir"), customRingOrbitSpeed: $("customRingOrbitSpeed"), customRingOrbitDir: $("customRingOrbitDir"),
     customRingCountNum: $("customRingCountNum"), customRingWidthNum: $("customRingWidthNum"), customRingRotateSpeedNum: $("customRingRotateSpeedNum"), customRingOrbitSpeedNum: $("customRingOrbitSpeedNum"),
     powerNum: $("powerNum"), angleNum: $("angleNum"), probeRadiusNum: $("probeRadiusNum"),
-    dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"),
+    dragNum: $("dragNum"), timeScaleNum: $("timeScaleNum"), trailNum: $("trailNum"), soundVolumeNum: $("soundVolumeNum"),
     planetRadiusNum: $("planetRadiusNum"), planetMassNum: $("planetMassNum"), atmosphereNum: $("atmosphereNum"),
     launchBtn: $("launchBtn"), setLauncherBtn: $("setLauncherBtn"), clearProbesBtn: $("clearProbesBtn"),
     pauseBtn: $("pauseBtn"), resetViewBtn: $("resetViewBtn"), orbitModeBtn: $("orbitModeBtn"),
@@ -1047,9 +1049,9 @@ select, button, input[type="number"] {
   };
   let currentLang = "zh";
   const TEXT = {
-    zh: { language:"語言", panelOpen:"控制面板 ▲", panelClose:"關閉面板 ▼", launch:"發射", setLauncher:"設定發射台", placeBody:"放置天體", placingLauncher:"點宇宙放置中...", placingBody:"點宇宙放置中...", clearProjectiles:"清除小球", pause:"暫停", resume:"繼續", orbitOn:"軌道模式：開", orbitOff:"軌道模式：關", mode:"模式", general:"一般", waitingBody:"等待你點宇宙放天體", waitingLauncher:"等待你點宇宙放發射台", projectiles:"小球", bodies:"天體", selected:"選中", none:"無", drag:"空阻", probe:"小球", fixedMode:"固定模式", gravityMode:"重力模式" },
-    en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe", fixedMode:"Fixed mode", gravityMode:"Gravity mode" },
-    ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球", fixedMode:"固定模式", gravityMode:"重力模式" }
+    zh: { language:"語言", panelOpen:"控制面板 ▲", panelClose:"關閉面板 ▼", launch:"發射", setLauncher:"設定發射台", placeBody:"放置天體", placingLauncher:"點宇宙放置中...", placingBody:"點宇宙放置中...", clearProjectiles:"清除小球", pause:"暫停", resume:"繼續", orbitOn:"軌道模式：開", orbitOff:"軌道模式：關", mode:"模式", general:"一般", waitingBody:"等待你點宇宙放天體", waitingLauncher:"等待你點宇宙放發射台", projectiles:"小球", bodies:"天體", selected:"選中", none:"無", drag:"空阻", probe:"小球", soundOn:"音效：開", soundOff:"音效：關", fixedMode:"固定模式", gravityMode:"重力模式" },
+    en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe", soundOn:"Sound: On", soundOff:"Sound: Off", fixedMode:"Fixed mode", gravityMode:"Gravity mode" },
+    ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球", soundOn:"音：オン", soundOff:"音：オフ", fixedMode:"固定模式", gravityMode:"重力模式" }
   };
 
   const UI_TRANSLATIONS = {
@@ -1069,6 +1071,9 @@ select, button, input[type="number"] {
     "空氣阻力": "Air drag",
     "時間倍率": "Time scale",
     "軌跡長度": "Trail length",
+    "音量": "Volume",
+    "音效：開": "Sound: On",
+    "音效：關": "Sound: Off",
     "暫停": "Pause",
     "繼續": "Resume",
     "視角歸零": "Reset view",
@@ -1277,6 +1282,9 @@ select, button, input[type="number"] {
     "空氣阻力": "空気抵抗",
     "時間倍率": "時間倍率",
     "軌跡長度": "軌跡長",
+    "音量": "音量",
+    "音效：開": "音：オン",
+    "音效：關": "音：オフ",
     "暫停": "停止",
     "繼續": "再開",
     "視角歸零": "視点リセット",
@@ -1562,6 +1570,10 @@ select, button, input[type="number"] {
       ui.bodyGravityModeBtn.textContent = bodyGravityMode ? t("gravityMode") : t("fixedMode");
       ui.bodyGravityModeBtn.classList.toggle("orbit-active", bodyGravityMode);
     }
+    if (ui.soundToggleBtn) {
+      ui.soundToggleBtn.textContent = soundEnabled ? t("soundOn") : t("soundOff");
+      ui.soundToggleBtn.classList.toggle("active-mode", soundEnabled);
+    }
     populateProjectileSelect();
   }
 
@@ -1614,6 +1626,148 @@ select, button, input[type="number"] {
     return `rgb(${r},${g},${b})`;
   }
 
+
+  let audioCtx = null;
+  let masterGain = null;
+  let soundEnabled = true;
+  let lastDragSoundAt = 0;
+  let lastCollisionSoundAt = 0;
+
+  function getAudioCtx() {
+    if (!soundEnabled) return null;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) {
+      audioCtx = new AC();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = Math.pow(+ui.soundVolume?.value || 0.42, 1.25) * 0.45;
+      masterGain.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  function setMasterVolume() {
+    if (!masterGain || !ui.soundVolume || !audioCtx) return;
+    masterGain.gain.setTargetAtTime(Math.pow(+ui.soundVolume.value, 1.25) * 0.45, audioCtx.currentTime, 0.03);
+  }
+
+  function playTone({freq=440, type="sine", duration=0.2, attack=0.01, release=0.12, volume=0.3, detune=0, filter=0, pan=0} = {}) {
+    const ctx = getAudioCtx();
+    if (!ctx || !masterGain) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    osc.detune.setValueAtTime(detune, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, volume), now + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(attack + 0.02, duration + release));
+
+    let node = osc;
+    if (filter) {
+      const biquad = ctx.createBiquadFilter();
+      biquad.type = "lowpass";
+      biquad.frequency.setValueAtTime(filter, now);
+      biquad.Q.setValueAtTime(0.7, now);
+      node.connect(biquad);
+      node = biquad;
+    }
+
+    node.connect(gain);
+    if (panner) {
+      panner.pan.value = clamp(pan, -1, 1);
+      gain.connect(panner);
+      panner.connect(masterGain);
+    } else {
+      gain.connect(masterGain);
+    }
+
+    osc.start(now);
+    osc.stop(now + duration + release + 0.05);
+  }
+
+  function playNoise({duration=0.18, volume=0.18, filter=900, attack=0.005, release=0.12, pan=0} = {}) {
+    const ctx = getAudioCtx();
+    if (!ctx || !masterGain) return;
+    const now = ctx.currentTime;
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+      const decay = 1 - i / bufferSize;
+      data[i] = (Math.random() * 2 - 1) * decay * decay;
+    }
+
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const biquad = ctx.createBiquadFilter();
+    biquad.type = "bandpass";
+    biquad.frequency.setValueAtTime(filter, now);
+    biquad.Q.setValueAtTime(0.75, now);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, volume), now + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration + release);
+    const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+
+    src.connect(biquad);
+    biquad.connect(gain);
+    if (panner) {
+      panner.pan.value = clamp(pan, -1, 1);
+      gain.connect(panner);
+      panner.connect(masterGain);
+    } else {
+      gain.connect(masterGain);
+    }
+
+    src.start(now);
+    src.stop(now + duration + release + 0.05);
+  }
+
+  function screenPanFromWorld(x) {
+    const s = worldToScreen(x, 0);
+    return clamp((s.x / W) * 2 - 1, -0.9, 0.9);
+  }
+
+  function soundPlace(x=0) {
+    const pan = screenPanFromWorld(x);
+    playTone({freq: 196, type: "sine", duration: 0.34, attack: 0.018, release: 0.26, volume: 0.16, filter: 1800, pan});
+    setTimeout(() => playTone({freq: 294, type: "triangle", duration: 0.24, attack: 0.012, release: 0.22, volume: 0.12, filter: 2300, pan}), 35);
+    setTimeout(() => playTone({freq: 392, type: "sine", duration: 0.18, attack: 0.01, release: 0.18, volume: 0.08, filter: 2600, pan}), 78);
+  }
+
+  function soundDrag(intensity=0.4, x=0) {
+    const nowMs = performance.now();
+    if (nowMs - lastDragSoundAt < 75) return;
+    lastDragSoundAt = nowMs;
+    const pan = screenPanFromWorld(x);
+    const base = 170 + clamp(intensity, 0, 1) * 180;
+    playTone({freq: base, type: "triangle", duration: 0.055, attack: 0.006, release: 0.055, volume: 0.045 + intensity * 0.035, filter: 900 + intensity * 900, pan});
+  }
+
+  function soundLaunch(kind="probe") {
+    playTone({freq: kind === "body" ? 92 : 132, type: "sawtooth", duration: 0.16, attack: 0.008, release: 0.14, volume: kind === "body" ? 0.13 : 0.10, filter: 850});
+    setTimeout(() => playTone({freq: kind === "body" ? 220 : 330, type: "triangle", duration: 0.22, attack: 0.006, release: 0.22, volume: 0.10, filter: 1800}), 38);
+    setTimeout(() => playNoise({duration: 0.14, volume: kind === "body" ? 0.11 : 0.075, filter: kind === "body" ? 720 : 1200, release: 0.12}), 18);
+  }
+
+  function soundCollision(power=1, x=0) {
+    const nowMs = performance.now();
+    if (nowMs - lastCollisionSoundAt < 45) return;
+    lastCollisionSoundAt = nowMs;
+    const pan = screenPanFromWorld(x);
+    const p = clamp(power, 0.2, 2.2);
+    playNoise({duration: 0.12 + p * 0.035, volume: 0.10 + p * 0.05, filter: 450 + p * 420, release: 0.16, pan});
+    playTone({freq: 74 + p * 30, type: "sine", duration: 0.18, attack: 0.004, release: 0.22, volume: 0.08 + p * 0.025, filter: 600, pan});
+    setTimeout(() => playTone({freq: 420 + p * 90, type: "triangle", duration: 0.08, attack: 0.004, release: 0.11, volume: 0.035, filter: 1500, pan}), 35);
+  }
+
   function syncLabels() {
     ui.powerNum.value = Math.round(+ui.power.value);
     ui.angleNum.value = Math.round(+ui.angle.value);
@@ -1621,6 +1775,7 @@ select, button, input[type="number"] {
     ui.dragNum.value = (+ui.drag.value).toFixed(3);
     ui.timeScaleNum.value = (+ui.timeScale.value).toFixed(2);
     ui.trailNum.value = +ui.trail.value;
+    if (ui.soundVolumeNum) ui.soundVolumeNum.value = (+ui.soundVolume.value).toFixed(2);
     ui.planetRadiusNum.value = +ui.planetRadius.value;
     ui.planetMassNum.value = Number.isInteger(+ui.planetMass.value) ? String(+ui.planetMass.value) : (+ui.planetMass.value).toFixed(2);
     ui.atmosphereNum.value = +ui.atmosphere.value;
@@ -1876,6 +2031,7 @@ select, button, input[type="number"] {
     planets.push(p);
     selectedPlanet = p;
     setPlanetControls(p);
+    soundPlace(x);
     return p;
   }
 
@@ -1885,6 +2041,7 @@ select, button, input[type="number"] {
     const key = ui.projectilePreset?.value || "probe";
 
     if (key !== "probe" && presets[key]) {
+      soundLaunch("body");
       const base = presets[key];
       const p = {
         id: safeId(),
@@ -1932,6 +2089,7 @@ select, button, input[type="number"] {
       return;
     }
 
+    soundLaunch("probe");
     const r = +ui.probeRadius.value;
     probes.push({
       x: launcher.x,
@@ -1950,6 +2108,7 @@ select, button, input[type="number"] {
   }
 
   function explode(x, y, color = "#7df9ff", count = 34) {
+    soundCollision(Math.min(2.2, count / 32), x);
     for (let i = 0; i < count; i++) {
       const a = Math.random() * Math.PI * 2;
       const s = 40 + Math.random() * 320;
@@ -2833,6 +2992,7 @@ select, button, input[type="number"] {
 
   if (window.PointerEvent) {
     canvas.addEventListener("pointerdown", e => {
+      getAudioCtx();
       if (e.target !== canvas) return;
       e.preventDefault();
       canvas.setPointerCapture?.(e.pointerId);
@@ -2895,8 +3055,11 @@ select, button, input[type="number"] {
       const w = updateMouseFromScreen(center.x, center.y);
 
       if (draggingPlanet && pointerState.mode === "dragPlanet") {
+        const oldDragX = draggingPlanet.x;
+        const oldDragY = draggingPlanet.y;
         draggingPlanet.x = w.x;
         draggingPlanet.y = w.y;
+        soundDrag(Math.min(1, Math.hypot(draggingPlanet.x - oldDragX, draggingPlanet.y - oldDragY) / 30), draggingPlanet.x);
       } else if (pointerState.mode === "pan") {
         camera.x -= dx / camera.zoom;
         camera.y -= dy / camera.zoom;
@@ -3093,6 +3256,12 @@ select, button, input[type="number"] {
 
   ui.launchBtn.onclick = launchProbe;
   ui.langSelect.onchange = () => applyLanguage(ui.langSelect.value);
+  ui.soundToggleBtn.onclick = () => {
+    soundEnabled = !soundEnabled;
+    if (soundEnabled) getAudioCtx();
+    applyLanguage(currentLang);
+  };
+  ui.soundVolume.addEventListener("input", setMasterVolume);
   ui.setLauncherBtn.onclick = () => setMode("setLauncher");
   ui.placePlanetBtn.onclick = () => setMode("placePlanet");
   ui.clearProbesBtn.onclick = () => { probes.length = 0; particles.length = 0; };
@@ -3181,6 +3350,7 @@ select, button, input[type="number"] {
   bindRangeNumber("drag", "dragNum");
   bindRangeNumber("timeScale", "timeScaleNum");
   bindRangeNumber("trail", "trailNum");
+  bindRangeNumber("soundVolume", "soundVolumeNum");
   bindRangeNumber("planetRadius", "planetRadiusNum");
   bindRangeNumber("planetMass", "planetMassNum");
   bindRangeNumber("atmosphere", "atmosphereNum");

@@ -540,6 +540,31 @@ select, button, input[type="number"] {
     }
   }
 
+
+  .language-picker {
+    position: fixed;
+    right: 170px;
+    bottom: 16px;
+    z-index: 9;
+    display: grid;
+    grid-template-columns: auto 112px;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(125,249,255,.32);
+    border-radius: 14px;
+    background: rgba(4,8,20,.82);
+    backdrop-filter: blur(10px);
+    color: #cfe6ff;
+    font-size: 12px;
+    box-shadow: 0 0 18px rgba(125,249,255,.13);
+  }
+  .language-picker select { width: 100%; min-height: 36px; padding: 6px 8px; }
+  .language-picker.panel-open { display: none; }
+  @media (max-width: 760px) {
+    .language-picker { right: 12px; bottom: 68px; grid-template-columns: auto 104px; }
+  }
+
 </style>
 </head>
 <body>
@@ -555,8 +580,9 @@ select, button, input[type="number"] {
     <label>力度 <input id="power" type="range" min="20" max="900" value="340" step="1"><input class="range-number" id="powerNum" type="number"></label>
     <label>角度 <input id="angle" type="range" min="0" max="360" value="28" step="1"><input class="range-number" id="angleNum" type="number"></label>
     <label>小球半徑 <input id="probeRadius" type="range" min="2" max="10" value="4" step="1"><input class="range-number" id="probeRadiusNum" type="number"></label>
+    <label>發射物 <select id="projectilePreset"><option value="probe">小球</option></select><span></span></label>
     <div class="row">
-      <button class="primary" id="launchBtn">發射小球</button>
+      <button class="primary" id="launchBtn">發射</button>
       <button id="setLauncherBtn">設定發射台</button>
     </div>
     <button class="wide" id="clearProbesBtn">清除小球</button>
@@ -786,6 +812,14 @@ select, button, input[type="number"] {
 </aside>
 
 <button class="panel-toggle" id="panelToggle">控制面板 ▲</button>
+<div class="language-picker" id="languagePicker">
+  <span id="languageLabel">語言</span>
+  <select id="langSelect">
+    <option value="zh">中文</option>
+    <option value="en">English</option>
+    <option value="ja">日本語</option>
+  </select>
+</div>
 
 <div class="placement-banner" id="placementBanner"></div>
 <div class="status" id="status"></div>
@@ -828,7 +862,7 @@ select, button, input[type="number"] {
 
   const $ = id => document.getElementById(id);
   const ui = {
-    power: $("power"), angle: $("angle"), probeRadius: $("probeRadius"),
+    power: $("power"), angle: $("angle"), probeRadius: $("probeRadius"), projectilePreset: $("projectilePreset"),
     drag: $("drag"), timeScale: $("timeScale"), trail: $("trail"),
     preset: $("preset"), planetRadius: $("planetRadius"), planetMass: $("planetMass"), atmosphere: $("atmosphere"),
     primaryColor: $("primaryColor"), secondaryColor: $("secondaryColor"),
@@ -852,7 +886,8 @@ select, button, input[type="number"] {
     status: $("status"),
     placementBanner: $("placementBanner"),
     controlPanel: $("controlPanel"),
-    panelToggle: $("panelToggle")
+    panelToggle: $("panelToggle"),
+    languagePicker: $("languagePicker"), langSelect: $("langSelect"), languageLabel: $("languageLabel")
   };
 
   let W = 0, H = 0, DPR = 1;
@@ -1008,6 +1043,50 @@ select, button, input[type="number"] {
     toutatis:{name:"圖塔蒂斯 Toutatis",radius:8,mass:70,atmosphere:0,colors:["#6a6055","#b09f8e"],glow:"#b09f8e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b09f8e"},
     custom:{name:"自訂",radius:34,mass:220000,atmosphere:30,colors:["#a46bff","#7df9ff"],glow:"#b493ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe0a2"}
   };
+  let currentLang = "zh";
+  const TEXT = {
+    zh: { language:"語言", panelOpen:"控制面板 ▲", panelClose:"關閉面板 ▼", launch:"發射", setLauncher:"設定發射台", placeBody:"放置天體", placingLauncher:"點宇宙放置中...", placingBody:"點宇宙放置中...", clearProjectiles:"清除小球", pause:"暫停", resume:"繼續", orbitOn:"軌道模式：開", orbitOff:"軌道模式：關", mode:"模式", general:"一般", waitingBody:"等待你點宇宙放天體", waitingLauncher:"等待你點宇宙放發射台", projectiles:"小球", bodies:"天體", selected:"選中", none:"無", drag:"空阻", probe:"小球" },
+    en: { language:"Lang", panelOpen:"Controls ▲", panelClose:"Close ▼", launch:"Launch", setLauncher:"Set launcher", placeBody:"Place body", placingLauncher:"Click space...", placingBody:"Click space...", clearProjectiles:"Clear shots", pause:"Pause", resume:"Resume", orbitOn:"Orbit assist: On", orbitOff:"Orbit assist: Off", mode:"Mode", general:"Normal", waitingBody:"Click space to place a body", waitingLauncher:"Click space to place launcher", projectiles:"Shots", bodies:"Bodies", selected:"Selected", none:"None", drag:"Drag", probe:"Probe" },
+    ja: { language:"言語", panelOpen:"操作パネル ▲", panelClose:"閉じる ▼", launch:"発射", setLauncher:"発射台設定", placeBody:"天体を配置", placingLauncher:"宇宙をタップ...", placingBody:"宇宙をタップ...", clearProjectiles:"弾を消去", pause:"停止", resume:"再開", orbitOn:"軌道補助：オン", orbitOff:"軌道補助：オフ", mode:"モード", general:"通常", waitingBody:"宇宙をタップして天体を配置", waitingLauncher:"宇宙をタップして発射台を配置", projectiles:"弾", bodies:"天体", selected:"選択", none:"なし", drag:"抵抗", probe:"小球" }
+  };
+  function t(key) { return (TEXT[currentLang] && TEXT[currentLang][key]) || TEXT.zh[key] || key; }
+
+  function populateProjectileSelect() {
+    if (!ui.projectilePreset) return;
+    const oldValue = ui.projectilePreset.value || "probe";
+    ui.projectilePreset.innerHTML = `<option value="probe">${t("probe")}</option>`;
+    for (const child of [...ui.preset.children]) {
+      if (child.tagName === "OPTGROUP") {
+        const group = document.createElement("optgroup");
+        group.label = child.label;
+        for (const option of [...child.children]) {
+          if (option.value === "custom") continue;
+          group.appendChild(option.cloneNode(true));
+        }
+        ui.projectilePreset.appendChild(group);
+      } else if (child.tagName === "OPTION" && child.value !== "custom") {
+        ui.projectilePreset.appendChild(child.cloneNode(true));
+      }
+    }
+    ui.projectilePreset.value = oldValue;
+    if (!ui.projectilePreset.value) ui.projectilePreset.value = "probe";
+  }
+
+  function applyLanguage(lang = currentLang) {
+    currentLang = lang;
+    document.documentElement.lang = lang === "zh" ? "zh-Hant" : lang;
+    if (ui.languageLabel) ui.languageLabel.textContent = t("language");
+    if (ui.panelToggle) ui.panelToggle.textContent = panelOpen ? t("panelClose") : t("panelOpen");
+    if (ui.launchBtn) ui.launchBtn.textContent = t("launch");
+    if (ui.setLauncherBtn && mode !== "setLauncher") ui.setLauncherBtn.textContent = t("setLauncher");
+    if (ui.placePlanetBtn && mode !== "placePlanet") ui.placePlanetBtn.textContent = t("placeBody");
+    if (ui.clearProbesBtn) ui.clearProbesBtn.textContent = t("clearProjectiles");
+    if (ui.pauseBtn) ui.pauseBtn.textContent = paused ? t("resume") : t("pause");
+    if (ui.orbitModeBtn) ui.orbitModeBtn.textContent = orbitAssistMode ? t("orbitOn") : t("orbitOff");
+    populateProjectileSelect();
+  }
+
+
 
   function resize() {
     DPR = Math.max(1, Math.min(2, devicePixelRatio || 1));
@@ -1243,16 +1322,16 @@ select, button, input[type="number"] {
     ui.placePlanetBtn.classList.toggle("active-mode", mode === "placePlanet");
 
     if (mode === "setLauncher") {
-      ui.setLauncherBtn.textContent = "點宇宙放置中...";
-      ui.placePlanetBtn.textContent = "放置天體";
+      ui.setLauncherBtn.textContent = t("placingLauncher");
+      ui.placePlanetBtn.textContent = t("placeBody");
       showPlacementBanner("發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。");
     } else if (mode === "placePlanet") {
-      ui.placePlanetBtn.textContent = "點宇宙放置中...";
-      ui.setLauncherBtn.textContent = "設定發射台";
+      ui.placePlanetBtn.textContent = t("placingBody");
+      ui.setLauncherBtn.textContent = t("setLauncher");
       showPlacementBanner("天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。");
     } else {
-      ui.setLauncherBtn.textContent = "設定發射台";
-      ui.placePlanetBtn.textContent = "放置天體";
+      ui.setLauncherBtn.textContent = t("setLauncher");
+      ui.placePlanetBtn.textContent = t("placeBody");
       hidePlacementBanner();
     }
   }
@@ -1324,21 +1403,71 @@ select, button, input[type="number"] {
   function launchProbe() {
     const angle = (+ui.angle.value) * Math.PI / 180;
     const power = +ui.power.value;
+    const key = ui.projectilePreset?.value || "probe";
+
+    if (key !== "probe" && presets[key]) {
+      const base = presets[key];
+      const p = {
+        id: safeId(),
+        x: launcher.x,
+        y: launcher.y,
+        vx: Math.cos(angle) * power,
+        vy: Math.sin(angle) * power,
+        radius: base.radius,
+        mass: base.mass || 0,
+        atmosphere: base.atmosphere || 0,
+        name: base.name,
+        colors: base.colors ? [base.colors[0], base.colors[1]] : ["#7df9ff", "#ffffff"],
+        glow: base.glow || base.colors?.[1] || "#7df9ff",
+        glowColor: base.glow || base.colors?.[1] || "#7df9ff",
+        glowEnabled: true,
+        glowSize: 28,
+        glowStrength: 1,
+        highlightEnabled: true,
+        stripesEnabled: true,
+        secondaryTarget: "highlight",
+        spin: Math.random() * Math.PI * 2,
+        rings: !!base.rings,
+        ringCount: base.ringCount || 1,
+        ringSlots: "auto",
+        ringWidth: base.ringWidth || 3,
+        ringColor: base.ringColor || base.glow || "#ffe0a2",
+        ringRotateEnabled: !!base.blackHole,
+        ringRotateDir: "cw",
+        ringRotateSpeed: base.blackHole ? 0.65 : 0,
+        ringOrbitEnabled: !!base.blackHole,
+        ringOrbitDir: "cw",
+        ringOrbitSpeed: base.blackHole ? 0.45 : 0,
+        ringAngle: -0.25,
+        ringPhase: Math.random() * Math.PI * 2,
+        blackHole: !!base.blackHole,
+        whiteHole: !!base.whiteHole,
+        isProjectileBody: true,
+        trail: [],
+        age: 0,
+        alive: true,
+        periapsis: {},
+        orbitMemory: {}
+      };
+      probes.push(p);
+      return;
+    }
+
     const r = +ui.probeRadius.value;
-    const p = {
+    probes.push({
       x: launcher.x,
       y: launcher.y,
       vx: Math.cos(angle) * power,
       vy: Math.sin(angle) * power,
       radius: r,
+      mass: 0,
       trail: [],
       age: 0,
       alive: true,
       periapsis: {},
       orbitMemory: {},
       colorSeed: Math.random()
-    };
-    probes.push(p);
+    });
   }
 
   function explode(x, y, color = "#7df9ff", count = 34) {
@@ -1503,6 +1632,33 @@ select, button, input[type="number"] {
         explode(probe.x, probe.y, pl.glow || "#7df9ff", pl.blackHole ? 80 : 50);
         probe.alive = false;
         return;
+      }
+    }
+
+    for (const other of probes) {
+      if (other === probe || !other.alive) continue;
+      const otherMass = other.mass || 0;
+      if (otherMass !== 0) {
+        const dx = other.x - probe.x;
+        const dy = other.y - probe.y;
+        const rawD2 = dx * dx + dy * dy;
+        const d = Math.sqrt(rawD2) || 0.0001;
+        const d2 = rawD2 + Math.max(SOFTENING, (other.radius || 4) * (other.radius || 4) * 0.12);
+        const force = G * otherMass / d2;
+        ax += (dx / d) * force;
+        ay += (dy / d) * force;
+      }
+      if (probe.isProjectileBody || other.isProjectileBody) {
+        const dx = other.x - probe.x;
+        const dy = other.y - probe.y;
+        const d = Math.hypot(dx, dy) || 0.0001;
+        const hit = (probe.radius || 4) + (other.radius || 4);
+        if (d < hit && probes.indexOf(probe) < probes.indexOf(other)) {
+          explode((probe.x + other.x) / 2, (probe.y + other.y) / 2, probe.glow || other.glow || "#7df9ff", 48);
+          probe.alive = false;
+          other.alive = false;
+          return;
+        }
       }
     }
 
@@ -1844,6 +2000,11 @@ select, button, input[type="number"] {
       ctx.restore();
     }
 
+    if (p.isProjectileBody) {
+      drawPlanet(p);
+      return;
+    }
+
     const s = worldToScreen(p.x, p.y);
     const r = Math.max(2, p.radius * camera.zoom);
     ctx.save();
@@ -2007,13 +2168,14 @@ select, button, input[type="number"] {
 
   function renderStatus() {
     const live = probes.filter(p => p.alive).length;
-    const selected = selectedPlanet ? `${selectedPlanet.name}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}` : "無";
+    const selected = selectedPlanet ? `${selectedPlanet.name}｜R ${selectedPlanet.radius}｜M ${Math.round(selectedPlanet.mass)}｜Atm ${selectedPlanet.atmosphere}` : t("none");
+    const modeText = mode === "placePlanet" ? t("waitingBody") : mode === "setLauncher" ? t("waitingLauncher") : t("general");
     ui.status.innerHTML = `
-      <div class="chip">模式 <strong>${mode === "placePlanet" ? "等待你點宇宙放天體" : mode === "setLauncher" ? "等待你點宇宙放發射台" : "一般"}</strong></div>
-      <div class="chip">小球 <strong>${live}</strong></div>
-      <div class="chip">天體 <strong>${planets.length}</strong></div>
-      <div class="chip">選中 <strong>${selected}</strong></div>
-      <div class="chip">空阻 <strong>${(+ui.drag.value).toFixed(3)}</strong></div>
+      <div class="chip">${t("mode")} <strong>${modeText}</strong></div>
+      <div class="chip">${t("projectiles")} <strong>${live}</strong></div>
+      <div class="chip">${t("bodies")} <strong>${planets.length}</strong></div>
+      <div class="chip">${t("selected")} <strong>${selected}</strong></div>
+      <div class="chip">${t("drag")} <strong>${(+ui.drag.value).toFixed(3)}</strong></div>
     `;
   }
 
@@ -2024,8 +2186,8 @@ select, button, input[type="number"] {
     const dt = rawDt * +ui.timeScale.value;
 
     if (!paused) {
-      for (const pl of planets) {
-        pl.spin += dt * 0.15;
+      const animateBody = pl => {
+        pl.spin = (pl.spin || 0) + dt * 0.15;
         if (pl.rings && pl.ringOrbitEnabled) {
           const dir = pl.ringOrbitDir === "ccw" ? -1 : 1;
           pl.ringAngle = (pl.ringAngle ?? -0.25) + dt * (pl.ringOrbitSpeed || 0) * dir * 0.9;
@@ -2034,7 +2196,9 @@ select, button, input[type="number"] {
           const dir = pl.ringRotateDir === "ccw" ? -1 : 1;
           pl.ringPhase = (pl.ringPhase || 0) + dt * (pl.ringRotateSpeed || 0) * dir * 2.4;
         }
-      }
+      };
+      for (const pl of planets) animateBody(pl);
+      for (const p of probes) if (p.isProjectileBody) animateBody(p);
       const physicsSteps = clamp(Math.ceil(dt * 80), 1, 8);
       const stepDt = dt / physicsSteps;
       for (let step = 0; step < physicsSteps; step++) {
@@ -2390,24 +2554,26 @@ select, button, input[type="number"] {
     panelOpen = open;
     ui.controlPanel.classList.toggle("open", panelOpen);
     ui.panelToggle.classList.toggle("panel-open", panelOpen);
-    ui.panelToggle.textContent = panelOpen ? "關閉面板 ▼" : "控制面板 ▲";
+    if (ui.languagePicker) ui.languagePicker.classList.toggle("panel-open", panelOpen);
+    ui.panelToggle.textContent = panelOpen ? t("panelClose") : t("panelOpen");
   }
 
   ui.panelToggle.onclick = () => setPanelOpen(!panelOpen);
   setPanelOpen(false);
 
   ui.launchBtn.onclick = launchProbe;
+  ui.langSelect.onchange = () => applyLanguage(ui.langSelect.value);
   ui.setLauncherBtn.onclick = () => setMode("setLauncher");
   ui.placePlanetBtn.onclick = () => setMode("placePlanet");
   ui.clearProbesBtn.onclick = () => { probes.length = 0; particles.length = 0; };
   ui.pauseBtn.onclick = () => {
     paused = !paused;
-    ui.pauseBtn.textContent = paused ? "繼續" : "暫停";
+    ui.pauseBtn.textContent = paused ? t("resume") : t("pause");
   };
 
   ui.orbitModeBtn.onclick = () => {
     orbitAssistMode = !orbitAssistMode;
-    ui.orbitModeBtn.textContent = orbitAssistMode ? "軌道模式：開" : "軌道模式：關";
+    ui.orbitModeBtn.textContent = orbitAssistMode ? t("orbitOn") : t("orbitOff");
     ui.orbitModeBtn.classList.toggle("orbit-active", orbitAssistMode);
   };
   ui.resetViewBtn.onclick = () => { camera.x = 0; camera.y = 0; camera.zoom = 1; };
@@ -2553,6 +2719,8 @@ select, button, input[type="number"] {
   makePlanet(310, -120, "moon");
   selectedPlanet = planets[0];
   setPlanetControls(selectedPlanet);
+  populateProjectileSelect();
+  applyLanguage(currentLang);
   syncLabels();
 
   // Canvas roundRect fallback

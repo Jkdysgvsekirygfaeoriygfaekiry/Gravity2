@@ -948,14 +948,14 @@ select, button, input[type="number"] {
   const presets={
     blackhole:{name:"黑洞",radius:38,mass:95000000,atmosphere:0,colors:["#000000","#181023"],glow:"#b06cff",rings:true,ringCount:2,ringWidth:4,ringColor:"#ffb45a",blackHole:true},
     whitehole:{name:"白洞",radius:38,mass:-95000000,atmosphere:0,colors:["#f8fbff","#ffffff"],glow:"#dff8ff",rings:true,ringCount:3,ringWidth:3,ringColor:"#e8fbff",whiteHole:true},
-    neutronstar:{name:"中子星",radius:22,mass:92000000,atmosphere:8,colors:["#9feaff","#ffffff"],glow:"#bff6ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e8fbff"},
-    stephenson218:{name:"史蒂文森 2-18",radius:124,mass:90000000,atmosphere:165,colors:["#b83220","#ffd08a"],glow:"#ff8c4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffb06b"},
-    uyscuti:{name:"盾牌座 UY",radius:118,mass:88000000,atmosphere:158,colors:["#9f261b","#ffbc73"],glow:"#ff7d45",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff9a58"},
-    canopus:{name:"老人星",radius:94,mass:72000000,atmosphere:130,colors:["#ffe2a5","#ffffff"],glow:"#ffe7b8",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe7b8"},
-    arcturus:{name:"大角星",radius:86,mass:48000000,atmosphere:115,colors:["#d36b24","#ffd18c"],glow:"#ff9f54",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffb36c"},
-    siriusa:{name:"天狼星 A",radius:54,mass:42000000,atmosphere:48,colors:["#c8e6ff","#ffffff"],glow:"#d8f0ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6f6ff"},
-    sun:{name:"太陽",radius:70,mass:35000000,atmosphere:115,colors:["#ff7c1a","#fff06e"],glow:"#ffcf4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffcf4d"},
-    proxima:{name:"比鄰星",radius:26,mass:8500000,atmosphere:32,colors:["#b33224","#ff9a65"],glow:"#ff745c",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff745c"},
+    neutronstar:{name:"中子星",radius:22,mass:92000000,atmosphere:8,colors:["#9feaff","#ffffff"],glow:"#bff6ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e8fbff",star:true},
+    stephenson218:{name:"史蒂文森 2-18",radius:124,mass:90000000,atmosphere:165,colors:["#b83220","#ffd08a"],glow:"#ff8c4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffb06b",star:true},
+    uyscuti:{name:"盾牌座 UY",radius:118,mass:88000000,atmosphere:158,colors:["#9f261b","#ffbc73"],glow:"#ff7d45",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff9a58",star:true},
+    canopus:{name:"老人星",radius:94,mass:72000000,atmosphere:130,colors:["#ffe2a5","#ffffff"],glow:"#ffe7b8",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe7b8",star:true},
+    arcturus:{name:"大角星",radius:86,mass:48000000,atmosphere:115,colors:["#d36b24","#ffd18c"],glow:"#ff9f54",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffb36c",star:true},
+    siriusa:{name:"天狼星 A",radius:54,mass:42000000,atmosphere:48,colors:["#c8e6ff","#ffffff"],glow:"#d8f0ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6f6ff",star:true},
+    sun:{name:"太陽",radius:70,mass:35000000,atmosphere:115,colors:["#ff7c1a","#fff06e"],glow:"#ffcf4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffcf4d",star:true},
+    proxima:{name:"比鄰星",radius:26,mass:8500000,atmosphere:32,colors:["#b33224","#ff9a65"],glow:"#ff745c",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff745c",star:true},
     mercury:{name:"水星",radius:16,mass:12500,atmosphere:0,colors:["#77716a","#c2b8aa"],glow:"#b9b1a6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b9b1a6"},
     venus:{name:"金星",radius:32,mass:180000,atmosphere:88,colors:["#d8a96a","#fff0b0"],glow:"#ffd48a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffd48a"},
     earth:{name:"地球",radius:34,mass:220000,atmosphere:34,colors:["#2d7dff","#4affb0"],glow:"#6db7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#6db7ff"},
@@ -2039,7 +2039,8 @@ select, button, input[type="number"] {
       ringPhase: Math.random() * Math.PI * 2,
       isCustom,
       blackHole: !!base.blackHole,
-      whiteHole: !!base.whiteHole
+      whiteHole: !!base.whiteHole,
+      star: !!base.star
     };
     planets.push(p);
     selectedPlanet = p;
@@ -2091,6 +2092,7 @@ select, button, input[type="number"] {
         ringPhase: Math.random() * Math.PI * 2,
         blackHole: !!base.blackHole,
         whiteHole: !!base.whiteHole,
+        star: !!base.star,
         isProjectileBody: true,
         trail: [],
         age: 0,
@@ -2137,6 +2139,102 @@ select, button, input[type="number"] {
     }
   }
 
+
+
+  function emitBodyParticles(pl, dt) {
+    if (!pl || dt <= 0) return;
+
+    const isBlack = !!pl.blackHole;
+    const isWhite = !!pl.whiteHole;
+    const isStar = !!pl.star;
+
+    if (!isBlack && !isWhite && !isStar) return;
+
+    const maxParticleCount = 950;
+    if (particles.length > maxParticleCount) particles.splice(0, particles.length - maxParticleCount);
+
+    const emitScale = clamp(dt * 60, 0.25, 2.2);
+    const baseCount = isBlack ? 5 : isWhite ? 7 : 4;
+    const count = Math.max(1, Math.floor(baseCount * emitScale));
+    const r = Math.max(8, pl.radius || 20);
+
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2;
+
+      if (isBlack) {
+        const startDist = r * (3.2 + Math.random() * 2.5);
+        const swirl = (Math.random() < 0.5 ? -1 : 1) * (0.9 + Math.random() * 0.8);
+        const inward = 85 + Math.random() * 180;
+        const tangent = inward * swirl;
+        const x = pl.x + Math.cos(a) * startDist;
+        const y = pl.y + Math.sin(a) * startDist;
+        const nx = -Math.cos(a);
+        const ny = -Math.sin(a);
+        const tx = -Math.sin(a);
+        const ty = Math.cos(a);
+
+        particles.push({
+          kind: "blackhole",
+          x, y,
+          vx: nx * inward + tx * tangent,
+          vy: ny * inward + ty * tangent,
+          ax: nx * 60,
+          ay: ny * 60,
+          life: 0.9 + Math.random() * 0.8,
+          max: 1.4 + Math.random() * 0.7,
+          color: Math.random() < 0.5 ? "rgba(190,120,255,.92)" : "rgba(255,175,75,.88)",
+          size: 1.2 + Math.random() * 2.2,
+          shrink: true
+        });
+      } else if (isWhite) {
+        const startDist = r * (0.85 + Math.random() * 0.55);
+        const speed = 190 + Math.random() * 420;
+        const x = pl.x + Math.cos(a) * startDist;
+        const y = pl.y + Math.sin(a) * startDist;
+        particles.push({
+          kind: "whitehole",
+          x, y,
+          vx: Math.cos(a) * speed,
+          vy: Math.sin(a) * speed,
+          ax: Math.cos(a) * 120,
+          ay: Math.sin(a) * 120,
+          life: 0.55 + Math.random() * 0.55,
+          max: 0.9 + Math.random() * 0.7,
+          color: Math.random() < 0.5 ? "rgba(230,255,255,.96)" : "rgba(155,235,255,.9)",
+          size: 1.8 + Math.random() * 3.4,
+          streak: true
+        });
+      } else if (isStar) {
+        const startDist = r * (0.78 + Math.random() * 0.38);
+        const speed = 20 + Math.random() * 90;
+        const wobble = (Math.random() - 0.5) * 55;
+        const x = pl.x + Math.cos(a) * startDist;
+        const y = pl.y + Math.sin(a) * startDist;
+        const tx = -Math.sin(a);
+        const ty = Math.cos(a);
+
+        particles.push({
+          kind: "star",
+          x, y,
+          vx: Math.cos(a) * speed + tx * wobble,
+          vy: Math.sin(a) * speed + ty * wobble,
+          ax: Math.cos(a) * 18,
+          ay: Math.sin(a) * 18,
+          life: 0.45 + Math.random() * 0.55,
+          max: 0.75 + Math.random() * 0.55,
+          color: Math.random() < 0.45 ? "rgba(255,236,120,.94)" : Math.random() < 0.72 ? "rgba(255,132,58,.9)" : "rgba(255,255,245,.9)",
+          size: 1.4 + Math.random() * 3.2,
+          flicker: true
+        });
+      }
+    }
+  }
+
+  function updateSpecialBodyParticles(dt) {
+    if (paused) return;
+    for (const pl of planets) emitBodyParticles(pl, dt);
+    for (const p of probes) if (p.alive && p.isProjectileBody) emitBodyParticles(p, dt);
+  }
 
   function predictOrbitRisk(probe, pl, d) {
     // Invisible predictor: looks at current specific orbital energy and angular momentum.
@@ -2393,14 +2491,16 @@ select, button, input[type="number"] {
 
   function updateParticles(dt) {
     for (const p of particles) {
+      p.vx += (p.ax || 0) * dt;
+      p.vy += (p.ay || 0) * dt;
       p.x += p.vx * dt;
       p.y += p.vy * dt;
-      p.vx *= 1 - 0.8 * dt;
-      p.vy *= 1 - 0.8 * dt;
       p.life -= dt;
+      if (p.flicker) p.size *= 0.992 + Math.random() * 0.018;
+      if (p.shrink) p.size *= Math.max(0.88, 1 - dt * 0.9);
     }
     for (let i = particles.length - 1; i >= 0; i--) {
-      if (particles[i].life <= 0) particles.splice(i, 1);
+      if (particles[i].life <= 0 || particles[i].size <= 0.15) particles.splice(i, 1);
     }
   }
 
@@ -2517,6 +2617,21 @@ select, button, input[type="number"] {
       ctx.arc(s.x, s.y, r + 4, 0, Math.PI * 2);
       ctx.stroke();
 
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.strokeStyle = "rgba(180,95,255,.28)";
+      ctx.lineWidth = Math.max(1, 1.2 * camera.zoom);
+      for (let i = 0; i < 18; i++) {
+        const a = pl.spin * 1.7 + i * Math.PI * 2 / 18;
+        const r1 = r * (2.0 + (i % 3) * 0.18);
+        const r2 = r * 3.25;
+        ctx.beginPath();
+        ctx.moveTo(s.x + Math.cos(a) * r2, s.y + Math.sin(a) * r2);
+        ctx.lineTo(s.x + Math.cos(a + 0.22) * r1, s.y + Math.sin(a + 0.22) * r1);
+        ctx.stroke();
+      }
+      ctx.restore();
+
       if (selectedPlanet === pl) {
         ctx.setLineDash([6, 6]);
         ctx.strokeStyle = "#7df9ff";
@@ -2547,6 +2662,53 @@ select, button, input[type="number"] {
     const haloWidth = Math.max(1, +(pl.haloWidth ?? 2));
     const haloGlowSize = Math.max(0, +(pl.haloGlowSize ?? 14));
     const highlightColor = secondaryTarget === "highlight" ? secondaryColor : mixHex(primaryColor, 0.35);
+
+    if (pl.whiteHole) {
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      for (let i = 0; i < 24; i++) {
+        const a = pl.spin * 1.35 + i * Math.PI * 2 / 24;
+        const r1 = r * 1.05;
+        const r2 = r * (2.25 + (i % 4) * 0.18);
+        ctx.strokeStyle = i % 2 ? "rgba(210,250,255,.32)" : "rgba(255,255,255,.42)";
+        ctx.lineWidth = Math.max(1, 1.5 * camera.zoom);
+        ctx.beginPath();
+        ctx.moveTo(s.x + Math.cos(a) * r1, s.y + Math.sin(a) * r1);
+        ctx.lineTo(s.x + Math.cos(a) * r2, s.y + Math.sin(a) * r2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    if (pl.star) {
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      const corona = ctx.createRadialGradient(s.x, s.y, r * 0.85, s.x, s.y, r * 2.4);
+      corona.addColorStop(0, "rgba(255,230,110,.22)");
+      corona.addColorStop(0.42, "rgba(255,115,45,.13)");
+      corona.addColorStop(1, "rgba(255,115,45,0)");
+      ctx.fillStyle = corona;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r * 2.4, 0, Math.PI * 2);
+      ctx.fill();
+
+      for (let i = 0; i < 14; i++) {
+        const a = -pl.spin * 0.9 + i * Math.PI * 2 / 14;
+        const amp = r * (1.08 + 0.22 * Math.sin(pl.spin * 3 + i));
+        ctx.strokeStyle = i % 2 ? "rgba(255,207,77,.33)" : "rgba(255,119,45,.26)";
+        ctx.lineWidth = Math.max(1, 2.2 * camera.zoom);
+        ctx.beginPath();
+        ctx.moveTo(s.x + Math.cos(a) * r * 0.92, s.y + Math.sin(a) * r * 0.92);
+        ctx.quadraticCurveTo(
+          s.x + Math.cos(a + 0.22) * amp,
+          s.y + Math.sin(a + 0.22) * amp,
+          s.x + Math.cos(a + 0.42) * r * 1.45,
+          s.y + Math.sin(a + 0.42) * r * 1.45
+        );
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
 
     if (pl.rings) {
       ctx.save();
@@ -2817,13 +2979,43 @@ select, button, input[type="number"] {
   }
 
   function drawParticles() {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+
     for (const p of particles) {
       const s = worldToScreen(p.x, p.y);
-      ctx.globalAlpha = clamp(p.life / p.max, 0, 1);
+      const alpha = clamp(p.life / p.max, 0, 1);
+      const size = Math.max(0.5, (p.size || 1) * camera.zoom);
+
+      ctx.globalAlpha = alpha;
       ctx.fillStyle = p.color;
-      ctx.fillRect(s.x, s.y, p.size, p.size);
+
+      if (p.streak || p.kind === "blackhole") {
+        const tail = clamp(Math.hypot(p.vx || 0, p.vy || 0) * 0.018 * camera.zoom, 4, 24);
+        const a = Math.atan2(p.vy || 0, p.vx || 0);
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = Math.max(1, size);
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - Math.cos(a) * tail, s.y - Math.sin(a) * tail);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (p.flicker && Math.random() > 0.52) {
+        ctx.globalAlpha = alpha * 0.38;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, size * 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
+
+    ctx.restore();
     ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
   }
 
   function drawModePreview() {
@@ -2909,6 +3101,7 @@ select, button, input[type="number"] {
         updatePlanetsByProjectileGravity(stepDt);
       }
       for (let i = probes.length - 1; i >= 0; i--) if (!probes[i].alive) probes.splice(i, 1);
+      updateSpecialBodyParticles(dt);
       updateParticles(dt);
     }
 

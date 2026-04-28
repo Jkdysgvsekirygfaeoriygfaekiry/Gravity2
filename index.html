@@ -687,6 +687,17 @@ select, button, input[type="number"] {
           <button id="customHighlightEnabled">高光：有</button>
           <button id="customStripesEnabled">條紋：有</button>
         </div>
+        <div class="custom-style-line">
+          <button id="customCratersEnabled">隕石坑：有</button>
+          <label class="custom-style-select">
+            <span>隕石坑</span>
+            <select id="customCraterDensity">
+              <option value="low">少</option>
+              <option value="medium">中</option>
+              <option value="high">多</option>
+            </select>
+          </label>
+        </div>
         <label class="custom-style-select">
           <span>副色作用</span>
           <select id="secondaryTarget">
@@ -870,7 +881,7 @@ select, button, input[type="number"] {
     preset: $("preset"), planetRadius: $("planetRadius"), planetMass: $("planetMass"), atmosphere: $("atmosphere"),
     primaryColor: $("primaryColor"), secondaryColor: $("secondaryColor"),
     customStyleEditor: $("customStyleEditor"), customHighlightEnabled: $("customHighlightEnabled"),
-    customStripesEnabled: $("customStripesEnabled"), secondaryTarget: $("secondaryTarget"),
+    customStripesEnabled: $("customStripesEnabled"), customCratersEnabled: $("customCratersEnabled"), customCraterDensity: $("customCraterDensity"), secondaryTarget: $("secondaryTarget"),
     customGlowEnabled: $("customGlowEnabled"), customGlowColor: $("customGlowColor"),
     customGlowSize: $("customGlowSize"), customGlowStrength: $("customGlowStrength"),
     customHaloDistance: $("customHaloDistance"), customHaloWidth: $("customHaloWidth"), customHaloGlowSize: $("customHaloGlowSize"),
@@ -944,108 +955,108 @@ select, button, input[type="number"] {
     siriusa:{name:"天狼星 A",radius:54,mass:42000000,atmosphere:48,colors:["#c8e6ff","#ffffff"],glow:"#d8f0ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6f6ff"},
     sun:{name:"太陽",radius:70,mass:35000000,atmosphere:115,colors:["#ff7c1a","#fff06e"],glow:"#ffcf4d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffcf4d"},
     proxima:{name:"比鄰星",radius:26,mass:8500000,atmosphere:32,colors:["#b33224","#ff9a65"],glow:"#ff745c",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff745c"},
-    mercury:{name:"水星",radius:16,mass:12500,atmosphere:0,colors:["#77716a","#c2b8aa"],glow:"#b9b1a6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b9b1a6"},
-    venus:{name:"金星",radius:32,mass:180000,atmosphere:88,colors:["#d8a96a","#fff0b0"],glow:"#ffd48a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffd48a"},
-    earth:{name:"地球",radius:34,mass:220000,atmosphere:34,colors:["#2d7dff","#4affb0"],glow:"#6db7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#6db7ff"},
-    mars:{name:"火星",radius:24,mass:25000,atmosphere:14,colors:["#b94e32","#ff9a61"],glow:"#ff7d5a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff7d5a"},
+    mercury:{name:"水星",radius:16,mass:12500,atmosphere:0,colors:["#77716a","#c2b8aa"],glow:"#b9b1a6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b9b1a6",craters:true,craterDensity:"high"},
+    venus:{name:"金星",radius:32,mass:180000,atmosphere:88,colors:["#d8a96a","#fff0b0"],glow:"#ffd48a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffd48a",craters:true,craterDensity:"low"},
+    earth:{name:"地球",radius:34,mass:220000,atmosphere:34,colors:["#2d7dff","#4affb0"],glow:"#6db7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#6db7ff",craters:true,craterDensity:"low"},
+    mars:{name:"火星",radius:24,mass:25000,atmosphere:14,colors:["#b94e32","#ff9a61"],glow:"#ff7d5a",rings:false,ringCount:1,ringWidth:3,ringColor:"#ff7d5a",craters:true,craterDensity:"medium"},
     jupiter:{name:"木星",radius:78,mass:6800000,atmosphere:90,colors:["#d9a46b","#f6e0b8"],glow:"#ffbd79",rings:true,ringCount:2,ringWidth:3,ringColor:"#ffe0a2"},
     saturn:{name:"土星",radius:72,mass:2050000,atmosphere:82,colors:["#d8c08b","#fff1bd"],glow:"#ffe0a2",rings:true,ringCount:3,ringWidth:5,ringColor:"#ffe0a2"},
     uranus:{name:"天王星",radius:54,mass:305000,atmosphere:62,colors:["#7fd6df","#d8ffff"],glow:"#a7f7ff",rings:true,ringCount:2,ringWidth:2,ringColor:"#a7f7ff"},
     neptune:{name:"海王星",radius:53,mass:360000,atmosphere:66,colors:["#244dff","#8bb6ff"],glow:"#6fa0ff",rings:false,ringCount:1,ringWidth:2,ringColor:"#6fa0ff"},
-    ceres:{name:"穀神星",radius:19,mass:14500,atmosphere:0,colors:["#7d7a73","#d3d0c7"],glow:"#c8c2b8",rings:false,ringCount:1,ringWidth:3,ringColor:"#c8c2b8"},
-    pluto:{name:"冥王星",radius:22,mass:18500,atmosphere:10,colors:["#a9795e","#f0c8a7"],glow:"#deb08e",rings:false,ringCount:1,ringWidth:3,ringColor:"#deb08e"},
-    haumea:{name:"妊神星",radius:18,mass:6000,atmosphere:2,colors:["#cfd8dc","#ffffff"],glow:"#e8f5ff",rings:true,ringCount:1,ringWidth:2,ringColor:"#e8f5ff"},
-    makemake:{name:"鳥神星",radius:20,mass:4000,atmosphere:4,colors:["#8d5a42","#d8a079"],glow:"#d69976",rings:false,ringCount:1,ringWidth:3,ringColor:"#d69976"},
-    eris:{name:"鬩神星",radius:22,mass:22000,atmosphere:3,colors:["#cbd7e6","#ffffff"],glow:"#dcecff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dcecff"},
-    orcus:{name:"亡神星",radius:20,mass:4500,atmosphere:1,colors:["#7d8590","#c8d0dc"],glow:"#aebbd0",rings:false,ringCount:1,ringWidth:3,ringColor:"#aebbd0"},
-    moon:{name:"月球",radius:18,mass:1100000,atmosphere:0,colors:["#999fa8","#d9dce2"],glow:"#d8d8d8",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d8d8"},
-    phobos:{name:"火衛一 Phobos",radius:9,mass:1200,atmosphere:0,colors:["#6d5b52","#b09888"],glow:"#b08c7b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b08c7b"},
-    deimos:{name:"火衛二 Deimos",radius:7,mass:600,atmosphere:0,colors:["#6c665f","#bdb2a6"],glow:"#aa9f94",rings:false,ringCount:1,ringWidth:3,ringColor:"#aa9f94"},
-    io:{name:"木衛一 Io",radius:20,mass:1320000,atmosphere:2,colors:["#d6b34a","#fff07b"],glow:"#ffe36e",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe36e"},
-    europa:{name:"木衛二 Europa",radius:18,mass:720000,atmosphere:2,colors:["#9aa6b8","#fff2da"],glow:"#dfeaff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dfeaff"},
-    ganymede:{name:"木衛三 Ganymede",radius:24,mass:2450000,atmosphere:2,colors:["#6f6b63","#c7bca8"],glow:"#c5b79c",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5b79c"},
-    callisto:{name:"木衛四 Callisto",radius:23,mass:1600000,atmosphere:1,colors:["#4a4641","#a99f91"],glow:"#9b8f80",rings:false,ringCount:1,ringWidth:3,ringColor:"#9b8f80"},
-    mimas:{name:"土衛一 Mimas",radius:12,mass:4000,atmosphere:0,colors:["#9a968d","#ddd8cc"],glow:"#d7d0c5",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7d0c5"},
-    enceladus:{name:"土衛二 Enceladus",radius:14,mass:6500,atmosphere:1,colors:["#dce8ff","#ffffff"],glow:"#f1f7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#f1f7ff"},
-    tethys:{name:"土衛三 Tethys",radius:15,mass:10000,atmosphere:0,colors:["#b4b1a8","#eee9dc"],glow:"#e2ddd3",rings:false,ringCount:1,ringWidth:3,ringColor:"#e2ddd3"},
-    dione:{name:"土衛四 Dione",radius:15,mass:18000,atmosphere:0,colors:["#999a9d","#e2e4e7"],glow:"#d8dde2",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8dde2"},
-    rhea:{name:"土衛五 Rhea",radius:17,mass:34000,atmosphere:0,colors:["#8f8c85","#d4d0c6"],glow:"#cfc8bd",rings:false,ringCount:1,ringWidth:3,ringColor:"#cfc8bd"},
+    ceres:{name:"穀神星",radius:19,mass:14500,atmosphere:0,colors:["#7d7a73","#d3d0c7"],glow:"#c8c2b8",rings:false,ringCount:1,ringWidth:3,ringColor:"#c8c2b8",craters:true,craterDensity:"high"},
+    pluto:{name:"冥王星",radius:22,mass:18500,atmosphere:10,colors:["#a9795e","#f0c8a7"],glow:"#deb08e",rings:false,ringCount:1,ringWidth:3,ringColor:"#deb08e",craters:true,craterDensity:"medium"},
+    haumea:{name:"妊神星",radius:18,mass:6000,atmosphere:2,colors:["#cfd8dc","#ffffff"],glow:"#e8f5ff",rings:true,ringCount:1,ringWidth:2,ringColor:"#e8f5ff",craters:true,craterDensity:"medium"},
+    makemake:{name:"鳥神星",radius:20,mass:4000,atmosphere:4,colors:["#8d5a42","#d8a079"],glow:"#d69976",rings:false,ringCount:1,ringWidth:3,ringColor:"#d69976",craters:true,craterDensity:"medium"},
+    eris:{name:"鬩神星",radius:22,mass:22000,atmosphere:3,colors:["#cbd7e6","#ffffff"],glow:"#dcecff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dcecff",craters:true,craterDensity:"medium"},
+    orcus:{name:"亡神星",radius:20,mass:4500,atmosphere:1,colors:["#7d8590","#c8d0dc"],glow:"#aebbd0",rings:false,ringCount:1,ringWidth:3,ringColor:"#aebbd0",craters:true,craterDensity:"medium"},
+    moon:{name:"月球",radius:18,mass:1100000,atmosphere:0,colors:["#999fa8","#d9dce2"],glow:"#d8d8d8",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d8d8",craters:true,craterDensity:"high"},
+    phobos:{name:"火衛一 Phobos",radius:9,mass:1200,atmosphere:0,colors:["#6d5b52","#b09888"],glow:"#b08c7b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b08c7b",craters:true,craterDensity:"high"},
+    deimos:{name:"火衛二 Deimos",radius:7,mass:600,atmosphere:0,colors:["#6c665f","#bdb2a6"],glow:"#aa9f94",rings:false,ringCount:1,ringWidth:3,ringColor:"#aa9f94",craters:true,craterDensity:"high"},
+    io:{name:"木衛一 Io",radius:20,mass:1320000,atmosphere:2,colors:["#d6b34a","#fff07b"],glow:"#ffe36e",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe36e",craters:true,craterDensity:"low"},
+    europa:{name:"木衛二 Europa",radius:18,mass:720000,atmosphere:2,colors:["#9aa6b8","#fff2da"],glow:"#dfeaff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dfeaff",craters:true,craterDensity:"low"},
+    ganymede:{name:"木衛三 Ganymede",radius:24,mass:2450000,atmosphere:2,colors:["#6f6b63","#c7bca8"],glow:"#c5b79c",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5b79c",craters:true,craterDensity:"medium"},
+    callisto:{name:"木衛四 Callisto",radius:23,mass:1600000,atmosphere:1,colors:["#4a4641","#a99f91"],glow:"#9b8f80",rings:false,ringCount:1,ringWidth:3,ringColor:"#9b8f80",craters:true,craterDensity:"high"},
+    mimas:{name:"土衛一 Mimas",radius:12,mass:4000,atmosphere:0,colors:["#9a968d","#ddd8cc"],glow:"#d7d0c5",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7d0c5",craters:true,craterDensity:"high"},
+    enceladus:{name:"土衛二 Enceladus",radius:14,mass:6500,atmosphere:1,colors:["#dce8ff","#ffffff"],glow:"#f1f7ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#f1f7ff",craters:true,craterDensity:"low"},
+    tethys:{name:"土衛三 Tethys",radius:15,mass:10000,atmosphere:0,colors:["#b4b1a8","#eee9dc"],glow:"#e2ddd3",rings:false,ringCount:1,ringWidth:3,ringColor:"#e2ddd3",craters:true,craterDensity:"medium"},
+    dione:{name:"土衛四 Dione",radius:15,mass:18000,atmosphere:0,colors:["#999a9d","#e2e4e7"],glow:"#d8dde2",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8dde2",craters:true,craterDensity:"medium"},
+    rhea:{name:"土衛五 Rhea",radius:17,mass:34000,atmosphere:0,colors:["#8f8c85","#d4d0c6"],glow:"#cfc8bd",rings:false,ringCount:1,ringWidth:3,ringColor:"#cfc8bd",craters:true,craterDensity:"medium"},
     titan:{name:"土衛六 Titan",radius:25,mass:2200000,atmosphere:52,colors:["#c78235","#ffd28a"],glow:"#ffb35d",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffb35d"},
-    iapetus:{name:"土衛八 Iapetus",radius:17,mass:28000,atmosphere:0,colors:["#3f332c","#d7d0c8"],glow:"#b2a79b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b2a79b"},
-    phoebe:{name:"土衛九 Phoebe",radius:11,mass:1800,atmosphere:0,colors:["#4f4a45","#91887d"],glow:"#968b80",rings:false,ringCount:1,ringWidth:3,ringColor:"#968b80"},
-    miranda:{name:"天衛五 Miranda",radius:13,mass:5500,atmosphere:0,colors:["#787f85","#cbd4db"],glow:"#c9d4dc",rings:false,ringCount:1,ringWidth:3,ringColor:"#c9d4dc"},
-    ariel:{name:"天衛一 Ariel",radius:16,mass:26000,atmosphere:0,colors:["#9aa5ad","#e6f2f9"],glow:"#d9edf8",rings:false,ringCount:1,ringWidth:3,ringColor:"#d9edf8"},
-    umbriel:{name:"天衛二 Umbriel",radius:15,mass:24000,atmosphere:0,colors:["#52565b","#aeb6bf"],glow:"#a9b4bf",rings:false,ringCount:1,ringWidth:3,ringColor:"#a9b4bf"},
-    titania:{name:"天衛三 Titania",radius:18,mass:55000,atmosphere:0,colors:["#767f86","#d0dce4"],glow:"#cbdde8",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbdde8"},
-    oberon:{name:"天衛四 Oberon",radius:18,mass:48000,atmosphere:0,colors:["#5d5f62","#bfc3c8"],glow:"#bbc2c9",rings:false,ringCount:1,ringWidth:3,ringColor:"#bbc2c9"},
-    triton:{name:"海衛一 Triton",radius:23,mass:320000,atmosphere:8,colors:["#b5c7d8","#fff2e7"],glow:"#dcecff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dcecff"},
-    nereid:{name:"海衛二 Nereid",radius:12,mass:2500,atmosphere:0,colors:["#6a6870","#b9b8c0"],glow:"#aaa9b0",rings:false,ringCount:1,ringWidth:3,ringColor:"#aaa9b0"},
-    proteus:{name:"Proteus",radius:15,mass:6000,atmosphere:0,colors:["#55565a","#a7aab0"],glow:"#9fa4ad",rings:false,ringCount:1,ringWidth:3,ringColor:"#9fa4ad"},
-    charon:{name:"冥衛一 Charon",radius:16,mass:18500,atmosphere:0,colors:["#8c8984","#d8d3cb"],glow:"#cbc4bb",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbc4bb"},
-    nix:{name:"冥衛二 Nix",radius:8,mass:400,atmosphere:0,colors:["#a9a9a9","#eeeeee"],glow:"#dddddd",rings:false,ringCount:1,ringWidth:3,ringColor:"#dddddd"},
-    hydra:{name:"冥衛三 Hydra",radius:8,mass:500,atmosphere:0,colors:["#9d9d9d","#e6e6e6"],glow:"#d5d5d5",rings:false,ringCount:1,ringWidth:3,ringColor:"#d5d5d5"},
-    kerberos:{name:"冥衛四 Kerberos",radius:7,mass:250,atmosphere:0,colors:["#777777","#c9c9c9"],glow:"#c5c5c5",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5c5c5"},
-    styx:{name:"冥衛五 Styx",radius:6,mass:200,atmosphere:0,colors:["#808080","#d0d0d0"],glow:"#c7c7c7",rings:false,ringCount:1,ringWidth:3,ringColor:"#c7c7c7"},
-    namaka:{name:"妊衛一 Namaka",radius:7,mass:300,atmosphere:0,colors:["#a7b0b6","#f5faff"],glow:"#e8f2ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e8f2ff"},
-    hiiaka:{name:"妊衛二 Hiʻiaka",radius:9,mass:900,atmosphere:0,colors:["#b9c4ca","#ffffff"],glow:"#eff8ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#eff8ff"},
-    mk2:{name:"鳥神星衛星 MK2",radius:7,mass:250,atmosphere:0,colors:["#4a3d35","#9b8173"],glow:"#a78678",rings:false,ringCount:1,ringWidth:3,ringColor:"#a78678"},
-    dysnomia:{name:"鬩衛一 Dysnomia",radius:10,mass:2000,atmosphere:0,colors:["#aeb8c5","#f5fbff"],glow:"#dbeaff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dbeaff"},
-    vanth:{name:"亡衛一 Vanth",radius:10,mass:1500,atmosphere:0,colors:["#6c7380","#bbc5d0"],glow:"#b6c3d6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b6c3d6"},
+    iapetus:{name:"土衛八 Iapetus",radius:17,mass:28000,atmosphere:0,colors:["#3f332c","#d7d0c8"],glow:"#b2a79b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b2a79b",craters:true,craterDensity:"high"},
+    phoebe:{name:"土衛九 Phoebe",radius:11,mass:1800,atmosphere:0,colors:["#4f4a45","#91887d"],glow:"#968b80",rings:false,ringCount:1,ringWidth:3,ringColor:"#968b80",craters:true,craterDensity:"medium"},
+    miranda:{name:"天衛五 Miranda",radius:13,mass:5500,atmosphere:0,colors:["#787f85","#cbd4db"],glow:"#c9d4dc",rings:false,ringCount:1,ringWidth:3,ringColor:"#c9d4dc",craters:true,craterDensity:"medium"},
+    ariel:{name:"天衛一 Ariel",radius:16,mass:26000,atmosphere:0,colors:["#9aa5ad","#e6f2f9"],glow:"#d9edf8",rings:false,ringCount:1,ringWidth:3,ringColor:"#d9edf8",craters:true,craterDensity:"medium"},
+    umbriel:{name:"天衛二 Umbriel",radius:15,mass:24000,atmosphere:0,colors:["#52565b","#aeb6bf"],glow:"#a9b4bf",rings:false,ringCount:1,ringWidth:3,ringColor:"#a9b4bf",craters:true,craterDensity:"medium"},
+    titania:{name:"天衛三 Titania",radius:18,mass:55000,atmosphere:0,colors:["#767f86","#d0dce4"],glow:"#cbdde8",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbdde8",craters:true,craterDensity:"medium"},
+    oberon:{name:"天衛四 Oberon",radius:18,mass:48000,atmosphere:0,colors:["#5d5f62","#bfc3c8"],glow:"#bbc2c9",rings:false,ringCount:1,ringWidth:3,ringColor:"#bbc2c9",craters:true,craterDensity:"medium"},
+    triton:{name:"海衛一 Triton",radius:23,mass:320000,atmosphere:8,colors:["#b5c7d8","#fff2e7"],glow:"#dcecff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dcecff",craters:true,craterDensity:"low"},
+    nereid:{name:"海衛二 Nereid",radius:12,mass:2500,atmosphere:0,colors:["#6a6870","#b9b8c0"],glow:"#aaa9b0",rings:false,ringCount:1,ringWidth:3,ringColor:"#aaa9b0",craters:true,craterDensity:"medium"},
+    proteus:{name:"Proteus",radius:15,mass:6000,atmosphere:0,colors:["#55565a","#a7aab0"],glow:"#9fa4ad",rings:false,ringCount:1,ringWidth:3,ringColor:"#9fa4ad",craters:true,craterDensity:"medium"},
+    charon:{name:"冥衛一 Charon",radius:16,mass:18500,atmosphere:0,colors:["#8c8984","#d8d3cb"],glow:"#cbc4bb",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbc4bb",craters:true,craterDensity:"medium"},
+    nix:{name:"冥衛二 Nix",radius:8,mass:400,atmosphere:0,colors:["#a9a9a9","#eeeeee"],glow:"#dddddd",rings:false,ringCount:1,ringWidth:3,ringColor:"#dddddd",craters:true,craterDensity:"medium"},
+    hydra:{name:"冥衛三 Hydra",radius:8,mass:500,atmosphere:0,colors:["#9d9d9d","#e6e6e6"],glow:"#d5d5d5",rings:false,ringCount:1,ringWidth:3,ringColor:"#d5d5d5",craters:true,craterDensity:"medium"},
+    kerberos:{name:"冥衛四 Kerberos",radius:7,mass:250,atmosphere:0,colors:["#777777","#c9c9c9"],glow:"#c5c5c5",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5c5c5",craters:true,craterDensity:"medium"},
+    styx:{name:"冥衛五 Styx",radius:6,mass:200,atmosphere:0,colors:["#808080","#d0d0d0"],glow:"#c7c7c7",rings:false,ringCount:1,ringWidth:3,ringColor:"#c7c7c7",craters:true,craterDensity:"medium"},
+    namaka:{name:"妊衛一 Namaka",radius:7,mass:300,atmosphere:0,colors:["#a7b0b6","#f5faff"],glow:"#e8f2ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#e8f2ff",craters:true,craterDensity:"medium"},
+    hiiaka:{name:"妊衛二 Hiʻiaka",radius:9,mass:900,atmosphere:0,colors:["#b9c4ca","#ffffff"],glow:"#eff8ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#eff8ff",craters:true,craterDensity:"medium"},
+    mk2:{name:"鳥神星衛星 MK2",radius:7,mass:250,atmosphere:0,colors:["#4a3d35","#9b8173"],glow:"#a78678",rings:false,ringCount:1,ringWidth:3,ringColor:"#a78678",craters:true,craterDensity:"medium"},
+    dysnomia:{name:"鬩衛一 Dysnomia",radius:10,mass:2000,atmosphere:0,colors:["#aeb8c5","#f5fbff"],glow:"#dbeaff",rings:false,ringCount:1,ringWidth:3,ringColor:"#dbeaff",craters:true,craterDensity:"medium"},
+    vanth:{name:"亡衛一 Vanth",radius:10,mass:1500,atmosphere:0,colors:["#6c7380","#bbc5d0"],glow:"#b6c3d6",rings:false,ringCount:1,ringWidth:3,ringColor:"#b6c3d6",craters:true,craterDensity:"medium"},
 
-    amalthea:{name:"木衛五 Amalthea",radius:12,mass:1700,atmosphere:0,colors:["#7a4439","#d28a75"],glow:"#d28a75",rings:false,ringCount:1,ringWidth:3,ringColor:"#d28a75"},
-    himalia:{name:"木衛六 Himalia",radius:11,mass:1300,atmosphere:0,colors:["#777065","#beb4a4"],glow:"#beb4a4",rings:false,ringCount:1,ringWidth:3,ringColor:"#beb4a4"},
-    thebe:{name:"木衛十四 Thebe",radius:10,mass:900,atmosphere:0,colors:["#7d4e42","#ba7f6f"],glow:"#ba7f6f",rings:false,ringCount:1,ringWidth:3,ringColor:"#ba7f6f"},
-    hyperion:{name:"土衛七 Hyperion",radius:13,mass:1500,atmosphere:0,colors:["#8d7e65","#d7c59d"],glow:"#d7c59d",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7c59d"},
-    janus:{name:"土衛十 Janus",radius:10,mass:700,atmosphere:0,colors:["#8f8980","#d8d0c4"],glow:"#d8d0c4",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d0c4"},
-    epimetheus:{name:"土衛十一 Epimetheus",radius:9,mass:650,atmosphere:0,colors:["#8a837a","#cac1b5"],glow:"#cac1b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cac1b5"},
-    prometheus:{name:"土衛十六 Prometheus",radius:8,mass:450,atmosphere:0,colors:["#878177","#d1c7b9"],glow:"#d1c7b9",rings:false,ringCount:1,ringWidth:3,ringColor:"#d1c7b9"},
-    pandora:{name:"土衛十七 Pandora",radius:8,mass:420,atmosphere:0,colors:["#807a70","#c5bcad"],glow:"#c5bcad",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5bcad"},
-    helene:{name:"土衛十二 Helene",radius:7,mass:280,atmosphere:0,colors:["#969187","#ddd6c9"],glow:"#ddd6c9",rings:false,ringCount:1,ringWidth:3,ringColor:"#ddd6c9"},
-    telesto:{name:"土衛十三 Telesto",radius:7,mass:220,atmosphere:0,colors:["#98958e","#e3ddd2"],glow:"#e3ddd2",rings:false,ringCount:1,ringWidth:3,ringColor:"#e3ddd2"},
-    calypso:{name:"土衛十四 Calypso",radius:7,mass:220,atmosphere:0,colors:["#98948a","#e0d7c8"],glow:"#e0d7c8",rings:false,ringCount:1,ringWidth:3,ringColor:"#e0d7c8"},
-    atlas:{name:"土衛十五 Atlas",radius:7,mass:180,atmosphere:0,colors:["#8c867c","#d6cabd"],glow:"#d6cabd",rings:false,ringCount:1,ringWidth:3,ringColor:"#d6cabd"},
-    pan:{name:"土衛十八 Pan",radius:6,mass:160,atmosphere:0,colors:["#8f887d","#d3c8b9"],glow:"#d3c8b9",rings:true,ringCount:1,ringWidth:2,ringColor:"#d3c8b9"},
-    methone:{name:"土衛三十二 Methone",radius:6,mass:80,atmosphere:0,colors:["#aaa49c","#eee7dc"],glow:"#eee7dc",rings:false,ringCount:1,ringWidth:3,ringColor:"#eee7dc"},
-    pallene:{name:"土衛三十三 Pallene",radius:6,mass:80,atmosphere:0,colors:["#a39d94","#e6ddd0"],glow:"#e6ddd0",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6ddd0"},
-    mab:{name:"天衛二十六 Mab",radius:6,mass:160,atmosphere:0,colors:["#8da4b0","#d7f3ff"],glow:"#d7f3ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7f3ff"},
-    puck:{name:"天衛十五 Puck",radius:10,mass:900,atmosphere:0,colors:["#6f7a83","#c5d5df"],glow:"#c5d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5d5df"},
-    portia:{name:"天衛十二 Portia",radius:8,mass:600,atmosphere:0,colors:["#6c7780","#bdcbd5"],glow:"#bdcbd5",rings:false,ringCount:1,ringWidth:3,ringColor:"#bdcbd5"},
-    juliet:{name:"天衛十一 Juliet",radius:8,mass:500,atmosphere:0,colors:["#6d7882","#c6d5df"],glow:"#c6d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c6d5df"},
-    desdemona:{name:"天衛十 Desdemona",radius:7,mass:450,atmosphere:0,colors:["#6b7580","#bfced8"],glow:"#bfced8",rings:false,ringCount:1,ringWidth:3,ringColor:"#bfced8"},
-    cressida:{name:"天衛九 Cressida",radius:7,mass:420,atmosphere:0,colors:["#6d7982","#c4d4df"],glow:"#c4d4df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c4d4df"},
-    bianca:{name:"天衛八 Bianca",radius:7,mass:380,atmosphere:0,colors:["#707b84","#c7d5df"],glow:"#c7d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c7d5df"},
-    galatea:{name:"海衛六 Galatea",radius:9,mass:900,atmosphere:0,colors:["#536db1","#a5bfff"],glow:"#a5bfff",rings:false,ringCount:1,ringWidth:3,ringColor:"#a5bfff"},
-    larissa:{name:"海衛七 Larissa",radius:9,mass:850,atmosphere:0,colors:["#5268a0","#9bb2ed"],glow:"#9bb2ed",rings:false,ringCount:1,ringWidth:3,ringColor:"#9bb2ed"},
-    despina:{name:"海衛五 Despina",radius:8,mass:650,atmosphere:0,colors:["#526aa7","#9fb9f5"],glow:"#9fb9f5",rings:false,ringCount:1,ringWidth:3,ringColor:"#9fb9f5"},
-    thalassa:{name:"海衛四 Thalassa",radius:7,mass:420,atmosphere:0,colors:["#526ba8","#9db6f0"],glow:"#9db6f0",rings:false,ringCount:1,ringWidth:3,ringColor:"#9db6f0"},
-    naiad:{name:"海衛三 Naiad",radius:7,mass:380,atmosphere:0,colors:["#4e66a2","#95afea"],glow:"#95afea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95afea"},
-    halimede:{name:"Halimede",radius:6,mass:250,atmosphere:0,colors:["#51679e","#8fa9e2"],glow:"#8fa9e2",rings:false,ringCount:1,ringWidth:3,ringColor:"#8fa9e2"},
-    sao:{name:"Sao",radius:6,mass:220,atmosphere:0,colors:["#5068a4","#91aee9"],glow:"#91aee9",rings:false,ringCount:1,ringWidth:3,ringColor:"#91aee9"},
-    laomedeia:{name:"Laomedeia",radius:6,mass:220,atmosphere:0,colors:["#526aa8","#97b2ee"],glow:"#97b2ee",rings:false,ringCount:1,ringWidth:3,ringColor:"#97b2ee"},
-    psamathe:{name:"Psamathe",radius:6,mass:160,atmosphere:0,colors:["#4e66a0","#90aae4"],glow:"#90aae4",rings:false,ringCount:1,ringWidth:3,ringColor:"#90aae4"},
-    neso:{name:"Neso",radius:6,mass:160,atmosphere:0,colors:["#5069a5","#95b0ea"],glow:"#95b0ea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95b0ea"},
+    amalthea:{name:"木衛五 Amalthea",radius:12,mass:1700,atmosphere:0,colors:["#7a4439","#d28a75"],glow:"#d28a75",rings:false,ringCount:1,ringWidth:3,ringColor:"#d28a75",craters:true,craterDensity:"medium"},
+    himalia:{name:"木衛六 Himalia",radius:11,mass:1300,atmosphere:0,colors:["#777065","#beb4a4"],glow:"#beb4a4",rings:false,ringCount:1,ringWidth:3,ringColor:"#beb4a4",craters:true,craterDensity:"medium"},
+    thebe:{name:"木衛十四 Thebe",radius:10,mass:900,atmosphere:0,colors:["#7d4e42","#ba7f6f"],glow:"#ba7f6f",rings:false,ringCount:1,ringWidth:3,ringColor:"#ba7f6f",craters:true,craterDensity:"medium"},
+    hyperion:{name:"土衛七 Hyperion",radius:13,mass:1500,atmosphere:0,colors:["#8d7e65","#d7c59d"],glow:"#d7c59d",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7c59d",craters:true,craterDensity:"medium"},
+    janus:{name:"土衛十 Janus",radius:10,mass:700,atmosphere:0,colors:["#8f8980","#d8d0c4"],glow:"#d8d0c4",rings:false,ringCount:1,ringWidth:3,ringColor:"#d8d0c4",craters:true,craterDensity:"medium"},
+    epimetheus:{name:"土衛十一 Epimetheus",radius:9,mass:650,atmosphere:0,colors:["#8a837a","#cac1b5"],glow:"#cac1b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cac1b5",craters:true,craterDensity:"medium"},
+    prometheus:{name:"土衛十六 Prometheus",radius:8,mass:450,atmosphere:0,colors:["#878177","#d1c7b9"],glow:"#d1c7b9",rings:false,ringCount:1,ringWidth:3,ringColor:"#d1c7b9",craters:true,craterDensity:"medium"},
+    pandora:{name:"土衛十七 Pandora",radius:8,mass:420,atmosphere:0,colors:["#807a70","#c5bcad"],glow:"#c5bcad",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5bcad",craters:true,craterDensity:"medium"},
+    helene:{name:"土衛十二 Helene",radius:7,mass:280,atmosphere:0,colors:["#969187","#ddd6c9"],glow:"#ddd6c9",rings:false,ringCount:1,ringWidth:3,ringColor:"#ddd6c9",craters:true,craterDensity:"medium"},
+    telesto:{name:"土衛十三 Telesto",radius:7,mass:220,atmosphere:0,colors:["#98958e","#e3ddd2"],glow:"#e3ddd2",rings:false,ringCount:1,ringWidth:3,ringColor:"#e3ddd2",craters:true,craterDensity:"medium"},
+    calypso:{name:"土衛十四 Calypso",radius:7,mass:220,atmosphere:0,colors:["#98948a","#e0d7c8"],glow:"#e0d7c8",rings:false,ringCount:1,ringWidth:3,ringColor:"#e0d7c8",craters:true,craterDensity:"medium"},
+    atlas:{name:"土衛十五 Atlas",radius:7,mass:180,atmosphere:0,colors:["#8c867c","#d6cabd"],glow:"#d6cabd",rings:false,ringCount:1,ringWidth:3,ringColor:"#d6cabd",craters:true,craterDensity:"medium"},
+    pan:{name:"土衛十八 Pan",radius:6,mass:160,atmosphere:0,colors:["#8f887d","#d3c8b9"],glow:"#d3c8b9",rings:true,ringCount:1,ringWidth:2,ringColor:"#d3c8b9",craters:true,craterDensity:"medium"},
+    methone:{name:"土衛三十二 Methone",radius:6,mass:80,atmosphere:0,colors:["#aaa49c","#eee7dc"],glow:"#eee7dc",rings:false,ringCount:1,ringWidth:3,ringColor:"#eee7dc",craters:true,craterDensity:"medium"},
+    pallene:{name:"土衛三十三 Pallene",radius:6,mass:80,atmosphere:0,colors:["#a39d94","#e6ddd0"],glow:"#e6ddd0",rings:false,ringCount:1,ringWidth:3,ringColor:"#e6ddd0",craters:true,craterDensity:"medium"},
+    mab:{name:"天衛二十六 Mab",radius:6,mass:160,atmosphere:0,colors:["#8da4b0","#d7f3ff"],glow:"#d7f3ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7f3ff",craters:true,craterDensity:"medium"},
+    puck:{name:"天衛十五 Puck",radius:10,mass:900,atmosphere:0,colors:["#6f7a83","#c5d5df"],glow:"#c5d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c5d5df",craters:true,craterDensity:"medium"},
+    portia:{name:"天衛十二 Portia",radius:8,mass:600,atmosphere:0,colors:["#6c7780","#bdcbd5"],glow:"#bdcbd5",rings:false,ringCount:1,ringWidth:3,ringColor:"#bdcbd5",craters:true,craterDensity:"medium"},
+    juliet:{name:"天衛十一 Juliet",radius:8,mass:500,atmosphere:0,colors:["#6d7882","#c6d5df"],glow:"#c6d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c6d5df",craters:true,craterDensity:"medium"},
+    desdemona:{name:"天衛十 Desdemona",radius:7,mass:450,atmosphere:0,colors:["#6b7580","#bfced8"],glow:"#bfced8",rings:false,ringCount:1,ringWidth:3,ringColor:"#bfced8",craters:true,craterDensity:"medium"},
+    cressida:{name:"天衛九 Cressida",radius:7,mass:420,atmosphere:0,colors:["#6d7982","#c4d4df"],glow:"#c4d4df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c4d4df",craters:true,craterDensity:"medium"},
+    bianca:{name:"天衛八 Bianca",radius:7,mass:380,atmosphere:0,colors:["#707b84","#c7d5df"],glow:"#c7d5df",rings:false,ringCount:1,ringWidth:3,ringColor:"#c7d5df",craters:true,craterDensity:"medium"},
+    galatea:{name:"海衛六 Galatea",radius:9,mass:900,atmosphere:0,colors:["#536db1","#a5bfff"],glow:"#a5bfff",rings:false,ringCount:1,ringWidth:3,ringColor:"#a5bfff",craters:true,craterDensity:"medium"},
+    larissa:{name:"海衛七 Larissa",radius:9,mass:850,atmosphere:0,colors:["#5268a0","#9bb2ed"],glow:"#9bb2ed",rings:false,ringCount:1,ringWidth:3,ringColor:"#9bb2ed",craters:true,craterDensity:"medium"},
+    despina:{name:"海衛五 Despina",radius:8,mass:650,atmosphere:0,colors:["#526aa7","#9fb9f5"],glow:"#9fb9f5",rings:false,ringCount:1,ringWidth:3,ringColor:"#9fb9f5",craters:true,craterDensity:"medium"},
+    thalassa:{name:"海衛四 Thalassa",radius:7,mass:420,atmosphere:0,colors:["#526ba8","#9db6f0"],glow:"#9db6f0",rings:false,ringCount:1,ringWidth:3,ringColor:"#9db6f0",craters:true,craterDensity:"medium"},
+    naiad:{name:"海衛三 Naiad",radius:7,mass:380,atmosphere:0,colors:["#4e66a2","#95afea"],glow:"#95afea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95afea",craters:true,craterDensity:"medium"},
+    halimede:{name:"Halimede",radius:6,mass:250,atmosphere:0,colors:["#51679e","#8fa9e2"],glow:"#8fa9e2",rings:false,ringCount:1,ringWidth:3,ringColor:"#8fa9e2",craters:true,craterDensity:"medium"},
+    sao:{name:"Sao",radius:6,mass:220,atmosphere:0,colors:["#5068a4","#91aee9"],glow:"#91aee9",rings:false,ringCount:1,ringWidth:3,ringColor:"#91aee9",craters:true,craterDensity:"medium"},
+    laomedeia:{name:"Laomedeia",radius:6,mass:220,atmosphere:0,colors:["#526aa8","#97b2ee"],glow:"#97b2ee",rings:false,ringCount:1,ringWidth:3,ringColor:"#97b2ee",craters:true,craterDensity:"medium"},
+    psamathe:{name:"Psamathe",radius:6,mass:160,atmosphere:0,colors:["#4e66a0","#90aae4"],glow:"#90aae4",rings:false,ringCount:1,ringWidth:3,ringColor:"#90aae4",craters:true,craterDensity:"medium"},
+    neso:{name:"Neso",radius:6,mass:160,atmosphere:0,colors:["#5069a5","#95b0ea"],glow:"#95b0ea",rings:false,ringCount:1,ringWidth:3,ringColor:"#95b0ea",craters:true,craterDensity:"medium"},
 
-    vesta:{name:"灶神星 Vesta",radius:18,mass:4000,atmosphere:0,colors:["#8d887f","#d9d1c3"],glow:"#d9d1c3",rings:false,ringCount:1,ringWidth:3,ringColor:"#d9d1c3"},
-    pallas:{name:"智神星 Pallas",radius:18,mass:3300,atmosphere:0,colors:["#7f7b73","#cbc3b5"],glow:"#cbc3b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbc3b5"},
-    hygiea:{name:"健神星 Hygiea",radius:17,mass:1300,atmosphere:0,colors:["#69645d","#afa79b"],glow:"#afa79b",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa79b"},
-    interamnia:{name:"司理星 Interamnia",radius:16,mass:800,atmosphere:0,colors:["#6e675e","#b3aa9b"],glow:"#b3aa9b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b3aa9b"},
-    euphrosyne:{name:"欣女星 Euphrosyne",radius:15,mass:500,atmosphere:0,colors:["#6a665e","#aaa49a"],glow:"#aaa49a",rings:false,ringCount:1,ringWidth:3,ringColor:"#aaa49a"},
-    davida:{name:"大衛星 Davida",radius:15,mass:450,atmosphere:0,colors:["#5d5952","#9e978d"],glow:"#9e978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#9e978d"},
-    psyche:{name:"靈神星 Psyche",radius:14,mass:420,atmosphere:0,colors:["#8c725e","#d7ae8a"],glow:"#d7ae8a",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7ae8a"},
-    eunomia:{name:"司法星 Eunomia",radius:14,mass:380,atmosphere:0,colors:["#7d786f","#c9c0b2"],glow:"#c9c0b2",rings:false,ringCount:1,ringWidth:3,ringColor:"#c9c0b2"},
-    juno:{name:"婚神星 Juno",radius:13,mass:320,atmosphere:0,colors:["#7a7168","#c2b4a7"],glow:"#c2b4a7",rings:false,ringCount:1,ringWidth:3,ringColor:"#c2b4a7"},
-    camilla:{name:"卡蜜拉星 Camilla",radius:14,mass:280,atmosphere:0,colors:["#5d564f","#9f9488"],glow:"#9f9488",rings:false,ringCount:1,ringWidth:3,ringColor:"#9f9488"},
-    sylvia:{name:"林神星 Sylvia",radius:15,mass:280,atmosphere:0,colors:["#5d5750","#a0978d"],glow:"#a0978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a0978d"},
-    hektor:{name:"赫克托 Hektor",radius:14,mass:250,atmosphere:0,colors:["#6b5b4f","#b0937e"],glow:"#b0937e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b0937e"},
-    achilles:{name:"阿基里斯 Achilles",radius:12,mass:200,atmosphere:0,colors:["#6c5e52","#ad9888"],glow:"#ad9888",rings:false,ringCount:1,ringWidth:3,ringColor:"#ad9888"},
-    patroclus:{name:"帕特羅克洛斯 Patroclus",radius:12,mass:200,atmosphere:0,colors:["#5f574f","#a3998d"],glow:"#a3998d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a3998d"},
-    eros:{name:"愛神星 Eros",radius:10,mass:120,atmosphere:0,colors:["#8b6655","#cf9b82"],glow:"#cf9b82",rings:false,ringCount:1,ringWidth:3,ringColor:"#cf9b82"},
-    bennu:{name:"貝努 Bennu",radius:7,mass:25,atmosphere:0,colors:["#4a4540","#8a8177"],glow:"#8a8177",rings:false,ringCount:1,ringWidth:3,ringColor:"#8a8177"},
-    ryugu:{name:"龍宮 Ryugu",radius:7,mass:25,atmosphere:0,colors:["#4d4842","#8e857a"],glow:"#8e857a",rings:false,ringCount:1,ringWidth:3,ringColor:"#8e857a"},
-    itokawa:{name:"糸川 Itokawa",radius:7,mass:20,atmosphere:0,colors:["#6b6258","#afa396"],glow:"#afa396",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa396"},
-    apophis:{name:"阿波菲斯 Apophis",radius:7,mass:40,atmosphere:0,colors:["#5f554d","#9d8e80"],glow:"#9d8e80",rings:false,ringCount:1,ringWidth:3,ringColor:"#9d8e80"},
-    toutatis:{name:"圖塔蒂斯 Toutatis",radius:8,mass:70,atmosphere:0,colors:["#6a6055","#b09f8e"],glow:"#b09f8e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b09f8e"},
-    custom:{name:"自訂",radius:34,mass:220000,atmosphere:30,colors:["#a46bff","#7df9ff"],glow:"#b493ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe0a2"}
+    vesta:{name:"灶神星 Vesta",radius:18,mass:4000,atmosphere:0,colors:["#8d887f","#d9d1c3"],glow:"#d9d1c3",rings:false,ringCount:1,ringWidth:3,ringColor:"#d9d1c3",craters:true,craterDensity:"high"},
+    pallas:{name:"智神星 Pallas",radius:18,mass:3300,atmosphere:0,colors:["#7f7b73","#cbc3b5"],glow:"#cbc3b5",rings:false,ringCount:1,ringWidth:3,ringColor:"#cbc3b5",craters:true,craterDensity:"high"},
+    hygiea:{name:"健神星 Hygiea",radius:17,mass:1300,atmosphere:0,colors:["#69645d","#afa79b"],glow:"#afa79b",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa79b",craters:true,craterDensity:"high"},
+    interamnia:{name:"司理星 Interamnia",radius:16,mass:800,atmosphere:0,colors:["#6e675e","#b3aa9b"],glow:"#b3aa9b",rings:false,ringCount:1,ringWidth:3,ringColor:"#b3aa9b",craters:true,craterDensity:"medium"},
+    euphrosyne:{name:"欣女星 Euphrosyne",radius:15,mass:500,atmosphere:0,colors:["#6a665e","#aaa49a"],glow:"#aaa49a",rings:false,ringCount:1,ringWidth:3,ringColor:"#aaa49a",craters:true,craterDensity:"medium"},
+    davida:{name:"大衛星 Davida",radius:15,mass:450,atmosphere:0,colors:["#5d5952","#9e978d"],glow:"#9e978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#9e978d",craters:true,craterDensity:"medium"},
+    psyche:{name:"靈神星 Psyche",radius:14,mass:420,atmosphere:0,colors:["#8c725e","#d7ae8a"],glow:"#d7ae8a",rings:false,ringCount:1,ringWidth:3,ringColor:"#d7ae8a",craters:true,craterDensity:"medium"},
+    eunomia:{name:"司法星 Eunomia",radius:14,mass:380,atmosphere:0,colors:["#7d786f","#c9c0b2"],glow:"#c9c0b2",rings:false,ringCount:1,ringWidth:3,ringColor:"#c9c0b2",craters:true,craterDensity:"medium"},
+    juno:{name:"婚神星 Juno",radius:13,mass:320,atmosphere:0,colors:["#7a7168","#c2b4a7"],glow:"#c2b4a7",rings:false,ringCount:1,ringWidth:3,ringColor:"#c2b4a7",craters:true,craterDensity:"medium"},
+    camilla:{name:"卡蜜拉星 Camilla",radius:14,mass:280,atmosphere:0,colors:["#5d564f","#9f9488"],glow:"#9f9488",rings:false,ringCount:1,ringWidth:3,ringColor:"#9f9488",craters:true,craterDensity:"medium"},
+    sylvia:{name:"林神星 Sylvia",radius:15,mass:280,atmosphere:0,colors:["#5d5750","#a0978d"],glow:"#a0978d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a0978d",craters:true,craterDensity:"medium"},
+    hektor:{name:"赫克托 Hektor",radius:14,mass:250,atmosphere:0,colors:["#6b5b4f","#b0937e"],glow:"#b0937e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b0937e",craters:true,craterDensity:"medium"},
+    achilles:{name:"阿基里斯 Achilles",radius:12,mass:200,atmosphere:0,colors:["#6c5e52","#ad9888"],glow:"#ad9888",rings:false,ringCount:1,ringWidth:3,ringColor:"#ad9888",craters:true,craterDensity:"medium"},
+    patroclus:{name:"帕特羅克洛斯 Patroclus",radius:12,mass:200,atmosphere:0,colors:["#5f574f","#a3998d"],glow:"#a3998d",rings:false,ringCount:1,ringWidth:3,ringColor:"#a3998d",craters:true,craterDensity:"medium"},
+    eros:{name:"愛神星 Eros",radius:10,mass:120,atmosphere:0,colors:["#8b6655","#cf9b82"],glow:"#cf9b82",rings:false,ringCount:1,ringWidth:3,ringColor:"#cf9b82",craters:true,craterDensity:"high"},
+    bennu:{name:"貝努 Bennu",radius:7,mass:25,atmosphere:0,colors:["#4a4540","#8a8177"],glow:"#8a8177",rings:false,ringCount:1,ringWidth:3,ringColor:"#8a8177",craters:true,craterDensity:"high"},
+    ryugu:{name:"龍宮 Ryugu",radius:7,mass:25,atmosphere:0,colors:["#4d4842","#8e857a"],glow:"#8e857a",rings:false,ringCount:1,ringWidth:3,ringColor:"#8e857a",craters:true,craterDensity:"high"},
+    itokawa:{name:"糸川 Itokawa",radius:7,mass:20,atmosphere:0,colors:["#6b6258","#afa396"],glow:"#afa396",rings:false,ringCount:1,ringWidth:3,ringColor:"#afa396",craters:true,craterDensity:"high"},
+    apophis:{name:"阿波菲斯 Apophis",radius:7,mass:40,atmosphere:0,colors:["#5f554d","#9d8e80"],glow:"#9d8e80",rings:false,ringCount:1,ringWidth:3,ringColor:"#9d8e80",craters:true,craterDensity:"high"},
+    toutatis:{name:"圖塔蒂斯 Toutatis",radius:8,mass:70,atmosphere:0,colors:["#6a6055","#b09f8e"],glow:"#b09f8e",rings:false,ringCount:1,ringWidth:3,ringColor:"#b09f8e",craters:true,craterDensity:"high"},
+    custom:{name:"自訂",radius:34,mass:220000,atmosphere:30,colors:["#a46bff","#7df9ff"],glow:"#b493ff",rings:false,ringCount:1,ringWidth:3,ringColor:"#ffe0a2",craters:true,craterDensity:"medium"}
   };
   let currentLang = "zh";
   const TEXT = {
@@ -1095,6 +1106,12 @@ select, button, input[type="number"] {
     "高光：無": "Highlight: Off",
     "條紋：有": "Stripes: On",
     "條紋：無": "Stripes: Off",
+    "隕石坑：有": "Craters: On",
+    "隕石坑：無": "Craters: Off",
+    "隕石坑": "Craters",
+    "少": "Low",
+    "中": "Medium",
+    "多": "High",
     "副色作用": "Secondary use",
     "高光": "Highlight",
     "條紋": "Stripes",
@@ -1306,6 +1323,12 @@ select, button, input[type="number"] {
     "高光：無": "ハイライト：無",
     "條紋：有": "縞模様：有",
     "條紋：無": "縞模様：無",
+    "隕石坑：有": "クレーター：有",
+    "隕石坑：無": "クレーター：無",
+    "隕石坑": "クレーター",
+    "少": "少",
+    "中": "中",
+    "多": "多",
     "副色作用": "副色の対象",
     "高光": "ハイライト",
     "條紋": "縞模様",
@@ -1574,6 +1597,7 @@ select, button, input[type="number"] {
       ui.soundToggleBtn.textContent = soundEnabled ? t("soundOn") : t("soundOff");
       ui.soundToggleBtn.classList.toggle("active-mode", soundEnabled);
     }
+    if (ui.customCratersEnabled) ui.customCratersEnabled.textContent = customCratersEnabledDraft ? trText("隕石坑：有") : trText("隕石坑：無");
     populateProjectileSelect();
   }
 
@@ -1814,6 +1838,7 @@ select, button, input[type="number"] {
   let customRingOrbitEnabledDraft = false;
   let customHighlightEnabledDraft = true;
   let customStripesEnabledDraft = true;
+  let customCratersEnabledDraft = true;
   let customGlowEnabledDraft = true;
 
   function setSecondaryTarget(value, updateSelected = true) {
@@ -1866,6 +1891,14 @@ select, button, input[type="number"] {
     if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.stripesEnabled = customStripesEnabledDraft;
   }
 
+  function setCustomCratersEnabled(enabled, updateSelected = true) {
+    customCratersEnabledDraft = !!enabled;
+    if (!ui.customCratersEnabled) return;
+    ui.customCratersEnabled.textContent = customCratersEnabledDraft ? trText("隕石坑：有") : trText("隕石坑：無");
+    ui.customCratersEnabled.classList.toggle("active-mode", customCratersEnabledDraft);
+    if (selectedPlanet?.isCustom && updateSelected) selectedPlanet.cratersEnabled = customCratersEnabledDraft;
+  }
+
   function setCustomGlowEnabled(enabled, updateSelected = true) {
     customGlowEnabledDraft = !!enabled;
     if (!ui.customGlowEnabled) return;
@@ -1899,6 +1932,8 @@ select, button, input[type="number"] {
     ui.customHaloGlowSize.value = p?.haloGlowSize ?? 14;
     setCustomHighlightEnabled(p?.highlightEnabled !== false, false);
     setCustomStripesEnabled(p?.stripesEnabled !== false, false);
+    setCustomCratersEnabled(p?.cratersEnabled !== false, false);
+    if (ui.customCraterDensity) ui.customCraterDensity.value = p?.craterDensity || "medium";
     setCustomGlowEnabled(p?.glowEnabled !== false, false);
     setSecondaryTarget(p?.secondaryTarget || (p?.highlightEnabled === false ? "none" : "highlight"), false);
   }
@@ -1933,6 +1968,8 @@ select, button, input[type="number"] {
       ui.customRingOrbitDir.value = "cw";
       setCustomHighlightEnabled(true, false);
       setCustomStripesEnabled(true, false);
+      setCustomCratersEnabled(true, false);
+      if (ui.customCraterDensity) ui.customCraterDensity.value = "medium";
       setCustomGlowEnabled(true, false);
       setSecondaryTarget("highlight", false);
       setCustomRingEnabled(false, false);
@@ -2009,6 +2046,9 @@ select, button, input[type="number"] {
       haloGlowSize: isCustom ? +ui.customHaloGlowSize.value : 14,
       highlightEnabled: isCustom ? customHighlightEnabledDraft : true,
       stripesEnabled: isCustom ? customStripesEnabledDraft : true,
+      cratersEnabled: isCustom ? customCratersEnabledDraft : !!base.craters,
+      craterDensity: isCustom ? ui.customCraterDensity.value : (base.craterDensity || "medium"),
+      craterSeed: safeId(),
       secondaryTarget: isCustom ? ui.secondaryTarget.value : "highlight",
       spin: Math.random() * Math.PI * 2,
       rings: isCustom ? customRingEnabledDraft : !!base.rings,
@@ -2061,6 +2101,9 @@ select, button, input[type="number"] {
         glowStrength: 1,
         highlightEnabled: true,
         stripesEnabled: true,
+        cratersEnabled: !!base.craters,
+        craterDensity: base.craterDensity || "medium",
+        craterSeed: safeId(),
         secondaryTarget: "highlight",
         spin: Math.random() * Math.PI * 2,
         rings: !!base.rings,
@@ -2454,6 +2497,81 @@ select, button, input[type="number"] {
     ctx.stroke();
   }
 
+  function seededNoise(seed) {
+    let h = 2166136261;
+    const str = String(seed);
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return () => {
+      h += 0x6D2B79F5;
+      let t = h;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function drawCraters(pl, s, r, primaryColor) {
+    if (!pl.cratersEnabled || r < 8) return;
+
+    const density = pl.craterDensity || "medium";
+    const countMap = { low: 7, medium: 14, high: 24 };
+    const count = countMap[density] || 14;
+    const rand = seededNoise(pl.craterSeed || pl.id || pl.name || 1);
+    const craterStroke = hexToRgba(mixHex(primaryColor, 0.55), 0.34);
+    const craterDark = hexToRgba("#000000", 0.22);
+    const craterLight = hexToRgba("#ffffff", 0.13);
+
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+
+    for (let i = 0; i < count; i++) {
+      const angle = rand() * Math.PI * 2;
+      const dist = Math.sqrt(rand()) * 0.82;
+      const x = Math.cos(angle) * dist * r;
+      const y = Math.sin(angle) * dist * r;
+      const limb = Math.sqrt(Math.max(0, 1 - dist * dist));
+      const cr = r * (0.035 + rand() * 0.075) * (0.55 + limb * 0.75);
+      const cx = s.x + x;
+      const cy = s.y + y;
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(rand() * Math.PI);
+      ctx.scale(1, 0.72 + rand() * 0.38);
+
+      const g = ctx.createRadialGradient(-cr * 0.28, -cr * 0.28, cr * 0.08, 0, 0, cr * 1.2);
+      g.addColorStop(0, craterLight);
+      g.addColorStop(0.42, "rgba(255,255,255,0.025)");
+      g.addColorStop(0.72, craterDark);
+      g.addColorStop(1, "rgba(0,0,0,0)");
+
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(0, 0, cr * 1.12, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = craterStroke;
+      ctx.lineWidth = Math.max(0.45, cr * 0.13);
+      ctx.beginPath();
+      ctx.arc(0, 0, cr, 0, Math.PI * 2);
+      ctx.stroke();
+
+      if (rand() > 0.72) {
+        ctx.fillStyle = hexToRgba("#ffffff", 0.10);
+        ctx.beginPath();
+        ctx.arc(-cr * 0.28, -cr * 0.22, Math.max(0.7, cr * 0.16), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
   function getRingSlotIndexes(count, slotMode) {
     const c = clamp(Math.round(count || 1), 1, 3);
     const mode = slotMode || "auto";
@@ -2643,6 +2761,9 @@ select, button, input[type="number"] {
         ctx.fillRect(s.x - r, yy, r * 2, Math.max(1, r * 0.028));
       }
     }
+
+    ctx.globalAlpha = 1;
+    drawCraters(pl, s, r, primaryColor);
     ctx.restore();
 
     if (secondaryTarget === "halo") {
@@ -3368,6 +3489,10 @@ select, button, input[type="number"] {
   if (ui.customHighlightEnabled) {
     ui.customHighlightEnabled.onclick = () => setCustomHighlightEnabled(!customHighlightEnabledDraft);
     ui.customStripesEnabled.onclick = () => setCustomStripesEnabled(!customStripesEnabledDraft);
+    ui.customCratersEnabled.onclick = () => setCustomCratersEnabled(!customCratersEnabledDraft);
+    ui.customCraterDensity.addEventListener("change", () => {
+      if (selectedPlanet?.isCustom) selectedPlanet.craterDensity = ui.customCraterDensity.value;
+    });
     ui.customGlowEnabled.onclick = () => setCustomGlowEnabled(!customGlowEnabledDraft);
     ui.secondaryTarget.addEventListener("change", () => setSecondaryTarget(ui.secondaryTarget.value));
     ui.customGlowColor.addEventListener("input", () => {

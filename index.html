@@ -35,8 +35,23 @@
     position: fixed;
     touch-action: none;
     inset: 0;
-    image-rendering: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
     cursor: crosshair;
+  }
+
+  body.pixel-mode::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    opacity: .055;
+    background:
+      linear-gradient(rgba(255,255,255,.38) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+    background-size: 4px 4px;
+    mix-blend-mode: screen;
   }
 
   .hud {
@@ -906,6 +921,8 @@ select, button, input[type="number"] {
   };
 
   let W = 0, H = 0, DPR = 1;
+  const PIXEL_SCALE = 0.62; // fine hard-edge pixel style: lower = chunkier, higher = smoother
+  document.body.classList.add("pixel-mode");
   let camera = { x: 0, y: 0, zoom: 1 };
   let mode = "none";
   let paused = false;
@@ -1593,13 +1610,14 @@ select, button, input[type="number"] {
 
 
   function resize() {
-    DPR = Math.max(1, Math.min(2, devicePixelRatio || 1));
+    DPR = PIXEL_SCALE;
     W = innerWidth;
     H = innerHeight;
-    canvas.width = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
+    canvas.width = Math.max(1, Math.floor(W * DPR));
+    canvas.height = Math.max(1, Math.floor(H * DPR));
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
+    ctx.imageSmoothingEnabled = false;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
   addEventListener("resize", resize);
@@ -2505,6 +2523,9 @@ select, button, input[type="number"] {
   }
 
   function starField() {
+    ctx.imageSmoothingEnabled = false;
+    ctx.lineCap = "butt";
+    ctx.lineJoin = "miter";
     ctx.fillStyle = "#03040a";
     ctx.fillRect(0, 0, W, H);
 
@@ -2549,8 +2570,9 @@ select, button, input[type="number"] {
 
   function drawAtmosphere(pl) {
     if (pl.atmosphere <= 0) return;
-    const s = worldToScreen(pl.x, pl.y);
-    const r = pl.radius * camera.zoom;
+    const rawS = worldToScreen(pl.x, pl.y);
+    const s = { x: Math.round(rawS.x), y: Math.round(rawS.y) };
+    const r = Math.max(1, Math.round(pl.radius * camera.zoom));
     const a = (pl.radius + pl.atmosphere) * camera.zoom;
     const g = ctx.createRadialGradient(s.x, s.y, r, s.x, s.y, a);
     g.addColorStop(0, "rgba(125,249,255,0.00)");
@@ -2868,8 +2890,9 @@ select, button, input[type="number"] {
       return;
     }
 
-    const s = worldToScreen(p.x, p.y);
-    const r = Math.max(2, p.radius * camera.zoom);
+    const rawS = worldToScreen(p.x, p.y);
+    const s = { x: Math.round(rawS.x), y: Math.round(rawS.y) };
+    const r = Math.max(2, Math.round(p.radius * camera.zoom));
     ctx.save();
     ctx.shadowBlur = 12;
     ctx.shadowColor = "#7df9ff";
@@ -2885,7 +2908,8 @@ select, button, input[type="number"] {
   }
 
   function drawLauncher() {
-    const s = worldToScreen(launcher.x, launcher.y);
+    const rawS = worldToScreen(launcher.x, launcher.y);
+    const s = { x: Math.round(rawS.x), y: Math.round(rawS.y) };
     const a = (+ui.angle.value) * Math.PI / 180;
     const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.004);
     const barrelLen = 54;
@@ -2983,9 +3007,10 @@ select, button, input[type="number"] {
     ctx.globalCompositeOperation = "lighter";
 
     for (const p of particles) {
-      const s = worldToScreen(p.x, p.y);
+      const s0 = worldToScreen(p.x, p.y);
+      const s = { x: Math.round(s0.x), y: Math.round(s0.y) };
       const alpha = clamp(p.life / p.max, 0, 1);
-      const size = Math.max(0.5, (p.size || 1) * camera.zoom);
+      const size = Math.max(0.5, Math.round((p.size || 1) * camera.zoom));
 
       ctx.globalAlpha = alpha;
       ctx.fillStyle = p.color;

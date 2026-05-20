@@ -35,8 +35,7 @@
     position: fixed;
     touch-action: none;
     inset: 0;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    image-rendering: auto;
     cursor: crosshair;
   }
 
@@ -46,7 +45,7 @@
     position: fixed;
     inset: 0;
     z-index: 3;
-    opacity: .055;
+    opacity: .035;
     background:
       linear-gradient(rgba(255,255,255,.38) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
@@ -864,6 +863,9 @@ select, button, input[type="number"] {
 (() => {
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d", { alpha: false });
+  const pixelBuffer = document.createElement("canvas");
+  const pixelCtx = pixelBuffer.getContext("2d", { alpha: false });
+  const crispLabels = [];
 
   // 兼容手機瀏覽器、file:// 本機開啟、舊版 WebView。
   function safeId() {
@@ -921,7 +923,7 @@ select, button, input[type="number"] {
   };
 
   let W = 0, H = 0, DPR = 1;
-  const PIXEL_SCALE = 0.62; // fine hard-edge pixel style: lower = chunkier, higher = smoother
+  const PIXEL_SCALE = 0.42; // scene pixel block size: lower = chunkier; text is drawn after this and stays sharp
   document.body.classList.add("pixel-mode");
   let camera = { x: 0, y: 0, zoom: 1 };
   let mode = "none";
@@ -1181,6 +1183,8 @@ select, button, input[type="number"] {
     "幾乎就是太空；速度剛好會成為衛星，太慢會撞上去，太快會逃逸。": "is basically space. The right speed becomes an orbit; too slow crashes, too fast escapes.",
     "大氣厚度會額外拖慢穿過大氣的小球，做得太厚會像宇宙果凍，超好笑但很不科學。": "Atmosphere slows objects that pass through it; too much turns space into jelly, funny but extremely unscientific.",
     "等待放置": "Waiting",
+    "點擊放置天體": "Click to place body",
+    "點擊放置發射台": "Click to place launcher",
     "發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。": "Launcher placement: click/tap anywhere in space. Press again to cancel.",
     "天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。": "Body placement: click/tap anywhere in space to add one. Press again to cancel.",
     "模式": "Mode",
@@ -1392,6 +1396,8 @@ select, button, input[type="number"] {
     "幾乎就是太空；速度剛好會成為衛星，太慢會撞上去，太快會逃逸。": "はほぼ宇宙空間。速度が合えば軌道、遅すぎると衝突、速すぎると脱出します。",
     "大氣厚度會額外拖慢穿過大氣的小球，做得太厚會像宇宙果凍，超好笑但很不科學。": "大気は通過物体を減速させます。厚すぎると宇宙ゼリーになります。面白いけど非科学的。",
     "等待放置": "配置待機",
+    "點擊放置天體": "タップして天体を配置",
+    "點擊放置發射台": "タップして発射台を配置",
     "發射台放置模式：請點擊黑色大空間任意位置放置。再按一次可取消。": "発射台配置：宇宙の任意の場所をタップ。もう一度押すとキャンセル。",
     "天體放置模式：請點擊黑色大空間任意位置新增。再按一次可取消。": "天体配置：宇宙の任意の場所をタップして追加。もう一度押すとキャンセル。",
     "模式": "モード",
@@ -1610,7 +1616,7 @@ select, button, input[type="number"] {
 
 
   function resize() {
-    DPR = PIXEL_SCALE;
+    DPR = Math.max(1, Math.min(2, devicePixelRatio || 1));
     W = innerWidth;
     H = innerHeight;
     canvas.width = Math.max(1, Math.floor(W * DPR));
@@ -1619,6 +1625,10 @@ select, button, input[type="number"] {
     canvas.style.height = H + "px";
     ctx.imageSmoothingEnabled = false;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    pixelBuffer.width = Math.max(1, Math.floor(W * PIXEL_SCALE));
+    pixelBuffer.height = Math.max(1, Math.floor(H * PIXEL_SCALE));
+    pixelCtx.imageSmoothingEnabled = false;
   }
   addEventListener("resize", resize);
   resize();
@@ -1629,6 +1639,42 @@ select, button, input[type="number"] {
 
   function screenToWorld(x, y) {
     return { x: (x - W / 2) / camera.zoom + camera.x, y: (y - H / 2) / camera.zoom + camera.y };
+  }
+
+  function queueCanvasLabel(text, x, y, color = "rgba(230,240,255,.86)", size = 11) {
+    crispLabels.push({ text, x, y, color, size });
+  }
+
+  function pixelateScene() {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    pixelCtx.save();
+    pixelCtx.setTransform(1, 0, 0, 1, 0, 0);
+    pixelCtx.imageSmoothingEnabled = false;
+    pixelCtx.clearRect(0, 0, pixelBuffer.width, pixelBuffer.height);
+    pixelCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, pixelBuffer.width, pixelBuffer.height);
+
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(pixelBuffer, 0, 0, pixelBuffer.width, pixelBuffer.height, 0, 0, canvas.width, canvas.height);
+    pixelCtx.restore();
+    ctx.restore();
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  function drawCrispLabels() {
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.textBaseline = "alphabetic";
+    for (const label of crispLabels) {
+      ctx.font = `${label.size}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Noto Sans TC", monospace`;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgba(0,0,0,.72)";
+      ctx.strokeText(label.text, label.x, label.y);
+      ctx.fillStyle = label.color;
+      ctx.fillText(label.text, label.x, label.y);
+    }
+    ctx.restore();
   }
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
@@ -2662,9 +2708,7 @@ select, button, input[type="number"] {
         ctx.stroke();
       }
 
-      ctx.fillStyle = "rgba(235,225,255,.86)";
-      ctx.font = "11px ui-monospace, monospace";
-      ctx.fillText(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 11, s.y - r - 8);
+      queueCanvasLabel(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 11, s.y - r - 8, "rgba(235,225,255,.86)", 11);
       ctx.restore();
       return;
     }
@@ -2866,9 +2910,7 @@ select, button, input[type="number"] {
       ctx.restore();
     }
 
-    ctx.fillStyle = "rgba(220,235,255,.78)";
-    ctx.font = "11px ui-monospace, monospace";
-    ctx.fillText(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 9, s.y - r - 7);
+    queueCanvasLabel(`${bodyName(pl.name)} M:${Math.round(pl.mass)}`, s.x + r + 9, s.y - r - 7, "rgba(220,235,255,.78)", 11);
   }
 
   function drawProbe(p) {
@@ -2997,9 +3039,7 @@ select, button, input[type="number"] {
 
     ctx.restore();
 
-    ctx.fillStyle = "#ffe6a3";
-    ctx.font = "12px ui-monospace, monospace";
-    ctx.fillText("LAUNCHER", s.x + 20, s.y + 34);
+    queueCanvasLabel("LAUNCHER", s.x + 20, s.y + 34, "#ffe6a3", 12);
   }
 
   function drawParticles() {
@@ -3056,9 +3096,7 @@ select, button, input[type="number"] {
       ctx.setLineDash([]);
       ctx.beginPath(); ctx.arc(mouse.x, mouse.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-      ctx.fillStyle = "rgba(235,255,242,.95)";
-      ctx.font = "13px ui-monospace, monospace";
-      ctx.fillText("點擊放置天體", mouse.x + 18, mouse.y - 18);
+      queueCanvasLabel(trText("點擊放置天體"), mouse.x + 18, mouse.y - 18, "rgba(235,255,242,.95)", 13);
       ctx.restore();
     }
     if (mode === "setLauncher") {
@@ -3077,9 +3115,7 @@ select, button, input[type="number"] {
       ctx.lineTo(mouse.x, mouse.y + 28);
       ctx.stroke();
 
-      ctx.fillStyle = "rgba(255,246,211,.95)";
-      ctx.font = "13px ui-monospace, monospace";
-      ctx.fillText("點擊放置發射台", mouse.x + 18, mouse.y - 18);
+      queueCanvasLabel(trText("點擊放置發射台"), mouse.x + 18, mouse.y - 18, "rgba(255,246,211,.95)", 13);
       ctx.restore();
     }
   }
@@ -3130,12 +3166,17 @@ select, button, input[type="number"] {
       updateParticles(dt);
     }
 
+    crispLabels.length = 0;
+
     starField();
     drawLauncher();
     for (const pl of planets) drawPlanet(pl);
     for (const p of probes) drawProbe(p);
     drawParticles();
     drawModePreview();
+
+    pixelateScene();
+    drawCrispLabels();
     renderStatus();
 
     requestAnimationFrame(loop);
